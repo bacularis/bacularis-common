@@ -27,23 +27,53 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
+namespace Bacularis\Common\Modules;
 
-use Prado\Web\UI\WebControls\TButton;
+use Prado\Exceptions\TException;
 
 /**
- * Baculum Button control.
+ * Main common Baculum exceptions class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Exception
  * @package Baculum Common
  */
-class BButton extends TButton {
+class BException extends TException {
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
+	private $error_code;
+	private $error_message;
+
+	public function __construct($error_message, $error_code) {
+		$this->setErrorMessage($error_message);
+		$this->setErrorCode($error_code);
+		parent::__construct($error_message);
+	}
+
+	public function getErrorCode() {
+		return $this->error_code;
+	}
+
+	public function setErrorCode($error_code) {
+		$this->error_code = $error_code;
+	}
+
+	public function getErrorMessage() {
+		return $this->error_message;
+	}
+
+	public function setErrorMessage($error_message) {
+		$this->error_message = $error_message;
+	}
+
+	public function __toString() {
+		return sprintf(
+			'Error: %d, Message: %s',
+			$this->getErrorCode(),
+			$this->getErrorMessage()
+		);
 	}
 }
 
+class AuthException extends BException {
+}
 ?>

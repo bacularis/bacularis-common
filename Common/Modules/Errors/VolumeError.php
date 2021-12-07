@@ -10,7 +10,7 @@
  * Bacula(R) - The Network Backup Solution
  * Baculum   - Bacula web interface
  *
- * Copyright (C) 2013-2019 Kern Sibbald
+ * Copyright (C) 2013-2021 Kern Sibbald
  *
  * The main author of Baculum is Marcin Haba.
  * The original author of Bacula is Kern Sibbald, with contributions
@@ -27,23 +27,24 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Prado\Web\UI\WebControls\TButton;
+namespace Bacularis\Common\Modules\Errors;
 
 /**
- * Baculum Button control.
+ * Volume error class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Errors
  * @package Baculum Common
  */
-class BButton extends TButton {
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
-	}
+class VolumeError extends GenericError {
+	const ERROR_VOLUME_DOES_NOT_EXISTS = 30;
+	const ERROR_INVALID_VOLUME = 31;
+	const ERROR_INVALID_SLOT = 32;
+	const ERROR_VOLUME_ALREADY_EXISTS = 33;
+
+	const MSG_ERROR_VOLUME_DOES_NOT_EXISTS = 'Volume does not exist.';
+	const MSG_ERROR_INVALID_VOLUME = 'Invalid volume.';
+	const MSG_ERROR_INVALID_SLOT = 'Invalid slot.';
+	const MSG_ERROR_VOLUME_ALREADY_EXISTS = 'Volume already exists.';
 }
-
-?>

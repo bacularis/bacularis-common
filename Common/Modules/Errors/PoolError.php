@@ -10,7 +10,7 @@
  * Bacula(R) - The Network Backup Solution
  * Baculum   - Bacula web interface
  *
- * Copyright (C) 2013-2019 Kern Sibbald
+ * Copyright (C) 2013-2021 Kern Sibbald
  *
  * The main author of Baculum is Marcin Haba.
  * The original author of Bacula is Kern Sibbald, with contributions
@@ -27,23 +27,21 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Prado\Web\UI\WebControls\TButton;
+namespace Bacularis\Common\Modules\Errors;
 
 /**
- * Baculum Button control.
+ * Pool error class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Errors
  * @package Baculum Common
  */
-class BButton extends TButton {
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
-	}
+class PoolError extends GenericError {
+	const ERROR_POOL_DOES_NOT_EXISTS = 40;
+	const ERROR_NO_VOLUMES_IN_POOL_TO_UPDATE = 41;
+
+	const MSG_ERROR_POOL_DOES_NOT_EXISTS = 'Pool does not exist.';
+	const MSG_ERROR_NO_VOLUMES_IN_POOL_TO_UPDATE= 'Pool with inputted poolid does not contain any volume to update.';
 }
 
-?>

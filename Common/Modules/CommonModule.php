@@ -27,23 +27,22 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
+namespace Bacularis\Common\Modules;
 
-use Prado\Web\UI\WebControls\TButton;
+use Prado\TModule;
 
 /**
- * Baculum Button control.
+ * Abstract common module.
+ * Every common module should inherit this abstraction.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Module
  * @package Baculum Common
  */
-class BButton extends TButton {
+abstract class CommonModule extends TModule {
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
+	protected function getModule($id) {
+		return $this->getApplication()->getModule($id);
 	}
 }
-
 ?>

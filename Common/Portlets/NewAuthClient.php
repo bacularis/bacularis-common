@@ -1,5 +1,12 @@
 <?php
 /*
+ * Bacularis - Bacula web interface
+ *
+ * Copyright (C) 2021 Marcin Haba
+ *
+ * The main author of Bacularis is Marcin Haba, with contributors, whose
+ * full list can be found in the AUTHORS file.
+ *
  * Bacula(R) - The Network Backup Solution
  * Baculum   - Bacula web interface
  *
@@ -20,15 +27,15 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-Prado::using('System.Web.UI.ActiveControls.TActiveHiddenField');
-Prado::using('System.Web.UI.ActiveControls.TActiveLabel');
-Prado::using('System.Web.UI.ActiveControls.TActiveLinkButton');
-Prado::using('System.Web.UI.ActiveControls.TActiveButton');
-Prado::using('System.Web.UI.ActiveControls.TActiveTextBox');
-Prado::using('System.Web.UI.TTemplateControl');
-Prado::using('Application.Common.Class.OAuth2');
-Prado::using('Application.Common.Class.BasicUserConfig');
-Prado::using('Application.Common.Portlets.PortletTemplate');
+use Prado\Web\UI\ActiveControls\TActiveHiddenField;
+use Prado\Web\UI\ActiveControls\TActiveLabel;
+use Prado\Web\UI\ActiveControls\TActiveLinkButton;
+use Prado\Web\UI\ActiveControls\TActiveButton;
+use Prado\Web\UI\ActiveControls\TActiveTextBox;
+use Prado\Web\UI\TTemplateControl;
+use Bacularis\Common\Modules\OAuth2;
+use Bacularis\Common\Modules\BasicUserConfig;
+use Bacularis\Common\Portlets\PortletTemplate;
 
 /**
  * New auth client control.

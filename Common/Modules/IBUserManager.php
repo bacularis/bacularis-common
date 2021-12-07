@@ -10,7 +10,7 @@
  * Bacula(R) - The Network Backup Solution
  * Baculum   - Bacula web interface
  *
- * Copyright (C) 2013-2019 Kern Sibbald
+ * Copyright (C) 2013-2021 Kern Sibbald
  *
  * The main author of Baculum is Marcin Haba.
  * The original author of Bacula is Kern Sibbald, with contributions
@@ -27,23 +27,19 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Prado\Web\UI\WebControls\TButton;
+namespace Bacularis\Common\Modules;
 
 /**
- * Baculum Button control.
+ * Defined Baculum user manager methods.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Interfaces
  * @package Baculum Common
  */
-class BButton extends TButton {
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
-	}
+interface IBUserManager {
+
+	public function init($config);
+
+	public function validateUser($username, $password);
 }
-
-?>

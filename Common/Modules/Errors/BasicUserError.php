@@ -27,16 +27,31 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Bacularis\Common\Portlets\PortletTemplate;
+namespace Bacularis\Common\Modules\Errors;
 
 /**
- * Table default options control.
+ * Basic user error class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Errors
  * @package Baculum Common
  */
-class TableDefaults extends PortletTemplate {
+
+class BasicUserError extends GenericError {
+
+	const ERROR_BASIC_USER_DOES_NOT_EXIST = 140;
+	const ERROR_BASIC_USER_ALREADY_EXISTS = 141;
+	const ERROR_BASIC_USER_INVALID_USERNAME = 142;
+	const ERROR_BASIC_USER_INVALID_BCONSOLE_CFG_PATH = 143;
+	const ERROR_BASIC_USER_INVALID_CONSOLE = 144;
+	const ERROR_BASIC_USER_INVALID_DIRECTOR = 145;
+	const ERROR_BASIC_USER_INVALID_PASSWORD= 146;
+
+	const MSG_ERROR_BASIC_USER_DOES_NOT_EXIST = 'Basic user does not exist.';
+	const MSG_ERROR_BASIC_USER_ALREADY_EXISTS = 'Basic user already exists.';
+	const MSG_ERROR_BASIC_USER_INVALID_USERNAME = 'Invalid basic user username';
+	const MSG_ERROR_BASIC_USER_INVALID_BCONSOLE_CFG_PATH = 'Invalid bconsole config path.';
+	const MSG_ERROR_BASIC_USER_INVALID_CONSOLE = 'Invalid Console name.';
+	const MSG_ERROR_BASIC_USER_INVALID_DIRECTOR = 'Invalid Director name.';
+	const MSG_ERROR_BASIC_USER_INVALID_PASSWORD = 'Invalid password.';
 }

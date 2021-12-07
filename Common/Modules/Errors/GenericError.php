@@ -10,7 +10,7 @@
  * Bacula(R) - The Network Backup Solution
  * Baculum   - Bacula web interface
  *
- * Copyright (C) 2013-2019 Kern Sibbald
+ * Copyright (C) 2013-2021 Kern Sibbald
  *
  * The main author of Baculum is Marcin Haba.
  * The original author of Bacula is Kern Sibbald, with contributions
@@ -27,23 +27,25 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Prado\Web\UI\WebControls\TButton;
+namespace Bacularis\Common\Modules\Errors;
 
 /**
- * Baculum Button control.
+ * Generic error class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Errors
  * @package Baculum Common
  */
-class BButton extends TButton {
+class GenericError {
+	const ERROR_NO_ERRORS = 0;
+	const ERROR_INVALID_COMMAND = 1;
+	const ERROR_INTERNAL_ERROR = 1000;
+	const ERROR_INVALID_PATH = 8;
+	const ERROR_WRONG_EXITCODE = 9;
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
-	}
+	const MSG_ERROR_NO_ERRORS = '';
+	const MSG_ERROR_INVALID_COMMAND = 'Invalid command.';
+	const MSG_ERROR_INTERNAL_ERROR = 'Internal error.';
+	const MSG_ERROR_INVALID_PATH = 'Invalid path.';
+	const MSG_ERROR_WRONG_EXITCODE = 'Wrong exitcode.';
 }
-
-?>

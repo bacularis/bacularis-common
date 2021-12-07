@@ -10,7 +10,7 @@
  * Bacula(R) - The Network Backup Solution
  * Baculum   - Bacula web interface
  *
- * Copyright (C) 2013-2019 Kern Sibbald
+ * Copyright (C) 2013-2021 Kern Sibbald
  *
  * The main author of Baculum is Marcin Haba.
  * The original author of Bacula is Kern Sibbald, with contributions
@@ -27,23 +27,20 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Prado\Web\UI\WebControls\TButton;
+namespace Bacularis\Common\Modules\Errors;
 
 /**
- * Baculum Button control.
+ * Database error class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Errors
  * @package Baculum Common
  */
-class BButton extends TButton {
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
-	}
+class DatabaseError extends GenericError {
+	const ERROR_DB_CONNECTION_PROBLEM = 2;
+	const ERROR_DATABASE_ACCESS_NOT_SUPPORTED = 3;
+	
+	const MSG_ERROR_DB_CONNECTION_PROBLEM = 'Problem with connection to database.';
+	const MSG_ERROR_DATABASE_ACCESS_NOT_SUPPORTED = 'Database access is not supported by this API instance.';
 }
-
-?>

@@ -10,7 +10,7 @@
  * Bacula(R) - The Network Backup Solution
  * Baculum   - Bacula web interface
  *
- * Copyright (C) 2013-2019 Kern Sibbald
+ * Copyright (C) 2013-2021 Kern Sibbald
  *
  * The main author of Baculum is Marcin Haba.
  * The original author of Bacula is Kern Sibbald, with contributions
@@ -27,23 +27,27 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Prado\Web\UI\WebControls\TButton;
+namespace Bacularis\Common\Modules\Errors;
 
 /**
- * Baculum Button control.
+ * JSON tools error class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Errors
  * @package Baculum Common
  */
-class BButton extends TButton {
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
-	}
+class JSONToolsError extends GenericError {
+
+	const ERROR_JSON_TOOLS_DISABLED = 80;
+	const ERROR_JSON_TOOLS_CONNECTION_PROBLEM = 81;
+	const ERROR_JSON_TOOLS_WRONG_EXITCODE = 82;
+	const ERROR_JSON_TOOLS_UNABLE_TO_PARSE_OUTPUT = 83;
+	const ERROR_JSON_TOOL_NOT_CONFIGURED = 84;
+
+	const MSG_ERROR_JSON_TOOLS_DISABLED = 'JSON tools support is disabled.';
+	const MSG_ERROR_JSON_TOOLS_CONNECTION_PROBLEM = 'Problem with connection to a JSON tool.';
+	const MSG_ERROR_JSON_TOOLS_WRONG_EXITCODE = 'JSON tool returned wrong exitcode.';
+	const MSG_ERROR_JSON_TOOLS_UNABLE_TO_PARSE_OUTPUT = 'JSON tool output was unable to parse.';
+	const MSG_ERROR_JSON_TOOL_NOT_CONFIGURED = 'JSON tool not configured.';
 }
-
-?>

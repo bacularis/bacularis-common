@@ -27,28 +27,29 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Prado\IDataRenderer;
-use Prado\Web\UI\TControl;
+namespace Bacularis\Common\Modules\Errors;
 
 /**
- * Baculum simple repeater item control.
+ * Device error class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
- * @package Baculum Web
+ * @category Errors
+ * @package Baculum Common
  */
-class BSimpleRepeaterItem extends TControl implements IDataRenderer {
 
-	private $_data = [];
+class DeviceError extends GenericError {
 
-	public function getData() {
-		return $this->_data;
-	}
+	const ERROR_DEVICE_DEVICE_CONFIG_DOES_NOT_EXIST = 130;
+	const ERROR_DEVICE_INVALID_COMMAND = 131;
+	const ERROR_DEVICE_AUTOCHANGER_DOES_NOT_EXIST = 132;
+	const ERROR_DEVICE_AUTOCHANGER_DRIVE_DOES_NOT_EXIST = 133;
+	const ERROR_DEVICE_WRONG_SLOT_NUMBER = 134;
+	const ERROR_DEVICE_DRIVE_DOES_NOT_BELONG_TO_AUTOCHANGER = 135;
 
-	public function setData($data) {
-		$this->_data = $data;
-	}
+	const MSG_ERROR_DEVICE_DEVICE_CONFIG_DOES_NOT_EXIST = 'Device config does not exist.';
+	const MSG_ERROR_DEVICE_INVALID_COMMAND = 'Invalid changer command.';
+	const MSG_ERROR_DEVICE_AUTOCHANGER_DOES_NOT_EXIST = 'Autochanger does not exist.';
+	const MSG_ERROR_DEVICE_AUTOCHANGER_DRIVE_DOES_NOT_EXIST = 'Autochanger drive does not exist.';
+	const MSG_ERROR_DEVICE_WRONG_SLOT_NUMBER = 'Wrong slot number.';
+	const MSG_ERROR_DEVICE_DRIVE_DOES_NOT_BELONG_TO_AUTOCHANGER = 'Drive does not belong to selected autochanger.';
 }
-?>

@@ -10,7 +10,7 @@
  * Bacula(R) - The Network Backup Solution
  * Baculum   - Bacula web interface
  *
- * Copyright (C) 2013-2019 Kern Sibbald
+ * Copyright (C) 2013-2021 Kern Sibbald
  *
  * The main author of Baculum is Marcin Haba.
  * The original author of Bacula is Kern Sibbald, with contributions
@@ -27,23 +27,25 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
-namespace Bacularis\Common\Portlets;
-
-use Prado\Web\UI\WebControls\TButton;
+namespace Bacularis\Common\Modules\Errors;
 
 /**
- * Baculum Button control.
+ * Actions error class.
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
- * @category Control
+ * @category Errors
  * @package Baculum Common
  */
-class BButton extends TButton {
 
-	public function onInit($param) {
-		parent::onInit($param);
-		$this->CssClass = "bbutton";
-	}
+class ActionsError extends GenericError {
+
+	const ERROR_ACTIONS_ACTION_DOES_NOT_EXIST = 110;
+	const ERROR_ACTIONS_DISABLED = 111;
+	const ERROR_ACTIONS_WRONG_EXITCODE = 112;
+	const ERROR_ACTIONS_NOT_CONFIGURED = 113;
+
+	const MSG_ERROR_ACTIONS_ACTION_DOES_NOT_EXIST = 'Action does not exist.';
+	const MSG_ERROR_ACTIONS_DISABLED = 'Actions support is disabled.';
+	const MSG_ERROR_ACTIONS_WRONG_EXITCODE = 'Action command returned wrong exitcode.';
+	const MSG_ERROR_ACTIONS_NOT_CONFIGURED = 'Action is not configured.';
 }
-
-?>
