@@ -186,7 +186,7 @@ class NewHost extends PortletTemplate {
 			$res = $this->getModule('host_config')->setConfig($config);
 			if ($res === true) {
 				$this->APIAddress->Text = '';
-				$this->APIPort->Text = '9096';
+				$this->APIPort->Text = '9097';
 				$this->APIBasicLogin->Text = '';
 				$this->APIBasicPassword->Text = '';
 				$this->APIHostName->Text = '';

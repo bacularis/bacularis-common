@@ -25,7 +25,7 @@
 	<div class="w3-row w3-section">
 		<div class="w3-col w3-third"><com:TLabel ForControl="APIPort" Text="<%[ Port: ]%>" /></div>
 		<div class="w3-col w3-third">
-			<com:TActiveTextBox ID="APIPort" CssClass="w3-input w3-border" CausesValidation="false" Text="9096" Width="70px" Style="display: inline-block" />
+			<com:TActiveTextBox ID="APIPort" CssClass="w3-input w3-border" CausesValidation="false" Text="9097" Width="70px" Style="display: inline-block" />
 			&nbsp;<i class="fa fa-asterisk w3-text-red" style="line-height: 40px"></i>
 			<com:TRequiredFieldValidator ValidationGroup="NewHostGroup" CssClass="validator-block" Display="Dynamic" ControlCssClass="invalidate" ControlToValidate="APIPort" Text="<%[ Please enter API port. ]%>" />
 		</div>
