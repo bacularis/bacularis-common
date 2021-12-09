@@ -1,7 +1,7 @@
 {
 	"name": "bacularis/bacularis-common",
 	"type": "library",
-	"description": "Bacularis common files",
+	"description": "Common files for Bacularis - The Bacula web interface",
 	"keywords": ["bacula", "backup", "restore", "bacularis", "bacularis-common"],
 	"homepage": "https://bacularis.app",
 	"license": "AGPL-3.0-only",
