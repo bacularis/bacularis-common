@@ -36,5 +36,20 @@ use Bacularis\Common\Modules\BaculumPage;
  * @package Baculum Common
  */
 class CommonPage extends BaculumPage {
+	public function onInit($param) {
+		parent::onInit($param);
+		/**
+		 * Go to web service if API config exists and pathinfo is empty.
+		 */
+		$config = $this->getModule('api_config')->getConfig();
+		$first_run = (count($config) === 0);
+		if (empty($this->Request->getPathInfo())) {
+			if ($first_run) {
+				$this->Response->redirect('/panel/config');
+			} else {
+				$this->Response->redirect('/web');
+			}
+		}
+	}
 }
 ?>

@@ -1,0 +1,5 @@
+<configuration>
+	<modules>
+		<module id="api_config" class="Bacularis\API\Modules\APIConfig" />
+	</modules>
+</configuration>

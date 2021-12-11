@@ -42,7 +42,7 @@ use Prado\Web\TUrlMapping;
  */
 class BaculumUrlMapping extends TUrlMapping {
 
-	const DEFAULT_SERVICE_ID = 'web';
+	const DEFAULT_SERVICE_ID = 'page';
 
 	private $services = array(
 		'web' => array(
