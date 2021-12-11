@@ -189,7 +189,7 @@
 			</div>
 		</div>
 		<div class="w3-row w3-section">
-			<div class="w3-col w3-third"><com:TLabel ForControl="APIOAuth2RedirectURI" Text="<%[ OAuth2 Redirect URI (example: https://baculumgui:9095/web/redirect): ]%>" /></div>
+			<div class="w3-col w3-third"><com:TLabel ForControl="APIOAuth2RedirectURI" Text="<%[ OAuth2 Redirect URI (example: https://bacularis:9097/web/redirect): ]%>" /></div>
 			<div class="w3-col w3-twothird">
 				<com:TTextBox
 					ID="APIOAuth2RedirectURI"
