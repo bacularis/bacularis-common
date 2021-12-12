@@ -29,6 +29,8 @@
 
 namespace Bacularis\Common\Modules;
 
+use Bacularis\Common\Modules\IUserConfig;
+
 /**
  * Basic authentication auth module.
  *
@@ -42,6 +44,13 @@ class AuthBasic extends AuthBase implements IAuthModule {
 	 * Generic name (used e.g. in config files).
 	 */
 	const NAME = 'basic';
+
+	/**
+	 * Realms for particular application services.
+	 */
+	const REALM_API = 'Bacularis API';
+	const REALM_PANEL = 'Bacularis Panel';
+	const REALM_WEB = 'Bacularis Web';
 
 	/**
 	 * Request header value pattern.
@@ -88,6 +97,32 @@ class AuthBasic extends AuthBase implements IAuthModule {
 			}
 		}
 		return $ret;
+	}
+
+	/**
+	 * Authenticate method.
+	 * It is responsible for authenticating basic users.
+	 * In case authentication error send appropriate headers.
+	 *
+	 * @param object $auth_mod module responsible for handling basic config
+	 * @param string realm realm name
+	 * @param boolean $check_conf check if user exists in basic user config
+	 * @return boolean true if user authenticated successfully, false otherwise
+	 */
+	public function authenticate($auth_mod, $realm, $check_conf = true) {
+		$is_auth = false;
+		$username = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
+		$password = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
+		if ($auth_mod instanceof IUserConfig && $auth_mod->validateUsernamePassword($username, $password, $check_conf)) {
+			// authentication valid
+			$is_auth = true;
+		}
+		if (!$is_auth) {
+			$h1 = sprintf('WWW-Authenticate: Basic realm="%s"', $realm);
+			header($h1);
+			header('HTTP/1.0 401 Unauthorized');
+		}
+		return $is_auth;
 	}
 }
 ?>
