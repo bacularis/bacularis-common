@@ -43,7 +43,8 @@ class CommonPage extends BaculumPage {
 		 */
 		$config = $this->getModule('api_config')->getConfig();
 		$first_run = (count($config) === 0);
-		if (empty($this->Request->getPathInfo())) {
+		$path_info = $this->Request->getPathInfo();
+		if (empty($path_info) || $path_info == '/') {
 			if ($first_run) {
 				$this->Response->redirect('/panel/config');
 			} else {

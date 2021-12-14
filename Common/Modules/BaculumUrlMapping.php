@@ -42,7 +42,7 @@ use Prado\Web\TUrlMapping;
  */
 class BaculumUrlMapping extends TUrlMapping {
 
-	const DEFAULT_SERVICE_ID = 'page';
+	const DEFAULT_SERVICE_ID = 'web';
 
 	private $services = array(
 		'web' => array(
@@ -114,7 +114,11 @@ class BaculumUrlMapping extends TUrlMapping {
 	}
 
 	private function getRequestedUrl() {
-		return $this->getRequest()->getPathInfo();
+		$path_info = $this->getRequest()->getPathInfo();
+		if ($path_info == '/') {
+			$path_info = '';
+		}
+		return $path_info;
 	}
 }
 ?>
