@@ -132,7 +132,7 @@ class ConfigFileModule extends CommonModule {
 	 * @param string $path config file path
 	 * @return boolean true if config valid, otherwise false
 	 */
-	protected function isConfigValid($required_options, array $config = array(), $format, $path = '') {
+	protected function isConfigValid($required_options, array $config = array(), $format = '', $path = '') {
 		$config_format = $this->getConfigFormatModule($format);
 		$is_valid = $config_format->isConfigValid($required_options, $config, $path);
 		return $is_valid;

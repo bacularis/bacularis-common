@@ -125,7 +125,7 @@ class ConfigIni extends CommonModule implements IConfigFormat {
 	 * @param string $source config file path
 	 * @return boolean true if config valid, otherwise false
 	 */
-	public function isConfigValid(array $required_options, array $config = array(), $source) {
+	public function isConfigValid(array $required_options, array $config = array(), $source = '') {
 		$valid = true;
 		$invalid = array('required' => null);
 
