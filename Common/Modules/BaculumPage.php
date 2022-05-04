@@ -71,13 +71,17 @@ class BaculumPage extends TPage {
 	 * @access public
 	 * @param string $page_name page name to redirect
 	 * @param array $params HTTP GET method parameters in associative array
-         * @return none
+	 * @param string $fragment address fragment/hash
+	 * @return none
 	 */
-	public function goToPage($page_name, $params = null) {
+	public function goToPage($page_name, $params = null, $fragment = null) {
 		$url = $this->Service->constructUrl($page_name, $params, false);
 		$url = str_replace('/index.php', '', $url);
+		if (is_string($fragment)) {
+			$url .= '#' . $fragment;
+		}
 		header('Location: ' . $url);
-                exit();
+		exit();
 	}
 
 	/**
