@@ -58,6 +58,7 @@ var W3Tabs = {
 		tab_item_hover: 'w3-grey'
 	},
 	open: function(btn_id, item_id) {
+		set_url_fragment(item_id);
 		W3TabsCommon.open.call(this, btn_id, item_id);
 	},
 	is_open: function(item_id) {
@@ -232,6 +233,62 @@ var set_scopes = function(field_id) {
 	document.getElementById(field_id).value = OAuth2Scopes.join(' ');
 }
 
+function get_url_fragment() {
+	var url = window.location.href;
+	var regex = new RegExp('#(.+)$');
+	var results = regex.exec(url);
+	var ret;
+	if (!results) {
+		ret = '';
+	} else if (results[1]) {
+		ret = results[1].replace(/\+/g, " ");
+		ret = decodeURIComponent(ret);
+	}
+	return ret;
+}
+
+function set_url_fragment(fragment) {
+	let url = window.location.href;
+	let prev_fragment = get_url_fragment();
+	if (prev_fragment) {
+		// remove previous fragment
+		prev_fragment = prev_fragment.replace(/\s/g, '+');
+		prev_fragment = encodeURIComponent(prev_fragment);
+		const regex = new RegExp('#' + prev_fragment + '$');
+		url = url.replace(regex, '');
+	}
+	url = url + '#' + fragment;
+	window.history.pushState({}, '', url);
+}
+
+function set_tab_by_url_fragment() {
+	const fragment = get_url_fragment();
+	// for HTML elements (buttons, anchors...)
+	let btn_el = $('#btn_' + fragment);
+	if (btn_el.length == 0) {
+		// for PRADO controls (TActiveButton, TActiveLinkButton...)
+		const el = document.getElementById(fragment);
+		if (el) {
+			const btn_id = el.getAttribute('data-btn');
+			btn_el = $('#' + btn_id);
+		}
+	}
+	if (btn_el.length == 1) {
+		try {
+			btn_el.click();
+		} catch (e) {
+			if (e instanceof TypeError) {
+				/*
+				 * Tabs are opened before content is loaded.
+				 * If onlick handler is content dependent, it causes errors.
+				 * Mostly it is setting responsivity for tables. Make it silent.
+				 */
+			}
+		}
+	}
+}
+
+
 function copy_to_clipboard(text) {
 	var input = document.createElement('INPUT');
 	document.body.appendChild(input);
@@ -256,4 +313,5 @@ dtEscapeRegex = function(value) {
 $(function() {
 	W3SideBar.init();
 	set_global_listeners();
+	set_tab_by_url_fragment();
 });
