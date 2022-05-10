@@ -32,6 +32,10 @@ table.dataTable {
 	border: 1px solid #c1c1c1;
 }
 
+table.dataTable button.w3-button, table.dataTable a.w3-button {
+	font-size: 10px;
+}
+
 table.dataTable tfoot th, table.dataTable tfoot td {
 	border-top: 1px solid #c1c1c1;
 }
@@ -97,6 +101,10 @@ div.dt-buttons .dt-button:nth-of-type(3) {
 }
 
 table.dataTable tbody th, table.dataTable tbody td {
+	padding: 5px 7px;
+}
+
+#last_jobs_list tbody th, #last_jobs_list tbody td {
 	padding: 8px 7px;
 }
 
