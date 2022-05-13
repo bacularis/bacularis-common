@@ -299,6 +299,18 @@ function copy_to_clipboard(text) {
 	document.body.removeChild(input);
 }
 
+function getClosestScrollEl(el) {
+	let ret = null;
+	if (el !== null) {
+		if (el.clientHeight > 0 && el.scrollHeight > el.clientHeight) {
+			ret = el;
+		} else {
+			ret = getClosestScrollEl(el.parentNode);
+		}
+	}
+	return ret;
+}
+
 /**
  * Used to escape values before putting them into regular expression.
  * Dedicated to use in table values.
