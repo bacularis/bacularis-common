@@ -311,6 +311,23 @@ function getClosestScrollEl(el) {
 	return ret;
 }
 
+function base64tohex(btext) {
+	let dec;
+	try {
+		dec = atob(btext);
+	} catch(e) {
+		// unable to decode base64 string
+	}
+
+	let ret;
+	if (dec) {
+		ret = dec.split('').map(function(ch) {
+			return ch.charCodeAt(0).toString(16).replace(/^([\da-f])$/, '0$1');
+		}).join('');
+	}
+	return ret;
+}
+
 /**
  * Used to escape values before putting them into regular expression.
  * Dedicated to use in table values.
