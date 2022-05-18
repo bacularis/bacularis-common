@@ -244,6 +244,10 @@ img.reset_btn, img.remove_btn {
 	
 }
 
+div.opentip, div.opentip-container canvas {
+	width: 370px !important;
+}
+
 div.opentip div.ot-header h1 {
 	font-size: 14px !important;
 	font-weight: bold;
