@@ -2,7 +2,7 @@
 /*
  * Bacularis - Bacula web interface
  *
- * Copyright (C) 2021 Marcin Haba
+ * Copyright (C) 2021-2022 Marcin Haba
  *
  * The main author of Bacularis is Marcin Haba, with contributors, whose
  * full list can be found in the AUTHORS file.
@@ -187,7 +187,7 @@ class BaculumPage extends TPage {
 					'%s%s?ver=%s',
 					$css_path,
 					$filename,
-					Params::BACULUM_VERSION
+					Params::BACULARIS_VERSION
 				);
 				$this->getPage()->getClientScript()->registerStyleSheetFile($filename, $url);
 			}
