@@ -90,19 +90,16 @@ var W3SideBar = {
 	},
 	init: function() {
 		this.sidebar = document.getElementById(this.ids.sidebar);
+		this.page_main = $(this.css.page_main);
 		if (!this.sidebar) {
 			// don't initialize for pages without sidebar
+			this.page_main.css({'margin-left': '0', 'width': '100%'});
 			return;
 		}
 		this.overlay_bg = document.getElementById(this.ids.overlay_bg);
-		this.page_main = $(this.css.page_main);
 		var hide = Cookies.get_cookie(this.cookies.side_bar_hide);
 		if (hide == 1) {
 			this.close();
-		}
-		if (!this.sidebar) {
-			// on pages without sidebar always show page main elements with 100% width.
-			this.page_main.css({'margin-left': '0', 'width': '100%'});
 		}
 		this.set_events();
 	},
