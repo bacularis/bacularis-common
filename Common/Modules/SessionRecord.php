@@ -95,7 +95,8 @@ class SessionRecord extends CommonModule implements ISessionItem {
 				$fp = fopen($sessfile, 'r');
 				if (flock($fp, LOCK_SH, $wouldblock)) {
 					$content = file_get_contents($sessfile);
-					$GLOBALS['sess'] = unserialize($content);
+					$ucont = unserialize($content);
+					$GLOBALS['sess'] = is_array($ucont) ? $ucont : [];
 					flock($fp, LOCK_UN);
 				} else {
 					$emsg = 'Unable to shared lock ' . $sessfile;
