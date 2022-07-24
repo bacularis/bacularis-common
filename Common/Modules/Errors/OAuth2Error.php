@@ -34,30 +34,28 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class OAuth2Error extends GenericError
+{
+	public const ERROR_OAUTH2_CLIENT_DOES_NOT_EXIST = 120;
+	public const ERROR_OAUTH2_CLIENT_ALREADY_EXISTS = 121;
+	public const ERROR_OAUTH2_CLIENT_INVALID_CLIENT_ID = 122;
+	public const ERROR_OAUTH2_CLIENT_INVALID_CLIENT_SECRET = 123;
+	public const ERROR_OAUTH2_CLIENT_INVALID_REDIRECT_URI = 124;
+	public const ERROR_OAUTH2_CLIENT_INVALID_SCOPE = 125;
+	public const ERROR_OAUTH2_CLIENT_INVALID_BCONSOLE_CFG_PATH = 126;
+	public const ERROR_OAUTH2_CLIENT_INVALID_NAME = 127;
+	public const ERROR_OAUTH2_CLIENT_INVALID_CONSOLE = 128;
+	public const ERROR_OAUTH2_CLIENT_INVALID_DIRECTOR = 129;
 
-class OAuth2Error extends GenericError {
-
-	const ERROR_OAUTH2_CLIENT_DOES_NOT_EXIST = 120;
-	const ERROR_OAUTH2_CLIENT_ALREADY_EXISTS = 121;
-	const ERROR_OAUTH2_CLIENT_INVALID_CLIENT_ID = 122;
-	const ERROR_OAUTH2_CLIENT_INVALID_CLIENT_SECRET = 123;
-	const ERROR_OAUTH2_CLIENT_INVALID_REDIRECT_URI = 124;
-	const ERROR_OAUTH2_CLIENT_INVALID_SCOPE = 125;
-	const ERROR_OAUTH2_CLIENT_INVALID_BCONSOLE_CFG_PATH = 126;
-	const ERROR_OAUTH2_CLIENT_INVALID_NAME = 127;
-	const ERROR_OAUTH2_CLIENT_INVALID_CONSOLE = 128;
-	const ERROR_OAUTH2_CLIENT_INVALID_DIRECTOR = 129;
-
-	const MSG_ERROR_OAUTH2_CLIENT_DOES_NOT_EXIST = 'OAuth2 client does not exist.';
-	const MSG_ERROR_OAUTH2_CLIENT_ALREADY_EXISTS = 'OAuth2 client already exists.';
-	const MSG_ERROR_OAUTH2_CLIENT_INVALID_CLIENT_ID = 'Invalid OAuth2 client ID.';
-	const MSG_ERROR_OAUTH2_CLIENT_INVALID_CLIENT_SECRET = 'Invalid OAuth2 client secret.';
-	const MSG_ERROR_OAUTH2_CLIENT_INVALID_REDIRECT_URI = 'Invalid OAuth2 redirect URI.';
-	const MSG_ERROR_OAUTH2_CLIENT_INVALID_SCOPE = 'Invalid OAuth2 scope.';
-	const MSG_ERROR_OAUTH2_CLIENT_INVALID_BCONSOLE_CFG_PATH = 'Invalid Bconsole config path.';
-	const MSG_ERROR_OAUTH2_CLIENT_INVALID_NAME = 'Invalid OAuth2 client name.';
-	const MSG_ERROR_OAUTH2_CLIENT_INVALID_CONSOLE = 'Invalid Console name.';
-	const MSG_ERROR_OAUTH2_CLIENT_INVALID_DIRECTOR = 'Invalid Director name.';
+	public const MSG_ERROR_OAUTH2_CLIENT_DOES_NOT_EXIST = 'OAuth2 client does not exist.';
+	public const MSG_ERROR_OAUTH2_CLIENT_ALREADY_EXISTS = 'OAuth2 client already exists.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_CLIENT_ID = 'Invalid OAuth2 client ID.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_CLIENT_SECRET = 'Invalid OAuth2 client secret.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_REDIRECT_URI = 'Invalid OAuth2 redirect URI.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_SCOPE = 'Invalid OAuth2 scope.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_BCONSOLE_CFG_PATH = 'Invalid Bconsole config path.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_NAME = 'Invalid OAuth2 client name.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_CONSOLE = 'Invalid Console name.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_DIRECTOR = 'Invalid Director name.';
 }

@@ -34,11 +34,9 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Interfaces
- * @package Baculum Common
  */
-
-interface IAuthModule {
-
+interface IAuthModule
+{
 	public function getAuthType();
 
 	public function isAuthRequest();

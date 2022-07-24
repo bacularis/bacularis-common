@@ -34,22 +34,20 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class DeviceError extends GenericError
+{
+	public const ERROR_DEVICE_DEVICE_CONFIG_DOES_NOT_EXIST = 130;
+	public const ERROR_DEVICE_INVALID_COMMAND = 131;
+	public const ERROR_DEVICE_AUTOCHANGER_DOES_NOT_EXIST = 132;
+	public const ERROR_DEVICE_AUTOCHANGER_DRIVE_DOES_NOT_EXIST = 133;
+	public const ERROR_DEVICE_WRONG_SLOT_NUMBER = 134;
+	public const ERROR_DEVICE_DRIVE_DOES_NOT_BELONG_TO_AUTOCHANGER = 135;
 
-class DeviceError extends GenericError {
-
-	const ERROR_DEVICE_DEVICE_CONFIG_DOES_NOT_EXIST = 130;
-	const ERROR_DEVICE_INVALID_COMMAND = 131;
-	const ERROR_DEVICE_AUTOCHANGER_DOES_NOT_EXIST = 132;
-	const ERROR_DEVICE_AUTOCHANGER_DRIVE_DOES_NOT_EXIST = 133;
-	const ERROR_DEVICE_WRONG_SLOT_NUMBER = 134;
-	const ERROR_DEVICE_DRIVE_DOES_NOT_BELONG_TO_AUTOCHANGER = 135;
-
-	const MSG_ERROR_DEVICE_DEVICE_CONFIG_DOES_NOT_EXIST = 'Device config does not exist.';
-	const MSG_ERROR_DEVICE_INVALID_COMMAND = 'Invalid changer command.';
-	const MSG_ERROR_DEVICE_AUTOCHANGER_DOES_NOT_EXIST = 'Autochanger does not exist.';
-	const MSG_ERROR_DEVICE_AUTOCHANGER_DRIVE_DOES_NOT_EXIST = 'Autochanger drive does not exist.';
-	const MSG_ERROR_DEVICE_WRONG_SLOT_NUMBER = 'Wrong slot number.';
-	const MSG_ERROR_DEVICE_DRIVE_DOES_NOT_BELONG_TO_AUTOCHANGER = 'Drive does not belong to selected autochanger.';
+	public const MSG_ERROR_DEVICE_DEVICE_CONFIG_DOES_NOT_EXIST = 'Device config does not exist.';
+	public const MSG_ERROR_DEVICE_INVALID_COMMAND = 'Invalid changer command.';
+	public const MSG_ERROR_DEVICE_AUTOCHANGER_DOES_NOT_EXIST = 'Autochanger does not exist.';
+	public const MSG_ERROR_DEVICE_AUTOCHANGER_DRIVE_DOES_NOT_EXIST = 'Autochanger drive does not exist.';
+	public const MSG_ERROR_DEVICE_WRONG_SLOT_NUMBER = 'Wrong slot number.';
+	public const MSG_ERROR_DEVICE_DRIVE_DOES_NOT_BELONG_TO_AUTOCHANGER = 'Drive does not belong to selected autochanger.';
 }

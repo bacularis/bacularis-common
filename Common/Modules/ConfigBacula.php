@@ -35,19 +35,18 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class ConfigBacula extends CommonModule implements IConfigFormat {
-
+class ConfigBacula extends CommonModule implements IConfigFormat
+{
 	/**
 	 * Whitespace character used as indent.
 	 */
-	const INDENT_CHAR = ' ';
+	public const INDENT_CHAR = ' ';
 
 	/**
 	 * Single indent size.
 	 */
-	const INDENT_SIZE = 2;
+	public const INDENT_SIZE = 2;
 
 	/**
 	 * Write config data to file in Bacula format.
@@ -55,9 +54,10 @@ class ConfigBacula extends CommonModule implements IConfigFormat {
 	 * @access public
 	 * @param string $source config file path
 	 * @param array $config config data
-	 * @return boolean true if config written successfully, otherwise false
+	 * @return bool true if config written successfully, otherwise false
 	 */
-	public function write($source, $config) {
+	public function write($source, $config)
+	{
 		$content = $this->prepareConfig($config);
 		$orig_umask = umask(0);
 		umask(0077);
@@ -73,7 +73,8 @@ class ConfigBacula extends CommonModule implements IConfigFormat {
 	 * @param string $source config file path
 	 * @return none
 	 */
-	public function read($source) {
+	public function read($source)
+	{
 		// reading Bacula config files is done by Bacula JSON tools.
 	}
 
@@ -84,7 +85,8 @@ class ConfigBacula extends CommonModule implements IConfigFormat {
 	 * @param array $config config data
 	 * @return string config content
 	 */
-	public function prepareConfig($config) {
+	public function prepareConfig($config)
+	{
 		$content = '';
 		for ($i = 0; $i < count($config); $i++) {
 			$content .= $this->prepareResource($config[$i]);
@@ -100,9 +102,10 @@ class ConfigBacula extends CommonModule implements IConfigFormat {
 	 * @param string $nesting_number current (sub)resource number
 	 * @return string resource content
 	 */
-	private function prepareResource($resource, $nesting_number = 0) {
+	private function prepareResource($resource, $nesting_number = 0)
+	{
 		$content = '';
-		foreach($resource as $name => $value) {
+		foreach ($resource as $name => $value) {
 			$indent = $this->getIndent($nesting_number);
 			$content .= $indent . "$name {\n";
 			$nesting_number++;
@@ -119,10 +122,11 @@ class ConfigBacula extends CommonModule implements IConfigFormat {
 	 * @access private
 	 * @param array $subresource subresource data
 	 * @param string $rname resource name
-	 * @param integer $nesting_number current (sub)resource number
+	 * @param int $nesting_number current (sub)resource number
 	 * @return string subresource content
 	 */
-	private function prepareSubResource($subresource, $rname, $nesting_number) {
+	private function prepareSubResource($subresource, $rname, $nesting_number)
+	{
 		$content = '';
 		if (is_string($rname)) {
 			$indent = $this->getIndent($nesting_number);
@@ -170,7 +174,8 @@ class ConfigBacula extends CommonModule implements IConfigFormat {
 	 * @param string $value text to prepare
 	 * @return string value ready to write
 	 */
-	private function prepareValue($value) {
+	private function prepareValue($value)
+	{
 		if (is_array($value)) {
 			$value = implode(',', $value);
 		}
@@ -181,10 +186,11 @@ class ConfigBacula extends CommonModule implements IConfigFormat {
 	 * Get indent value.
 	 *
 	 * @access private
-	 * @param integer $multiplier number of single indents
+	 * @param int $multiplier number of single indents
 	 * @return string indent value
 	 */
-	private function getIndent($multiplier) {
+	private function getIndent($multiplier)
+	{
 		$indent = '';
 		if ($multiplier > 0) {
 			$size = self::INDENT_SIZE * $multiplier;

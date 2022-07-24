@@ -38,32 +38,33 @@
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Tool
- * @package Baculum Common
  */
-
 $namespaces = [
 	'Prado\\' => APPLICATION_DIRECTORY . '/protected/vendor/pradosoft/prado/framework',
 	'JSMin\\' => APPLICATION_DIRECTORY . '/protected/vendor/mrclay/jsmin-php/src/JSMin',
 	'Bacularis\\' => APPLICATION_DIRECTORY . '/protected'
 ];
 
-class BaculumAutoloader {
-
-	const CLASS_FILE_EXTENSION = '.php';
+class BaculumAutoloader
+{
+	public const CLASS_FILE_EXTENSION = '.php';
 
 	private $namespaces = [];
 
-	public function __construct() {
+	public function __construct()
+	{
 		spl_autoload_register([$this, 'load']);
 	}
 
-	public function setNamapaces(array $nss) {
+	public function setNamapaces(array $nss)
+	{
 		foreach ($nss as $prefix => $path) {
 			$this->addNamespace($prefix, $path);
 		}
 	}
 
-	public function addNamespace($prefix, $path) {
+	public function addNamespace($prefix, $path)
+	{
 		$path = rtrim($path, DIRECTORY_SEPARATOR) . '/';
 
 		if (!key_exists($prefix, $this->namespaces)) {
@@ -71,7 +72,8 @@ class BaculumAutoloader {
 		}
 	}
 
-	public function load($path) {
+	public function load($path)
+	{
 		$pos = strrpos($path, '\\');
 		if ($pos !== false) {
 			$class = substr($path, $pos + 1);
@@ -79,12 +81,13 @@ class BaculumAutoloader {
 			$this->loadFile($class, $rpath);
 		}
 	}
-	
 
-	private function loadFile($class, $rpath) {
+
+	private function loadFile($class, $rpath)
+	{
 		$ns = $this->getNamespace($rpath);
 		if (is_array($ns)) {
-			list($prefix, $path) = $ns;
+			[$prefix, $path] = $ns;
 			$len = strlen($prefix);
 			$relative_path = substr($rpath, $len);
 			$relative_path = str_replace('\\', DIRECTORY_SEPARATOR, $relative_path);
@@ -95,7 +98,8 @@ class BaculumAutoloader {
 		}
 	}
 
-	private function getNamespace($rpath) {
+	private function getNamespace($rpath)
+	{
 		$ns = false;
 		foreach ($this->namespaces as $prefix => $path) {
 			$len = strlen($prefix);
@@ -108,5 +112,5 @@ class BaculumAutoloader {
 	}
 }
 
-$autoloader = new BaculumAutoloader;
+$autoloader = new BaculumAutoloader();
 $autoloader->setNamapaces($namespaces);

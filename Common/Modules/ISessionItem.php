@@ -34,11 +34,9 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Interfaces
- * @package Baculum Common
  */
-
-interface ISessionItem {
-
+interface ISessionItem
+{
 	public static function getRecordId();
 
 	public static function getPrimaryKey();

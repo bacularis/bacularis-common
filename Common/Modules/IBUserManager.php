@@ -34,11 +34,9 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Interfaces
- * @package Baculum Common
  */
-
-interface IBUserManager {
-
+interface IBUserManager
+{
 	public function init($config);
 
 	public function validateUser($username, $password);

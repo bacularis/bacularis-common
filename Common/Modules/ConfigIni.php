@@ -34,19 +34,19 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class ConfigIni extends CommonModule implements IConfigFormat {
-
+class ConfigIni extends CommonModule implements IConfigFormat
+{
 	/**
 	 * Write config data to file in INI format.
 	 *
 	 * @access public
 	 * @param string $source config file path
 	 * @param array $config config data
-	 * @return boolean true if config written successfully, otherwise false
+	 * @return bool true if config written successfully, otherwise false
 	 */
-	public function write($source, $config) {
+	public function write($source, $config)
+	{
 		$content = $this->prepareConfig($config);
 		$orig_umask = umask(0);
 		umask(0077);
@@ -62,10 +62,11 @@ class ConfigIni extends CommonModule implements IConfigFormat {
 	 * @param string $source config file path
 	 * @return array config data
 	 */
-	public function read($source) {
+	public function read($source)
+	{
 		$content = parse_ini_file($source, true);
 		if (!is_array($content)) {
-			$content = array();
+			$content = [];
 		}
 		return $content;
 	}
@@ -77,27 +78,28 @@ class ConfigIni extends CommonModule implements IConfigFormat {
 	 * @param array $config config data
 	 * @return string config content
 	 */
-	public function prepareConfig($config) {
+	public function prepareConfig($config)
+	{
 		$content = '';
-		foreach($config as $section => $options) {
+		foreach ($config as $section => $options) {
 			$content .= "[$section]\n";
-				foreach($options as $option => $value) {
-					if (is_array($value)) {
-						$str_keys = array_filter(array_keys($value), 'is_string');
-						$is_assoc = (count($str_keys) > 0); // check if array is associative
-						foreach($value as $k => $v) {
-							$v = $this->prepareValue($v);
-							if (!$is_assoc) {
-								// array with numeric indexes, set empty key
-								$k = '';
-							}
-							$content .= "{$option}[$k] = $v\n";
+			foreach ($options as $option => $value) {
+				if (is_array($value)) {
+					$str_keys = array_filter(array_keys($value), 'is_string');
+					$is_assoc = (count($str_keys) > 0); // check if array is associative
+					foreach ($value as $k => $v) {
+						$v = $this->prepareValue($v);
+						if (!$is_assoc) {
+							// array with numeric indexes, set empty key
+							$k = '';
 						}
-					} else {
-						$value = $this->prepareValue($value);
-						$content .= "$option = $value\n";
+						$content .= "{$option}[$k] = $v\n";
 					}
+				} else {
+					$value = $this->prepareValue($value);
+					$content .= "$option = $value\n";
 				}
+			}
 			$content .= "\n";
 		}
 		return $content;
@@ -110,7 +112,8 @@ class ConfigIni extends CommonModule implements IConfigFormat {
 	 * @param string $value text to prepare
 	 * @return string value ready to write
 	 */
-	private function prepareValue($value) {
+	private function prepareValue($value)
+	{
 		$value = str_replace('"', '\"', $value);
 		$value = "\"$value\"";
 		return $value;
@@ -123,14 +126,15 @@ class ConfigIni extends CommonModule implements IConfigFormat {
 	 * @param array $required_options required options grouped in sections
 	 * @param array $config config
 	 * @param string $source config file path
-	 * @return boolean true if config valid, otherwise false
+	 * @return bool true if config valid, otherwise false
 	 */
-	public function isConfigValid(array $required_options, array $config = array(), $source = '') {
+	public function isConfigValid(array $required_options, array $config = [], $source = '')
+	{
 		$valid = true;
-		$invalid = array('required' => null);
+		$invalid = ['required' => null];
 
 		//if (count($config) === 0) {
-			// Check existing config
+		// Check existing config
 		//	$config = $this->getConfig();
 		//}
 
@@ -138,22 +142,21 @@ class ConfigIni extends CommonModule implements IConfigFormat {
 			if (array_key_exists($section, $config)) {
 				if (!is_array($config[$section]) || count($config[$section]) === 0) {
 					// Empty section (no options)
-					$invalid['required'] = array('value' => $section, 'type' => 'empty_section');
+					$invalid['required'] = ['value' => $section, 'type' => 'empty_section'];
 					$valid = false;
 					break;
 				}
 				for ($i = 0; $i < count($options); $i++) {
 					if (!array_key_exists($options[$i], $config[$section])) {
 						// Required option not found
-						$invalid['required'] = array('value' => $options[$i], 'type' => 'option');
+						$invalid['required'] = ['value' => $options[$i], 'type' => 'option'];
 						$valid = false;
 						break;
 					}
 				}
-				
 			} else {
 				// Required section not found
-				$invalid['required'] = array('value' => $section, 'type' => 'section');
+				$invalid['required'] = ['value' => $section, 'type' => 'section'];
 				$valid = false;
 				break;
 			}
@@ -180,4 +183,3 @@ class ConfigIni extends CommonModule implements IConfigFormat {
 		return $valid;
 	}
 }
-?>

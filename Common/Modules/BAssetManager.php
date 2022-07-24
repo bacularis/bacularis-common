@@ -51,11 +51,11 @@ use Prado\Web\TAssetManager;
  * asset directory. It is because copy() changes MTIME of destination file.
  *
  * @category Client Script
- * @package Baculum Common
  */
-class BAssetManager extends TAssetManager {
-
-	protected function copyFile($src, $dst) {
+class BAssetManager extends TAssetManager
+{
+	protected function copyFile($src, $dst)
+	{
 		if (!is_dir($dst)) {
 			@mkdir($dst);
 			@chmod($dst, PRADO_CHMOD);
@@ -70,7 +70,8 @@ class BAssetManager extends TAssetManager {
 		}
 	}
 
-	public function copyDirectory($src, $dst) {
+	public function copyDirectory($src, $dst)
+	{
 		if (!is_dir($dst)) {
 			@mkdir($dst);
 			@chmod($dst, PRADO_CHMOD);
@@ -100,4 +101,3 @@ class BAssetManager extends TAssetManager {
 		}
 	}
 }
-?>

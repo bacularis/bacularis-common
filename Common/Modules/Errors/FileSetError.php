@@ -34,11 +34,10 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class FileSetError extends GenericError
+{
+	public const ERROR_FILESET_DOES_NOT_EXISTS = 60;
 
-class FileSetError extends GenericError {
-	const ERROR_FILESET_DOES_NOT_EXISTS = 60;
-
-	const MSG_ERROR_FILESET_DOES_NOT_EXISTS = 'FileSet does not exist.';
+	public const MSG_ERROR_FILESET_DOES_NOT_EXISTS = 'FileSet does not exist.';
 }

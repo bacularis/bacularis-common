@@ -42,10 +42,9 @@ use Bacularis\Common\Portlets\PortletTemplate;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Control
- * @package Baculum Common
  */
-class NewAuthClient extends PortletTemplate {
-
+class NewAuthClient extends PortletTemplate
+{
 	private $show_buttons = true;
 
 	private $auth_types = ['basic', 'oauth2'];
@@ -55,15 +54,16 @@ class NewAuthClient extends PortletTemplate {
 	private $modes = ['add', 'edit'];
 
 	// @TODO: Move it to a common class
-	const AUTH_TYPE_BASIC = 'basic';
-	const AUTH_TYPE_OAUTH2 = 'oauth2';
+	public const AUTH_TYPE_BASIC = 'basic';
+	public const AUTH_TYPE_OAUTH2 = 'oauth2';
 
-	const MODE_TYPE_ADD = 'add';
-	const MODE_TYPE_EDIT = 'edit';
+	public const MODE_TYPE_ADD = 'add';
+	public const MODE_TYPE_EDIT = 'edit';
 
-	const MODE = 'Mode';
+	public const MODE = 'Mode';
 
-	public function saveNewAuthClient($sender, $param) {
+	public function saveNewAuthClient($sender, $param)
+	{
 		$this->NewAuthClientError->Display = 'None';
 		$this->NewAuthClientExists->Display = 'None';
 
@@ -135,11 +135,13 @@ class NewAuthClient extends PortletTemplate {
 		}
 	}
 
-	public function cancelNewAuthClient($sender, $param) {
+	public function cancelNewAuthClient($sender, $param)
+	{
 		$this->onCancel($param);
 	}
 
-	public function clearForm() {
+	public function clearForm()
+	{
 		$this->APIBasicLogin->Text = '';
 		$this->APIBasicPassword->Text = '';
 		$this->RetypeAPIBasicPassword->Text = '';
@@ -151,47 +153,56 @@ class NewAuthClient extends PortletTemplate {
 		$this->APIOAuth2Name->Text = '';
 	}
 
-	public function setShowButtons($show) {
+	public function setShowButtons($show)
+	{
 		$show = TPropertyValue::ensureBoolean($show);
 		$this->show_buttons = $show;
 	}
 
-	public function getShowButtons() {
+	public function getShowButtons()
+	{
 		return $this->show_buttons;
 	}
 
-	public function setAuthType($auth_type) {
+	public function setAuthType($auth_type)
+	{
 		if (in_array($auth_type, $this->auth_types)) {
 			$this->auth_type = $auth_type;
 		}
 	}
 
-	public function getAuthType() {
+	public function getAuthType()
+	{
 		return $this->auth_type;
 	}
 
-	public function setMode($mode) {
+	public function setMode($mode)
+	{
 		if (in_array($mode, $this->modes)) {
 			$this->setViewState(self::MODE, $mode);
 		}
 	}
 
-	public function getMode() {
+	public function getMode()
+	{
 		return $this->getViewState(self::MODE, $this->modes[0]);
 	}
 
-	public function onSuccess($param) {
+	public function onSuccess($param)
+	{
 		$this->raiseEvent('OnSuccess', $this, $param);
 	}
 
-	public function onCancel($param) {
+	public function onCancel($param)
+	{
 		$this->clearForm();
 		$this->raiseEvent('OnCancel', $this, $param);
 	}
 
-	public function bubbleEvent($sender, $param) {
+	public function bubbleEvent($sender, $param)
+	{
 		if ($param instanceof TCommandEventParameter) {
-			$this->raiseBubbleEvent($this,$param);
+			$this->raiseBubbleEvent($this, $param);
 			return true;
 		} else {
 			return false;

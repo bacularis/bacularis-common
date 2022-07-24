@@ -26,7 +26,7 @@
  *
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
- 
+
 namespace Bacularis\Common\Modules;
 
 /**
@@ -34,24 +34,26 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class SessionRecord extends CommonModule implements ISessionItem {
-
-	const SESS_FILE_PERM = 0600;
+class SessionRecord extends CommonModule implements ISessionItem
+{
+	public const SESS_FILE_PERM = 0600;
 
 	private static $lock = false;
 	private static $queue = 0;
 
-	public function __construct() {
+	public function __construct()
+	{
 		self::restore();
 	}
 
-	public function __destruct() {
+	public function __destruct()
+	{
 		self::store();
 	}
 
-	private static function store($wouldblock = true) {
+	private static function store($wouldblock = true)
+	{
 		$c = get_called_class();
 		$sessfile = $c::getSessionFile();
 		if (key_exists('sess', $GLOBALS)) {
@@ -87,7 +89,8 @@ class SessionRecord extends CommonModule implements ISessionItem {
 		}
 	}
 
-	private static function restore($wouldblock = true) {
+	private static function restore($wouldblock = true)
+	{
 		$c = get_called_class();
 		$sessfile = $c::getSessionFile();
 		if (!array_key_exists('sess', $GLOBALS)) {
@@ -110,15 +113,16 @@ class SessionRecord extends CommonModule implements ISessionItem {
 				}
 				fclose($fp);
 			} else {
-				$GLOBALS['sess'] = array();
+				$GLOBALS['sess'] = [];
 			}
 		}
 	}
 
-	public function save() {
+	public function save()
+	{
 		$is_saved = false;
 		$is_updated = false;
-		$vals =& self::get();
+		$vals = & self::get();
 		$c = get_called_class();
 		$primary_key = $c::getPrimaryKey();
 		for ($i = 0; $i < count($vals); $i++) {
@@ -147,29 +151,33 @@ class SessionRecord extends CommonModule implements ISessionItem {
 		return ($is_saved || $is_updated);
 	}
 
-	public static function &get() {
+	public static function &get()
+	{
 		self::restore();
-		$result = array();
+		$result = [];
 		$c = get_called_class();
 		$record_id = $c::getRecordId();
 		if (!array_key_exists($record_id, $GLOBALS['sess'])) {
-			$GLOBALS['sess'][$record_id] = array();;
+			$GLOBALS['sess'][$record_id] = [];
+			;
 		}
 		return $GLOBALS['sess'][$record_id];
 	}
 
-	public static function findByPk($pk) {
+	public static function findByPk($pk)
+	{
 		$c = get_called_class();
 		$primary_key = $c::getPrimaryKey();
 		$result = self::findBy($primary_key, $pk);
 		return $result;
 	}
 
-	public static function findBy($field, $value) {
+	public static function findBy($field, $value)
+	{
 		self::restore();
 		$result = null;
-		$vals =& self::get();
-		for($i = 0; $i < count($vals); $i++) {
+		$vals = & self::get();
+		for ($i = 0; $i < count($vals); $i++) {
 			if ($vals[$i][$field] === $value) {
 				$result = $vals[$i];
 				break;
@@ -178,11 +186,12 @@ class SessionRecord extends CommonModule implements ISessionItem {
 		return $result;
 	}
 
-	public static function deleteByPk($pk) {
+	public static function deleteByPk($pk)
+	{
 		self::restore();
 		$result = false;
 		$c = get_called_class();
-		$vals =& self::get();
+		$vals = & self::get();
 		$primary_key = $c::getPrimaryKey();
 		for ($i = 0; $i < count($vals); $i++) {
 			if ($vals[$i][$primary_key] === $pk) {
@@ -194,16 +203,20 @@ class SessionRecord extends CommonModule implements ISessionItem {
 		return $result;
 	}
 
-	public static function forceRefresh() {
+	public static function forceRefresh()
+	{
 		unset($GLOBALS['sess']);
 	}
 
-	public static function getPrimaryKey() {
+	public static function getPrimaryKey()
+	{
 	}
 
-	public static function getRecordId() {
+	public static function getRecordId()
+	{
 	}
 
-	public static function getSessionFile() {
+	public static function getSessionFile()
+	{
 	}
 }

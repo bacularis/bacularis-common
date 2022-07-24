@@ -34,11 +34,9 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Interfaces
- * @package Baculum Common
  */
-
-interface IConfigFormat {
-
+interface IConfigFormat
+{
 	public function write($source, $config);
 
 	public function read($source);

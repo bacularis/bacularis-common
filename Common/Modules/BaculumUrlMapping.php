@@ -38,36 +38,36 @@ use Prado\Web\TUrlMapping;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category URL
- * @package Baculum Common
  */
-class BaculumUrlMapping extends TUrlMapping {
+class BaculumUrlMapping extends TUrlMapping
+{
+	public const DEFAULT_SERVICE_ID = 'web';
 
-	const DEFAULT_SERVICE_ID = 'web';
-
-	private $services = array(
-		'web' => array(
+	private $services = [
+		'web' => [
 			'url_manager' => 'Bacularis.Web.Modules.WebUrlMapping',
 			'url_pattern' => '!^(/index\.php)?/web([/,].*)?$!',
 			'endpoints' => 'Bacularis.Web.endpoints'
-		),
-		'api' => array(
+		],
+		'api' => [
 			'url_manager' => 'Bacularis.API.Modules.APIUrlMapping',
 			'url_pattern' => '!^(/index\.php)?/api([/,].*)?$!',
 			'endpoints' => 'Bacularis.API.Pages.API.endpoints'
-		),
-		'oauth' => array(
+		],
+		'oauth' => [
 			'url_manager' => 'Bacularis.API.Modules.OAuthUrlMapping',
 			'url_pattern' => '!^(/index\.php)?/oauth([/,].*)?$!',
 			'endpoints' => 'Bacularis.API.Pages.OAuth2.endpoints'
-		),
-		'panel' => array(
+		],
+		'panel' => [
 			'url_manager' => 'Bacularis.API.Modules.PanelUrlMapping',
 			'url_pattern' => '!^(/index\.php)?/panel([/,].*)?$!',
 			'endpoints' => 'Bacularis.API.Pages.Panel.endpoints'
-		)
-	);
+		]
+	];
 
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct();
 		$this->setServiceUrlManager();
 	}
@@ -78,7 +78,8 @@ class BaculumUrlMapping extends TUrlMapping {
 	 *
 	 * @return array all pages for service.
 	 */
-	public function getPages() {
+	public function getPages()
+	{
 		$pages = [];
 		foreach ($this->_patterns as $pattern) {
 			$pages[] = $pattern->getServiceParameter();
@@ -86,7 +87,8 @@ class BaculumUrlMapping extends TUrlMapping {
 		return $pages;
 	}
 
-	private function getServiceID() {
+	private function getServiceID()
+	{
 		$service_id = null;
 		$url = $this->getRequestedUrl();
 		foreach ($this->services as $id => $params) {
@@ -98,7 +100,8 @@ class BaculumUrlMapping extends TUrlMapping {
 		return $service_id;
 	}
 
-	private function setServiceUrlManager() {
+	private function setServiceUrlManager()
+	{
 		$service_id = $this->getServiceID() ?: self::DEFAULT_SERVICE_ID;
 		$url = $this->getRequestedUrl();
 		if (array_key_exists($service_id, $this->services)) {
@@ -113,7 +116,8 @@ class BaculumUrlMapping extends TUrlMapping {
 		}
 	}
 
-	private function getRequestedUrl() {
+	private function getRequestedUrl()
+	{
 		$path_info = $this->getRequest()->getPathInfo();
 		if ($path_info == '/') {
 			$path_info = '';
@@ -121,4 +125,3 @@ class BaculumUrlMapping extends TUrlMapping {
 		return $path_info;
 	}
 }
-?>

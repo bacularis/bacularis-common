@@ -36,13 +36,12 @@ use Bacularis\Common\Modules\CommonModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class Params extends CommonModule {
+class Params extends CommonModule
+{
+	public const BACULARIS_VERSION = '1.0.11';
 
-	const BACULARIS_VERSION = '1.0.11';
-
-	public static $months = array(
+	public static $months = [
 		'jan' => 'January',
 		'feb' => 'February',
 		'mar' => 'March',
@@ -55,17 +54,17 @@ class Params extends CommonModule {
 		'oct' => 'October',
 		'nov' => 'November',
 		'dec' => 'December'
-	);
+	];
 
-	public static $weeks = array(
+	public static $weeks = [
 		'1st' => 'first',
 		'2nd' => 'second',
 		'3rd' => 'third',
 		'4th' => 'fourth',
 		'5th' => 'fifth',
 		'6th' => 'sixth'
-	);
-	public static $wdays = array(
+	];
+	public static $wdays = [
 		'sun' => 'Sunday',
 		'mon' => 'Monday',
 		'tue' => 'Tuesday',
@@ -73,7 +72,7 @@ class Params extends CommonModule {
 		'thu' => 'Thursday',
 		'fri' => 'Friday',
 		'sat' => 'Saturday'
-	);
+	];
 
 	/**
 	 * Get time value in config form.
@@ -86,7 +85,8 @@ class Params extends CommonModule {
 	 * @param string $minute time minute
 	 * @return string time config value
 	 */
-	public static function getTimeConfig(array $hour, $minute) {
+	public static function getTimeConfig(array $hour, $minute)
+	{
 		$t = '';
 		$hour_len = count($hour);
 		$is_hourly = ($hour_len == 24);
@@ -111,7 +111,8 @@ class Params extends CommonModule {
 	 * @param array $moys_cfg month array (ex. [0,1,2,3,4])
 	 * @return string months of the year config value
 	 */
-	public static function getMonthsOfYearConfig(array $moys_cfg) {
+	public static function getMonthsOfYearConfig(array $moys_cfg)
+	{
 		$month = '';
 		$months = array_keys(Params::$months);
 		$moys_len = count($moys_cfg);
@@ -131,7 +132,8 @@ class Params extends CommonModule {
 	 * @param array $woms_cfg week array (ex. [0,1,4])
 	 * @return string weeks of the month config value
 	 */
-	public static function getWeeksOfMonthConfig(array $woms_cfg) {
+	public static function getWeeksOfMonthConfig(array $woms_cfg)
+	{
 		$week = '';
 		$woms_len = count($woms_cfg);
 		$weeks = array_keys(Params::$weeks);
@@ -151,7 +153,8 @@ class Params extends CommonModule {
 	 * @param array $dows_cfg day array (ex. [0,1,5])
 	 * @return string days of the week config value
 	 */
-	public static function getDaysOfWeekConfig(array $dows_cfg) {
+	public static function getDaysOfWeekConfig(array $dows_cfg)
+	{
 		$wday = '';
 		$dows_len = count($dows_cfg);
 		$wdays = array_keys(Params::$wdays);
@@ -172,13 +175,14 @@ class Params extends CommonModule {
 	 * @param array $doms_cfg day array (ex. [0,1,5,22,30])
 	 * @return string days of the month config value
 	 */
-	public static function getDaysOfMonthConfig(array $doms_cfg) {
+	public static function getDaysOfMonthConfig(array $doms_cfg)
+	{
 		$days = '';
 		$doms_len = count($doms_cfg);
 		if ($doms_len === 0) {
 			$days = 'on lastday';
 		} elseif ($doms_len < 31) {
-			$doms_w = array_map(function($el) {
+			$doms_w = array_map(function ($el) {
 				return ++$el;
 			}, $doms_cfg);
 			$days = 'on ' . implode(',', $doms_w);
@@ -190,13 +194,15 @@ class Params extends CommonModule {
 	 * Get weeks of year value in config form.
 	 *
 	 * @param array $woy_cfg week array (ex. array(0,1,2,3,4))
+	 * @param array $woys_cfg
 	 * @return string weeks of the year config value
 	 */
-	public static function getWeeksOfYearConfig(array $woys_cfg) {
+	public static function getWeeksOfYearConfig(array $woys_cfg)
+	{
 		$weeks = '';
 		$woys_len = count($woys_cfg);
 		if ($woys_len < 54) {
-			$woys_w = array_map(function($el) {
+			$woys_w = array_map(function ($el) {
 				return ('w' . sprintf('%02d', $el));
 			}, $woys_cfg);
 			$weeks = implode(',', $woys_w);
@@ -209,19 +215,22 @@ class Params extends CommonModule {
 	 * Simple method to prepare day config value by day number.
 	 *
 	 * @static
-	 * @return integer single day config value
+	 * @param mixed $day_no
+	 * @return int single day config value
 	 */
-	private static function getDayByNo($day_no) {
+	private static function getDayByNo($day_no)
+	{
 		return ++$day_no;
 	}
 
 	/**
 	 * Get Bacula config boolean value.
 	 *
-	 * @param boolean $value value
+	 * @param bool $value value
 	 * @return string bacula config boolean value
 	 */
-	public static function getBoolValue($value) {
+	public static function getBoolValue($value)
+	{
 		return ($value ? 'yes' : 'no');
 	}
 
@@ -232,17 +241,17 @@ class Params extends CommonModule {
 	 * @param array $output component status output
 	 * @return array major, minor and release numbers.
 	 */
-	public static function getComponentVersion(array $output) {
-		$version = array('major' => 0, 'minor' => 0, 'release' => 0);
+	public static function getComponentVersion(array $output)
+	{
+		$version = ['major' => 0, 'minor' => 0, 'release' => 0];
 		for ($i = 0; $i < count($output); $i++) {
 			if (preg_match('/^[\w\d\s:.\-]+Version:\s+(?P<major>\d+)\.(?P<minor>\d+)\.(?P<release>\d+)\s+\(/', $output[$i], $match) === 1) {
-				$version['major'] = intval($match['major']);
-				$version['minor'] = intval($match['minor']);
-				$version['release'] = intval($match['release']);
+				$version['major'] = (int) ($match['major']);
+				$version['minor'] = (int) ($match['minor']);
+				$version['release'] = (int) ($match['release']);
 				break;
 			}
 		}
 		return $version;
 	}
 }
-?>

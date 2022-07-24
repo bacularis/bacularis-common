@@ -39,4 +39,3 @@ define('PRADO_VENDORDIR', APPLICATION_PROTECTED . '/vendor');
 require(APPLICATION_PROTECTED . '/autoload.php');
 $application = new \Prado\TApplication(APPLICATION_PROTECTED);
 $application->run();
-?>

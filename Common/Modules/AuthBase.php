@@ -38,14 +38,13 @@ use Prado\Web\THttpRequest;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-abstract class AuthBase extends CommonModule {
-
+abstract class AuthBase extends CommonModule
+{
 	/**
 	 * Stores HTTP request object.
 	 */
-	private static $req = null;
+	private static $req;
 
 	/**
 	 * Public constructor.
@@ -53,7 +52,8 @@ abstract class AuthBase extends CommonModule {
 	 * @param THttpRequest $request HTTP request object.
 	 * @return none
 	 */
-	public function initialize(THttpRequest $request) {
+	public function initialize(THttpRequest $request)
+	{
 		self::$req = $request;
 	}
 
@@ -62,7 +62,8 @@ abstract class AuthBase extends CommonModule {
 	 *
 	 * @return array request headers
 	 */
-	private function getRequestHeaders() {
+	private function getRequestHeaders()
+	{
 		return self::$req->getHeaders(CASE_LOWER);
 	}
 
@@ -70,18 +71,20 @@ abstract class AuthBase extends CommonModule {
 	 * Check if HTTP request contains authorization header
 	 * ex: 'Authorization: Basic dGVzdGVyOnRlc3Q='
 	 *
-	 * @return boolean true if request contains valid authorization header
+	 * @return bool true if request contains valid authorization header
 	 */
-	public function isAuthRequest() {
+	public function isAuthRequest()
+	{
 		return ($this->getRequestHeader() !== null);
 	}
 
 	/**
 	 * Get authorization request header.
 	 *
-	 * @return string|null authorization header or null if header is invalid
+	 * @return null|string authorization header or null if header is invalid
 	 */
-	public function getRequestHeader() {
+	public function getRequestHeader()
+	{
 		$auth_header = null;
 		$headers = $this->getRequestHeaders();
 		if (is_array($headers) && key_exists('authorization', $headers)) {
@@ -95,8 +98,8 @@ abstract class AuthBase extends CommonModule {
 	/**
 	 * Validate request header.
 	 *
-	 * @return boolean true - success, false - validation error
+	 * @param mixed $header
+	 * @return bool true - success, false - validation error
 	 */
 	abstract protected function validateRequestHeader($header);
 }
-?>

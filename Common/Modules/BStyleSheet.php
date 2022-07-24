@@ -37,10 +37,9 @@ use Bacularis\Common\Modules\Params;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Client StyleSheet
- * @package Baculum Common
  */
-class BStyleSheet extends TStyleSheet {
-
+class BStyleSheet extends TStyleSheet
+{
 	public function getStyleSheetUrl()
 	{
 		$url = parent::getStyleSheetUrl();
@@ -49,6 +48,4 @@ class BStyleSheet extends TStyleSheet {
 		}
 		return $url;
 	}
-
 }
-?>

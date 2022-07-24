@@ -36,13 +36,12 @@ use Prado\Prado;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class ConfigFileModule extends CommonModule {
-	
-	const CONFIG_FILE_EXT = '.conf';
+class ConfigFileModule extends CommonModule
+{
+	public const CONFIG_FILE_EXT = '.conf';
 
-	const DEFAULT_CONFIG_FILE_FORMAT = 'ini';
+	public const DEFAULT_CONFIG_FILE_FORMAT = 'ini';
 
 	/**
 	 * Get config real path.
@@ -51,7 +50,8 @@ class ConfigFileModule extends CommonModule {
 	 * @param string $path config file path
 	 * @return string config system path
 	 */
-	protected function getConfigRealPath($path) {
+	protected function getConfigRealPath($path)
+	{
 		$pos = strpos($path, '/');
 		if (!$pos && $pos !== 0) {
 			$path = Prado::getPathOfNamespace($path, self::CONFIG_FILE_EXT);
@@ -64,9 +64,10 @@ class ConfigFileModule extends CommonModule {
 	 *
 	 * @access protected
 	 * @param string $path config file path
-	 * @return boolean true if file exists, otherwise false
+	 * @return bool true if file exists, otherwise false
 	 */
-	protected function isConfig($path) {
+	protected function isConfig($path)
+	{
 		$real_path = $this->getConfigRealPath($path);
 		return file_exists($real_path);
 	}
@@ -78,9 +79,10 @@ class ConfigFileModule extends CommonModule {
 	 * @param array $config config
 	 * @param string $path config file path
 	 * @param string $format config file format
-	 * @return boolean true if config written successfully, otherwise false
+	 * @return bool true if config written successfully, otherwise false
 	 */
-	protected function writeConfig(array $config, $path, $format) {
+	protected function writeConfig(array $config, $path, $format)
+	{
 		$real_path = $this->getConfigRealPath($path);
 		$config_module = $this->getConfigFormatModule($format);
 		$result = $config_module->write($real_path, $config);
@@ -95,8 +97,9 @@ class ConfigFileModule extends CommonModule {
 	 * @param string $format config file format
 	 * @return array config
 	 */
-	protected function readConfig($path, $format) {
-		$config = array();
+	protected function readConfig($path, $format)
+	{
+		$config = [];
 		if ($this->isConfig($path) === true) {
 			$real_path = $this->getConfigRealPath($path);
 			$config_module = $this->getConfigFormatModule($format);
@@ -114,7 +117,8 @@ class ConfigFileModule extends CommonModule {
 	 * @param string $format config file format
 	 * @return string config content
 	 */
-	protected function prepareConfig($config, $format) {
+	protected function prepareConfig($config, $format)
+	{
 		$config_module = $this->getConfigFormatModule($format);
 		$config_content = $config_module->prepareConfig($config);
 		return $config_content;
@@ -130,9 +134,10 @@ class ConfigFileModule extends CommonModule {
 	 * @param array $config config
 	 * @param string $format config file format
 	 * @param string $path config file path
-	 * @return boolean true if config valid, otherwise false
+	 * @return bool true if config valid, otherwise false
 	 */
-	protected function isConfigValid($required_options, array $config = array(), $format = '', $path = '') {
+	protected function isConfigValid($required_options, array $config = [], $format = '', $path = '')
+	{
 		$config_format = $this->getConfigFormatModule($format);
 		$is_valid = $config_format->isConfigValid($required_options, $config, $path);
 		return $is_valid;
@@ -145,7 +150,8 @@ class ConfigFileModule extends CommonModule {
 	 * @param string $format config file format
 	 * @return object module responsible for read/write config file
 	 */
-	private function getConfigFormatModule($format) {
+	private function getConfigFormatModule($format)
+	{
 		$module_id = $this->getFormatModuleId($format);
 		$module = $this->getModule($module_id);
 		if (is_null($module)) {
@@ -162,9 +168,9 @@ class ConfigFileModule extends CommonModule {
 	 * @param string $format config file format
 	 * @return string module ID
 	 */
-	private function getFormatModuleId($format) {
+	private function getFormatModuleId($format)
+	{
 		$module_id = "config_$format";
 		return $module_id;
 	}
 }
-?>

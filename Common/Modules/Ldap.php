@@ -38,26 +38,25 @@ use Bacularis\Common\Modules\CommonModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class Ldap extends CommonModule {
-
+class Ldap extends CommonModule
+{
 	/**
 	 * Authentication methods.
 	 */
-	const AUTH_METHOD_ANON = 'anonymous';
-	const AUTH_METHOD_SIMPLE = 'simple';
+	public const AUTH_METHOD_ANON = 'anonymous';
+	public const AUTH_METHOD_SIMPLE = 'simple';
 
 	/**
 	 * LDAP protocol types.
 	 */
-	const PROTOCOL_PLAIN = 'ldap';
-	const PROTOCOL_SSL = 'ldaps';
+	public const PROTOCOL_PLAIN = 'ldap';
+	public const PROTOCOL_SSL = 'ldaps';
 
 	/**
 	 * LDAP attributes.
 	 */
-	const DN_ATTR = 'dn';
+	public const DN_ATTR = 'dn';
 
 	/**
 	 * Stores LDAP connection parameters.
@@ -72,12 +71,12 @@ class Ldap extends CommonModule {
 	/**
 	 * Stores obligatory (required) parameters.
 	 */
-	private $req_params = array(
+	private $req_params = [
 		'address',
 		'port',
 		'protocol_ver',
 		'auth_method'
-	);
+	];
 
 	/**
 	 * Stores LDAP connection resource.
@@ -89,9 +88,10 @@ class Ldap extends CommonModule {
 	 * Note, it is used to initialize connection parameters, but itself it
 	 * doesn't open any LDAP conection.
 	 *
-	 * @return resource|false LDAP connection resource or false if any error occurs
+	 * @return false|resource LDAP connection resource or false if any error occurs
 	 */
-	public function connect() {
+	public function connect()
+	{
 		$ldapuri = $this->getLdapUri();
 		$conn = @ldap_connect($ldapuri);
 		$this->conn = $conn;
@@ -111,9 +111,10 @@ class Ldap extends CommonModule {
 	 *
 	 * @param string $rdn distinguished name
 	 * @param string $password user password
-	 * @return boolean true on successfull connection, false otherwise
+	 * @return bool true on successfull connection, false otherwise
 	 */
-	public function bind($rdn = null, $password = null) {
+	public function bind($rdn = null, $password = null)
+	{
 		$success = false;
 		if ($this->conn) {
 			$success = @ldap_bind($this->conn, $rdn, $password);
@@ -129,9 +130,11 @@ class Ldap extends CommonModule {
 	 * Parameters are set after successful validation.
 	 *
 	 * @param array $param parameters to work with LDAP
+	 * @param array $params
 	 * @return none
 	 */
-	public function setParams(array $params) {
+	public function setParams(array $params)
+	{
 		if ($this->validateConnectionParams($params)) {
 			$this->params = $params;
 		}
@@ -142,7 +145,8 @@ class Ldap extends CommonModule {
 	 *
 	 * @return none
 	 */
-	public function setConnectionOpts() {
+	public function setConnectionOpts()
+	{
 		ldap_set_option($this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->params['protocol_ver']);
 		ldap_set_option($this->conn, LDAP_OPT_REFERRALS, 0);
 	}
@@ -153,9 +157,10 @@ class Ldap extends CommonModule {
 	 * Note, if an error occurs, the error message is available in
 	 * the error property.
 	 *
-	 * @return boolean true on successfull connection, false otherwise
+	 * @return bool true on successfull connection, false otherwise
 	 */
-	public function adminBind() {
+	public function adminBind()
+	{
 		$success = false;
 		if ($this->connect()) {
 			if ($this->params['auth_method'] === self::AUTH_METHOD_ANON) {
@@ -174,9 +179,10 @@ class Ldap extends CommonModule {
 	 *
 	 * @param string $username username to login
 	 * @param string $password password to login
-	 * @return boolean true if login finished successfully, false otherwise
+	 * @return bool true if login finished successfully, false otherwise
 	 */
-	public function login($username, $password) {
+	public function login($username, $password)
+	{
 		$success = false;
 		if ($this->adminBind()) {
 			$filter = sprintf('(%s=%s)', $this->params['user_attr'], $username);
@@ -203,7 +209,8 @@ class Ldap extends CommonModule {
 	 * @param array $attr required object attributes
 	 * @return resource search result identifier or false otherwise
 	 */
-	public function search($base_dn, $filter, $attr = array('*')) {
+	public function search($base_dn, $filter, $attr = ['*'])
+	{
 		$search = @ldap_search($this->conn, $base_dn, $filter, $attr, 0, 0, 0);
 		if (!$search) {
 			$this->setLdapError();
@@ -219,7 +226,8 @@ class Ldap extends CommonModule {
 	 * @param string $filter the search filter, ex. '(objectClass=inetOrgPerson)'
 	 * @param array $attr required object attributes
 	 */
-	public function findUserAttr($filter, $attr = array('*')) {
+	public function findUserAttr($filter, $attr = ['*'])
+	{
 		$user_attr = [];
 		if ($this->adminBind()) {
 			$search = $this->search($this->params['base_dn'], $filter, $attr);
@@ -235,7 +243,8 @@ class Ldap extends CommonModule {
 	 *
 	 * @return string full LDAP URI (ex. ldap://host:port)
 	 */
-	public function getLdapUri() {
+	public function getLdapUri()
+	{
 		$protocol = self::PROTOCOL_PLAIN;
 		if (key_exists('ldaps', $this->params) && $this->params['ldaps'] == 1) {
 			$protocol = self::PROTOCOL_SSL;
@@ -254,7 +263,8 @@ class Ldap extends CommonModule {
 	 *
 	 * @return none
 	 */
-	public function setLdapError() {
+	public function setLdapError()
+	{
 		ldap_get_option($this->conn, LDAP_OPT_DIAGNOSTIC_MESSAGE, $error);
 		$emsg = sprintf(
 			'Error: %d: %s. %s',
@@ -278,7 +288,8 @@ class Ldap extends CommonModule {
 	 *
 	 * @return string error message
 	 */
-	public function getLdapError() {
+	public function getLdapError()
+	{
 		return $this->error;
 	}
 
@@ -288,7 +299,8 @@ class Ldap extends CommonModule {
 	 * @param array $params connection parameters
 	 * @return false if any of parameters is invalid
 	 */
-	public function validateConnectionParams(array $params) {
+	public function validateConnectionParams(array $params)
+	{
 		$valid = true;
 		for ($i = 0; $i < count($this->req_params); $i++) {
 			if (!key_exists($this->req_params[$i], $params)) {
@@ -306,8 +318,8 @@ class Ldap extends CommonModule {
 	 * @param string $value search value
 	 * @return formatted string in search filter
 	 */
-	public function getFilter($key, $value) {
+	public function getFilter($key, $value)
+	{
 		return sprintf('(%s=%s)', $key, $value);
 	}
 }
-?>

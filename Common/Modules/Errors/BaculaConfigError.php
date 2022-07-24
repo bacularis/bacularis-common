@@ -34,20 +34,18 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class BaculaConfigError extends GenericError
+{
+	public const ERROR_CONFIG_DIR_NOT_WRITABLE = 90;
+	public const ERROR_UNEXPECTED_BACULA_CONFIG_VALUE = 91;
+	public const ERROR_CONFIG_NO_JSONTOOL_READY = 92;
+	public const ERROR_WRITE_TO_CONFIG_ERROR = 93;
+	public const ERROR_CONFIG_VALIDATION_ERROR = 94;
 
-class BaculaConfigError extends GenericError {
-
-	const ERROR_CONFIG_DIR_NOT_WRITABLE = 90;
-	const ERROR_UNEXPECTED_BACULA_CONFIG_VALUE = 91;
-	const ERROR_CONFIG_NO_JSONTOOL_READY = 92;
-	const ERROR_WRITE_TO_CONFIG_ERROR = 93;
-	const ERROR_CONFIG_VALIDATION_ERROR = 94;
-
-	const MSG_ERROR_CONFIG_DIR_NOT_WRITABLE = 'Config directory is not writable.';
-	const MSG_ERROR_UNEXPECTED_BACULA_CONFIG_VALUE = 'Unexpected Bacula config value.';
-	const MSG_ERROR_CONFIG_NO_JSONTOOL_READY = 'No JSON tool ready.';
-	const MSG_ERROR_WRITE_TO_CONFIG_ERROR = 'Write to config file error.';
-	const MSG_ERROR_CONFIG_VALIDATION_ERROR = 'Config validation error.';
+	public const MSG_ERROR_CONFIG_DIR_NOT_WRITABLE = 'Config directory is not writable.';
+	public const MSG_ERROR_UNEXPECTED_BACULA_CONFIG_VALUE = 'Unexpected Bacula config value.';
+	public const MSG_ERROR_CONFIG_NO_JSONTOOL_READY = 'No JSON tool ready.';
+	public const MSG_ERROR_WRITE_TO_CONFIG_ERROR = 'Write to config file error.';
+	public const MSG_ERROR_CONFIG_VALIDATION_ERROR = 'Config validation error.';
 }

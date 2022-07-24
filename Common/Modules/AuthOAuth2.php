@@ -34,21 +34,21 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class AuthOAuth2 extends AuthBase implements IAuthModule {
-
+class AuthOAuth2 extends AuthBase implements IAuthModule
+{
 	/**
 	 * Generic name (used e.g. in config files).
 	 */
-	const NAME = 'oauth2';
+	public const NAME = 'oauth2';
 
 	/**
 	 * Get auth type.
 	 *
 	 * @return string auth type.
 	 */
-	public function getAuthType() {
+	public function getAuthType()
+	{
 		return 'Bearer';
 	}
 
@@ -56,9 +56,10 @@ class AuthOAuth2 extends AuthBase implements IAuthModule {
 	 * Validate auth request header.
 	 *
 	 * @param string $header auth request header value (ex: 'Bearer 39607568825eba6b72088b1ab054ed9d0f857eb7')
-	 * @return boolean true - valid, false - validation error
+	 * @return bool true - valid, false - validation error
 	 */
-	public function validateRequestHeader($header) {
+	public function validateRequestHeader($header)
+	{
 		$valid = false;
 		$value = $this->getRequestHeaderValue($header);
 		if (is_array($value)) {
@@ -71,14 +72,15 @@ class AuthOAuth2 extends AuthBase implements IAuthModule {
 	 * Get parsed request header value.
 	 *
 	 * @param string $header auth request header value (ex: 'Basic 39607568825eba6b72088b1ab054ed9d0f857eb7')
-	 * @return array|null list with type and token or null if header is invalid
+	 * @return null|array list with type and token or null if header is invalid
 	 */
-	public function getRequestHeaderValue($header) {
+	public function getRequestHeaderValue($header)
+	{
 		$ret = null;
 		if (is_string($header)) {
 			$values = explode(' ', $header, 2);
 			if (count($values) == 2) {
-				list($type, $token) = $values;
+				[$type, $token] = $values;
 				$ret = ['type' => $type, 'token' => $token];
 			}
 		}
@@ -90,7 +92,8 @@ class AuthOAuth2 extends AuthBase implements IAuthModule {
 	 *
 	 * @return string token value or empty string if header is invalid
 	 */
-	public function getToken() {
+	public function getToken()
+	{
 		$token = '';
 		$header = $this->getRequestHeader();
 		$value = $this->getRequestHeaderValue($header);
@@ -108,9 +111,10 @@ class AuthOAuth2 extends AuthBase implements IAuthModule {
 	 * @param string $path requested URL path
 	 * @param string $tscopes scopes assigned to token
 	 * @param array $public_endpoints endpoints that are public for all valid clients
-	 * @return boolean true if scope in path and scope assigned to token are valid, otherwise false
+	 * @return bool true if scope in path and scope assigned to token are valid, otherwise false
 	 */
-	public function isScopeValid($path, $tscopes, $public_endpoints) {
+	public function isScopeValid($path, $tscopes, $public_endpoints)
+	{
 		$valid = false;
 		$scopes = explode(' ', $tscopes);
 		$params = explode('/', $path);
@@ -134,4 +138,3 @@ class AuthOAuth2 extends AuthBase implements IAuthModule {
 		return $valid;
 	}
 }
-?>

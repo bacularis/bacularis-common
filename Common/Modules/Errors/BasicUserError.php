@@ -34,24 +34,22 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class BasicUserError extends GenericError
+{
+	public const ERROR_BASIC_USER_DOES_NOT_EXIST = 140;
+	public const ERROR_BASIC_USER_ALREADY_EXISTS = 141;
+	public const ERROR_BASIC_USER_INVALID_USERNAME = 142;
+	public const ERROR_BASIC_USER_INVALID_BCONSOLE_CFG_PATH = 143;
+	public const ERROR_BASIC_USER_INVALID_CONSOLE = 144;
+	public const ERROR_BASIC_USER_INVALID_DIRECTOR = 145;
+	public const ERROR_BASIC_USER_INVALID_PASSWORD = 146;
 
-class BasicUserError extends GenericError {
-
-	const ERROR_BASIC_USER_DOES_NOT_EXIST = 140;
-	const ERROR_BASIC_USER_ALREADY_EXISTS = 141;
-	const ERROR_BASIC_USER_INVALID_USERNAME = 142;
-	const ERROR_BASIC_USER_INVALID_BCONSOLE_CFG_PATH = 143;
-	const ERROR_BASIC_USER_INVALID_CONSOLE = 144;
-	const ERROR_BASIC_USER_INVALID_DIRECTOR = 145;
-	const ERROR_BASIC_USER_INVALID_PASSWORD= 146;
-
-	const MSG_ERROR_BASIC_USER_DOES_NOT_EXIST = 'Basic user does not exist.';
-	const MSG_ERROR_BASIC_USER_ALREADY_EXISTS = 'Basic user already exists.';
-	const MSG_ERROR_BASIC_USER_INVALID_USERNAME = 'Invalid basic user username';
-	const MSG_ERROR_BASIC_USER_INVALID_BCONSOLE_CFG_PATH = 'Invalid bconsole config path.';
-	const MSG_ERROR_BASIC_USER_INVALID_CONSOLE = 'Invalid Console name.';
-	const MSG_ERROR_BASIC_USER_INVALID_DIRECTOR = 'Invalid Director name.';
-	const MSG_ERROR_BASIC_USER_INVALID_PASSWORD = 'Invalid password.';
+	public const MSG_ERROR_BASIC_USER_DOES_NOT_EXIST = 'Basic user does not exist.';
+	public const MSG_ERROR_BASIC_USER_ALREADY_EXISTS = 'Basic user already exists.';
+	public const MSG_ERROR_BASIC_USER_INVALID_USERNAME = 'Invalid basic user username';
+	public const MSG_ERROR_BASIC_USER_INVALID_BCONSOLE_CFG_PATH = 'Invalid bconsole config path.';
+	public const MSG_ERROR_BASIC_USER_INVALID_CONSOLE = 'Invalid Console name.';
+	public const MSG_ERROR_BASIC_USER_INVALID_DIRECTOR = 'Invalid Director name.';
+	public const MSG_ERROR_BASIC_USER_INVALID_PASSWORD = 'Invalid password.';
 }

@@ -36,15 +36,14 @@ use Bacularis\Common\Modules\CommonModule;
  * Module is responsible for providing APR1-MD5 support.
  *
  * @category Module
- * @package Baculum Common
  */
-class Apr1Md5 extends CommonModule {
-
+class Apr1Md5 extends CommonModule
+{
 	// APR-MD5 hash prefix
-	const HASH_PREFIX = '$apr1';
+	public const HASH_PREFIX = '$apr1';
 
 	// Salt length
-	const DEF_SALT_LEN = 8;
+	public const DEF_SALT_LEN = 8;
 
 	/**
 	 * Get hashed password using APR1-MD5 algorithm.
@@ -56,7 +55,8 @@ class Apr1Md5 extends CommonModule {
 	 * @param string $salt cryptographic salt
 	 * @return string hashed password
 	 */
-	public function crypt($password, $salt = null) {
+	public function crypt($password, $salt = null)
+	{
 		if (is_null($salt)) {
 			$salt = $this->getModule('crypto')->getRandomString(self::DEF_SALT_LEN);
 		}
@@ -105,9 +105,10 @@ class Apr1Md5 extends CommonModule {
 	 *
 	 * @param string $password password to check
 	 * @param string $hash hash to check
-	 * @return boolean true if password and hash are match, otherwise false
+	 * @return bool true if password and hash are match, otherwise false
 	 */
-	public function verify($password, $hash) {
+	public function verify($password, $hash)
+	{
 		$valid = false;
 		$parts = explode('$', $hash, 4);
 		if (count($parts) === 4) {
@@ -118,4 +119,3 @@ class Apr1Md5 extends CommonModule {
 		return $valid;
 	}
 }
-?>

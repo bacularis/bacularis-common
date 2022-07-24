@@ -38,15 +38,14 @@ use Bacularis\Common\Modules\CommonModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class Ssha1 extends CommonModule {
-
+class Ssha1 extends CommonModule
+{
 	// Salted SHA-1 hash prefix
-	const HASH_PREFIX = '{SSHA}';
+	public const HASH_PREFIX = '{SSHA}';
 
 	// Salt length
-	const DEF_SALT_LEN = 4;
+	public const DEF_SALT_LEN = 4;
 
 	/**
 	 * Get hashed password using SHA-1 algorithm and salt.
@@ -55,7 +54,8 @@ class Ssha1 extends CommonModule {
 	 * @param string $salt cryptographic salt
 	 * @return string hashed password
 	 */
-	public function crypt($password, $salt = null) {
+	public function crypt($password, $salt = null)
+	{
 		if (is_null($salt)) {
 			$salt = $this->getModule('crypto')->getRandomString(self::DEF_SALT_LEN);
 		}
@@ -70,9 +70,10 @@ class Ssha1 extends CommonModule {
 	 *
 	 * @param string $password password to check
 	 * @param string $hash hash to check
-	 * @return boolean true if password and hash are match, otherwise false
+	 * @return bool true if password and hash are match, otherwise false
 	 */
-	public function verify($password, $hash) {
+	public function verify($password, $hash)
+	{
 		$pos = strlen(self::HASH_PREFIX) - 1;
 		$bh = substr($hash, $pos);
 		$h = base64_decode($bh);
@@ -81,4 +82,3 @@ class Ssha1 extends CommonModule {
 		return ($hash === $hash2);
 	}
 }
-?>

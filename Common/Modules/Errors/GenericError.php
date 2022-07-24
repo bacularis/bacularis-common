@@ -34,18 +34,18 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
-class GenericError {
-	const ERROR_NO_ERRORS = 0;
-	const ERROR_INVALID_COMMAND = 1;
-	const ERROR_INTERNAL_ERROR = 1000;
-	const ERROR_INVALID_PATH = 8;
-	const ERROR_WRONG_EXITCODE = 9;
+class GenericError
+{
+	public const ERROR_NO_ERRORS = 0;
+	public const ERROR_INVALID_COMMAND = 1;
+	public const ERROR_INTERNAL_ERROR = 1000;
+	public const ERROR_INVALID_PATH = 8;
+	public const ERROR_WRONG_EXITCODE = 9;
 
-	const MSG_ERROR_NO_ERRORS = '';
-	const MSG_ERROR_INVALID_COMMAND = 'Invalid command.';
-	const MSG_ERROR_INTERNAL_ERROR = 'Internal error.';
-	const MSG_ERROR_INVALID_PATH = 'Invalid path.';
-	const MSG_ERROR_WRONG_EXITCODE = 'Wrong exitcode.';
+	public const MSG_ERROR_NO_ERRORS = '';
+	public const MSG_ERROR_INVALID_COMMAND = 'Invalid command.';
+	public const MSG_ERROR_INTERNAL_ERROR = 'Internal error.';
+	public const MSG_ERROR_INVALID_PATH = 'Invalid path.';
+	public const MSG_ERROR_WRONG_EXITCODE = 'Wrong exitcode.';
 }

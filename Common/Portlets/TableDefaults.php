@@ -36,7 +36,7 @@ use Bacularis\Common\Portlets\PortletTemplate;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Control
- * @package Baculum Common
  */
-class TableDefaults extends PortletTemplate {
+class TableDefaults extends PortletTemplate
+{
 }

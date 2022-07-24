@@ -35,10 +35,9 @@ use Bacularis\Common\Portlets\BSimpleRepeaterItem;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Control
- * @package Baculum Web
  */
-class BSimpleRepeater extends TDataBoundControl {
-
+class BSimpleRepeater extends TDataBoundControl
+{
 	/**
 	 * Stores item template object
 	 */
@@ -49,7 +48,8 @@ class BSimpleRepeater extends TDataBoundControl {
 	 *
 	 * @return ITemplate template
 	 */
-	public function getItemTemplate() {
+	public function getItemTemplate()
+	{
 		return $this->_itemTemplate;
 	}
 
@@ -59,7 +59,8 @@ class BSimpleRepeater extends TDataBoundControl {
 	 * @param ITemplate $tpl template
 	 * @return none
 	 */
-	public function setItemTemplate($tpl) {
+	public function setItemTemplate($tpl)
+	{
 		if ($tpl instanceof \Prado\Web\UI\ITemplate) {
 			$this->_itemTemplate = $tpl;
 		}
@@ -71,7 +72,8 @@ class BSimpleRepeater extends TDataBoundControl {
 	 * @param $data data from data source
 	 * @return none
 	 */
-	protected function performDataBinding($data) {
+	protected function performDataBinding($data)
+	{
 		for ($i = 0; $i < count($data); $i++) {
 			$this->createItem($data[$i]);
 		}
@@ -81,9 +83,11 @@ class BSimpleRepeater extends TDataBoundControl {
 	 * Create single repeater item.
 	 *
 	 * return BSimpleRepeaterItem repeater item
+	 * @param mixed $data
 	 */
-	private function createItem($data) {
-		$item = new BSimpleRepeaterItem;
+	private function createItem($data)
+	{
+		$item = new BSimpleRepeaterItem();
 		if ($item instanceof \Prado\IDataRenderer) {
 			$item->setData($data);
 		}
@@ -93,8 +97,8 @@ class BSimpleRepeater extends TDataBoundControl {
 		return $item;
 	}
 
-	public function render($writer) {
+	public function render($writer)
+	{
 		$this->renderChildren($writer);
 	}
 }
-?>

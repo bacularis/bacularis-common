@@ -20,10 +20,8 @@ namespace Bacularis\Common\Modules;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Interfaces
- * @package Bacularis Common
  */
-
-interface IUserConfig {
-
+interface IUserConfig
+{
 	public function validateUsernamePassword($username, $password, $check_conf = true);
 }

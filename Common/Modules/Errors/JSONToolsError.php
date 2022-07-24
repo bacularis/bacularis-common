@@ -34,20 +34,18 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class JSONToolsError extends GenericError
+{
+	public const ERROR_JSON_TOOLS_DISABLED = 80;
+	public const ERROR_JSON_TOOLS_CONNECTION_PROBLEM = 81;
+	public const ERROR_JSON_TOOLS_WRONG_EXITCODE = 82;
+	public const ERROR_JSON_TOOLS_UNABLE_TO_PARSE_OUTPUT = 83;
+	public const ERROR_JSON_TOOL_NOT_CONFIGURED = 84;
 
-class JSONToolsError extends GenericError {
-
-	const ERROR_JSON_TOOLS_DISABLED = 80;
-	const ERROR_JSON_TOOLS_CONNECTION_PROBLEM = 81;
-	const ERROR_JSON_TOOLS_WRONG_EXITCODE = 82;
-	const ERROR_JSON_TOOLS_UNABLE_TO_PARSE_OUTPUT = 83;
-	const ERROR_JSON_TOOL_NOT_CONFIGURED = 84;
-
-	const MSG_ERROR_JSON_TOOLS_DISABLED = 'JSON tools support is disabled.';
-	const MSG_ERROR_JSON_TOOLS_CONNECTION_PROBLEM = 'Problem with connection to a JSON tool.';
-	const MSG_ERROR_JSON_TOOLS_WRONG_EXITCODE = 'JSON tool returned wrong exitcode.';
-	const MSG_ERROR_JSON_TOOLS_UNABLE_TO_PARSE_OUTPUT = 'JSON tool output was unable to parse.';
-	const MSG_ERROR_JSON_TOOL_NOT_CONFIGURED = 'JSON tool not configured.';
+	public const MSG_ERROR_JSON_TOOLS_DISABLED = 'JSON tools support is disabled.';
+	public const MSG_ERROR_JSON_TOOLS_CONNECTION_PROBLEM = 'Problem with connection to a JSON tool.';
+	public const MSG_ERROR_JSON_TOOLS_WRONG_EXITCODE = 'JSON tool returned wrong exitcode.';
+	public const MSG_ERROR_JSON_TOOLS_UNABLE_TO_PARSE_OUTPUT = 'JSON tool output was unable to parse.';
+	public const MSG_ERROR_JSON_TOOL_NOT_CONFIGURED = 'JSON tool not configured.';
 }

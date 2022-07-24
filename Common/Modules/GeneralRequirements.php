@@ -32,10 +32,9 @@
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Requirements
- * @package Baculum Common
  */
-abstract class GeneralRequirements {
-
+abstract class GeneralRequirements
+{
 	/**
 	 * Required PHP extensions.
 	 *
@@ -43,50 +42,51 @@ abstract class GeneralRequirements {
 	 * translation engine initialization. From this reason all messages are not
 	 * translated.
 	 */
-	private $req_exts = array(
-		array(
+	private $req_exts = [
+		[
 			'ext' => 'json',
 			'help_msg' => 'Please install <b>PHP JSON module</b>.'
-		),
-		array(
+		],
+		[
 			'ext' => 'dom',
 			'help_msg' => 'Please install <b>PHP DOM module</b> to support XML documents (usually included in php-xml binary package).'
-		)
-	);
+		]
+	];
 
 	/**
 	 * Required read/write access for these application directories.
 	 */
-	private $req_app_rw_dirs = array(
+	private $req_app_rw_dirs = [
 		'assets'
-	);
+	];
 
 	/**
 	 * Required read/wrie access for these directories in base directory.
 	 */
-	private $req_base_rw_dirs = array(
+	private $req_base_rw_dirs = [
 		'Config', 'Logs'
-	);
+	];
 
 	/**
 	 * Required read/wrie access for these directories in protected directory.
 	 */
-	private $req_prot_rw_dirs = array(
+	private $req_prot_rw_dirs = [
 		'runtime'
-	);
+	];
 
 	/**
 	 * Generic help message for directories without fulfilled dependencies.
 	 */
-	const DIR_HELP_MSG = 'Please make readable and writeable by the web server user the following directory: <b>%s</b>';
+	public const DIR_HELP_MSG = 'Please make readable and writeable by the web server user the following directory: <b>%s</b>';
 
 	/**
 	 * This static variable stores all dependency messages to show on the page.
 	 * If empty, dependencies are fulfilled.
 	 */
-	protected static $requirements = array();
+	protected static $requirements = [];
 
-	public function __construct($app_dir, $prot_dir, $base_dir) {
+	public function __construct($app_dir, $prot_dir, $base_dir)
+	{
 		$this->validateEnvironment($app_dir, $prot_dir, $base_dir);
 	}
 
@@ -98,7 +98,8 @@ abstract class GeneralRequirements {
 	 * @param string $base_dir full path to service specific base directory
 	 * @return none
 	 */
-	private function validateEnvironment($app_dir, $prot_dir, $base_dir) {
+	private function validateEnvironment($app_dir, $prot_dir, $base_dir)
+	{
 		$this->validateDirectories($app_dir, $prot_dir, $base_dir);
 		$this->validateExtensions($this->req_exts);
 	}
@@ -111,7 +112,8 @@ abstract class GeneralRequirements {
 	 * @param string $base_dir full path to service specific base directory
 	 * @return none
 	 */
-	private function validateDirectories($app_dir, $prot_dir, $base_dir) {
+	private function validateDirectories($app_dir, $prot_dir, $base_dir)
+	{
 		for ($i = 0; $i < count($this->req_app_rw_dirs); $i++) {
 			$dir = $app_dir . '/' . $this->req_app_rw_dirs[$i];
 			if (is_readable($dir) && is_writeable($dir)) {
@@ -144,7 +146,8 @@ abstract class GeneralRequirements {
 	 * @param array $req_exts extension list
 	 * @return none
 	 */
-	protected static function validateExtensions($req_exts) {
+	protected static function validateExtensions($req_exts)
+	{
 		for ($i = 0; $i < count($req_exts); $i++) {
 			if (!extension_loaded($req_exts[$i]['ext'])) {
 				self::$requirements[] = $req_exts[$i]['help_msg'];
@@ -158,7 +161,8 @@ abstract class GeneralRequirements {
 	 * @param string $product product name ('Baculum Web' or 'Baculum API'...etc.)
 	 * @return none
 	 */
-	protected static function showResult($product) {
+	protected static function showResult($product)
+	{
 		if (count(self::$requirements) > 0) {
 			echo '<html><body><h2>' . $product . ' - Missing dependencies</h2><ul>';
 			for ($i = 0; $i < count(self::$requirements); $i++) {
@@ -171,4 +175,3 @@ abstract class GeneralRequirements {
 		}
 	}
 }
-?>

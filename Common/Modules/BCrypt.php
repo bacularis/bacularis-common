@@ -37,21 +37,20 @@ use Bacularis\Common\Modules\CommonModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class BCrypt extends CommonModule {
-
+class BCrypt extends CommonModule
+{
 	// BCrypt hash prefix
-	const HASH_PREFIX = '$2y';
+	public const HASH_PREFIX = '$2y';
 
 	// Salt length
-	const DEF_SALT_LEN = 22;
+	public const DEF_SALT_LEN = 22;
 
 	// bcrypt uses not standard base64 alphabet
-	const BCRYPT_BASE64_CODE = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	public const BCRYPT_BASE64_CODE = './ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 	// bcrypt cost parameter - number of iterations during hashing
-	const BCRYPT_COST = 10;
+	public const BCRYPT_COST = 10;
 
 	/**
 	 * Get hashed password using BCrypt algorithm and salt.
@@ -60,7 +59,8 @@ class BCrypt extends CommonModule {
 	 * @param string $salt cryptographic salt
 	 * @return string hashed password
 	 */
-	public function crypt($password, $salt = null) {
+	public function crypt($password, $salt = null)
+	{
 		if (is_null($salt)) {
 			// Suffle string
 			$rand_string = str_shuffle(self::BCRYPT_BASE64_CODE);
@@ -83,9 +83,10 @@ class BCrypt extends CommonModule {
 	 *
 	 * @param string $password password to check
 	 * @param string $hash hash to check
-	 * @return boolean true if password and hash are match, otherwise false
+	 * @return bool true if password and hash are match, otherwise false
 	 */
-	public function verify($password, $hash) {
+	public function verify($password, $hash)
+	{
 		$valid = false;
 		$parts = explode('$', $hash, 4);
 		if (count($parts) === 4) {
@@ -96,4 +97,3 @@ class BCrypt extends CommonModule {
 		return $valid;
 	}
 }
-?>

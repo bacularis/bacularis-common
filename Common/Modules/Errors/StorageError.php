@@ -34,11 +34,10 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class StorageError extends GenericError
+{
+	public const ERROR_STORAGE_DOES_NOT_EXISTS = 20;
 
-class StorageError extends GenericError {
-	const ERROR_STORAGE_DOES_NOT_EXISTS = 20;
-
-	const MSG_ERROR_STORAGE_DOES_NOT_EXISTS = 'Storage does not exist.';
+	public const MSG_ERROR_STORAGE_DOES_NOT_EXISTS = 'Storage does not exist.';
 }

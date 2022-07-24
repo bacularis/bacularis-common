@@ -37,18 +37,18 @@ use Prado\Web\UI\TControl;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Control
- * @package Baculum Web
  */
-class BSimpleRepeaterItem extends TControl implements IDataRenderer {
-
+class BSimpleRepeaterItem extends TControl implements IDataRenderer
+{
 	private $_data = [];
 
-	public function getData() {
+	public function getData()
+	{
 		return $this->_data;
 	}
 
-	public function setData($data) {
+	public function setData($data)
+	{
 		$this->_data = $data;
 	}
 }
-?>

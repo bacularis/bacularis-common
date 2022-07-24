@@ -36,36 +36,41 @@ use Prado\Exceptions\TException;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Exception
- * @package Baculum Common
  */
-class BException extends TException {
-
+class BException extends TException
+{
 	private $error_code;
 	private $error_message;
 
-	public function __construct($error_message, $error_code) {
+	public function __construct($error_message, $error_code)
+	{
 		$this->setErrorMessage($error_message);
 		$this->setErrorCode($error_code);
 		parent::__construct($error_message);
 	}
 
-	public function getErrorCode() {
+	public function getErrorCode()
+	{
 		return $this->error_code;
 	}
 
-	public function setErrorCode($error_code) {
+	public function setErrorCode($error_code)
+	{
 		$this->error_code = $error_code;
 	}
 
-	public function getErrorMessage() {
+	public function getErrorMessage()
+	{
 		return $this->error_message;
 	}
 
-	public function setErrorMessage($error_message) {
+	public function setErrorMessage($error_message)
+	{
 		$this->error_message = $error_message;
 	}
 
-	public function __toString() {
+	public function __toString()
+	{
 		return sprintf(
 			'Error: %d, Message: %s',
 			$this->getErrorCode(),
@@ -74,6 +79,6 @@ class BException extends TException {
 	}
 }
 
-class AuthException extends BException {
+class AuthException extends BException
+{
 }
-?>

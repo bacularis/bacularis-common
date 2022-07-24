@@ -36,31 +36,32 @@ use Prado\Prado;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class Logging extends CommonModule {
-
+class Logging extends CommonModule
+{
 	public static $debug_enabled = false;
 
-	const CATEGORY_EXECUTE = 'Execute';
-	const CATEGORY_EXTERNAL = 'External';
-	const CATEGORY_APPLICATION = 'Application';
-	const CATEGORY_GENERAL = 'General';
-	const CATEGORY_SECURITY = 'Security';
+	public const CATEGORY_EXECUTE = 'Execute';
+	public const CATEGORY_EXTERNAL = 'External';
+	public const CATEGORY_APPLICATION = 'Application';
+	public const CATEGORY_GENERAL = 'General';
+	public const CATEGORY_SECURITY = 'Security';
 
-	private function getLogCategories() {
-		$categories = array(
+	private function getLogCategories()
+	{
+		$categories = [
 			self::CATEGORY_EXECUTE,
 			self::CATEGORY_EXTERNAL,
 			self::CATEGORY_APPLICATION,
 			self::CATEGORY_GENERAL,
 			self::CATEGORY_SECURITY
-		);
+		];
 		return $categories;
 	}
 
-	public function log($cmd, $output, $category, $file, $line) {
-		if(self::$debug_enabled !== true) {
+	public function log($cmd, $output, $category, $file, $line)
+	{
+		if (self::$debug_enabled !== true) {
 			return;
 		}
 		$current_mode = $this->Application->getMode();
@@ -68,7 +69,7 @@ class Logging extends CommonModule {
 		// switch application to debug mode
 		$this->Application->setMode('Debug');
 
-		if(!in_array($category, $this->getLogCategories())) {
+		if (!in_array($category, $this->getLogCategories())) {
 			$category = self::CATEGORY_SECURITY;
 		}
 
@@ -77,7 +78,7 @@ class Logging extends CommonModule {
 			$cmd,
 			print_r($output, true),
 			$file,
-			intval($line)
+			(int) $line
 		);
 
 		Prado::trace($log, $category);
@@ -86,5 +87,3 @@ class Logging extends CommonModule {
 		$this->Application->setMode($current_mode);
 	}
 }
-
-?>

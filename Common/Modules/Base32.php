@@ -16,8 +16,8 @@ namespace Bacularis\Common\Modules;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-class Base32 extends CommonModule {
-
+class Base32 extends CommonModule
+{
 	/**
 	 * Base32 dictionary.
 	 */
@@ -62,7 +62,8 @@ class Base32 extends CommonModule {
 	 * @param string $base32 base32 string
 	 * @return string binary string or empty string on validation error
 	 */
-	public function decode($base32) {
+	public function decode($base32)
+	{
 		$ret = '';
 		$b32 = strtoupper($base32);
 		$l = strlen($b32);
@@ -87,14 +88,14 @@ class Base32 extends CommonModule {
 	/**
 	 * Generate random base32 string with given length.
 	 *
-	 * @param integer $length string length
+	 * @param int $length string length
 	 * @return string random base32 string
 	 */
-	public function generateRandomString($length = 16) {
+	public function generateRandomString($length = 16)
+	{
 		$ret = '';
 		for ($i = 0; $i < $length; $i++) {
 			$ret .= array_rand(self::$dictionary);
-
 		}
 		return $ret;
 	}

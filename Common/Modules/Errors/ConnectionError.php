@@ -34,12 +34,10 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class ConnectionError extends GenericError
+{
+	public const ERROR_CONNECTION_TO_HOST_PROBLEM = 100;
 
-class ConnectionError extends GenericError {
-
-	const ERROR_CONNECTION_TO_HOST_PROBLEM = 100;
-
-	const MSG_ERROR_CONNECTION_TO_HOST_PROBLEM = 'Problem with connection to remote host.';
+	public const MSG_ERROR_CONNECTION_TO_HOST_PROBLEM = 'Problem with connection to remote host.';
 }

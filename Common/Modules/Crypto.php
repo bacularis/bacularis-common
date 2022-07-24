@@ -37,19 +37,18 @@ use Bacularis\Common\Modules\CommonModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class Crypto extends CommonModule {
-
+class Crypto extends CommonModule
+{
 	/**
 	 * Supported hash algorithms.
 	 */
-	const HASH_ALG_APR1_MD5 = 'apr-md5';
-	const HASH_ALG_SHA1 = 'sha1';
-	const HASH_ALG_SSHA1 = 'ssha1';
-	const HASH_ALG_SHA256 = 'sha256';
-	const HASH_ALG_SHA512 = 'sha512';
-	const HASH_ALG_BCRYPT = 'bcrypt';
+	public const HASH_ALG_APR1_MD5 = 'apr-md5';
+	public const HASH_ALG_SHA1 = 'sha1';
+	public const HASH_ALG_SSHA1 = 'ssha1';
+	public const HASH_ALG_SHA256 = 'sha256';
+	public const HASH_ALG_SHA512 = 'sha512';
+	public const HASH_ALG_BCRYPT = 'bcrypt';
 
 	/**
 	 * Get (pseudo)random string.
@@ -57,9 +56,11 @@ class Crypto extends CommonModule {
 	 * Useful for log out user from HTTP Basic auth by providing random password.
 	 *
 	 * @access public
+	 * @param null|mixed $length
 	 * @return string random string from range [a-zA-Z0-9]
 	 */
-	public function getRandomString($length = null) {
+	public function getRandomString($length = null)
+	{
 		$characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		$rand_string = str_shuffle($characters);
 		if (is_int($length) && $length <= 62) {
@@ -74,7 +75,8 @@ class Crypto extends CommonModule {
 	 * @param string $hash_alg hash algorithm
 	 * @return object hash algorithm module instance
 	 */
-	private function getModuleByHashAlg($hash_alg) {
+	private function getModuleByHashAlg($hash_alg)
+	{
 		$mod = '';
 		switch ($hash_alg) {
 			case self::HASH_ALG_BCRYPT: {
@@ -117,7 +119,8 @@ class Crypto extends CommonModule {
 	 * @param string $hash_alg hash algorithm
 	 * @return string hashed password
 	 */
-	public function getHashedPassword($password, $hash_alg = null) {
+	public function getHashedPassword($password, $hash_alg = null)
+	{
 		if (is_null($hash_alg)) {
 			$hash_alg = self::HASH_ALG_APR1_MD5;
 		}
@@ -130,7 +133,8 @@ class Crypto extends CommonModule {
 	 *
 	 * @return array supported hash algorithms
 	 */
-	private function getSupportedHashAlgs() {
+	private function getSupportedHashAlgs()
+	{
 		$hash_algs = [];
 		$ocls = new \ReflectionClass(__CLASS__);
 		foreach ($ocls->getConstants() as $const => $hash_alg) {
@@ -146,9 +150,10 @@ class Crypto extends CommonModule {
 	 * Get module corresponding a hash string.
 	 *
 	 * @param string $hash hash string to check
-	 * @return object|null module object on true, false if hash algorithm not recognized
+	 * @return null|object module object on true, false if hash algorithm not recognized
 	 */
-	public function getModuleByHash($hash) {
+	public function getModuleByHash($hash)
+	{
 		$module = null;
 		foreach ($this->getSupportedHashAlgs() as $const => $hash_alg) {
 			$mod = $this->getModuleByHashAlg($hash_alg);
@@ -160,4 +165,3 @@ class Crypto extends CommonModule {
 		return $module;
 	}
 }
-?>

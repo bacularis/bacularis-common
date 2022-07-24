@@ -34,16 +34,14 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class BconsoleError extends GenericError
+{
+	public const ERROR_BCONSOLE_CONNECTION_PROBLEM = 4;
+	public const ERROR_INVALID_DIRECTOR = 5;
+	public const ERROR_BCONSOLE_DISABLED = 11;
 
-class BconsoleError extends GenericError {
-
-	const ERROR_BCONSOLE_CONNECTION_PROBLEM = 4;
-	const ERROR_INVALID_DIRECTOR = 5;
-	const ERROR_BCONSOLE_DISABLED = 11;
-
-	const MSG_ERROR_BCONSOLE_CONNECTION_PROBLEM = 'Problem with connection to bconsole.';
-	const MSG_ERROR_INVALID_DIRECTOR = 'Invalid director.';
-	const MSG_ERROR_BCONSOLE_DISABLED = 'Bconsole support is disabled.';
+	public const MSG_ERROR_BCONSOLE_CONNECTION_PROBLEM = 'Problem with connection to bconsole.';
+	public const MSG_ERROR_INVALID_DIRECTOR = 'Invalid director.';
+	public const MSG_ERROR_BCONSOLE_DISABLED = 'Bconsole support is disabled.';
 }

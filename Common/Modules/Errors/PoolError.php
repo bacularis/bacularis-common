@@ -34,14 +34,12 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class PoolError extends GenericError
+{
+	public const ERROR_POOL_DOES_NOT_EXISTS = 40;
+	public const ERROR_NO_VOLUMES_IN_POOL_TO_UPDATE = 41;
 
-class PoolError extends GenericError {
-	const ERROR_POOL_DOES_NOT_EXISTS = 40;
-	const ERROR_NO_VOLUMES_IN_POOL_TO_UPDATE = 41;
-
-	const MSG_ERROR_POOL_DOES_NOT_EXISTS = 'Pool does not exist.';
-	const MSG_ERROR_NO_VOLUMES_IN_POOL_TO_UPDATE= 'Pool with inputted poolid does not contain any volume to update.';
+	public const MSG_ERROR_POOL_DOES_NOT_EXISTS = 'Pool does not exist.';
+	public const MSG_ERROR_NO_VOLUMES_IN_POOL_TO_UPDATE = 'Pool with inputted poolid does not contain any volume to update.';
 }
-

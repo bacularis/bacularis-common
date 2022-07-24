@@ -34,12 +34,10 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class AuthenticationError extends GenericError
+{
+	public const ERROR_AUTHENTICATION_TO_API_PROBLEM = 6;
 
-class AuthenticationError extends GenericError {
-
-	const ERROR_AUTHENTICATION_TO_API_PROBLEM = 6;
-
-	const MSG_ERROR_AUTHENTICATION_TO_API_PROBLEM = 'Problem with authentication to Baculum API.';
+	public const MSG_ERROR_AUTHENTICATION_TO_API_PROBLEM = 'Problem with authentication to Baculum API.';
 }

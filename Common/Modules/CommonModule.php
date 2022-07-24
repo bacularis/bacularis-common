@@ -37,12 +37,11 @@ use Prado\TModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-abstract class CommonModule extends TModule {
-
-	protected function getModule($id) {
+abstract class CommonModule extends TModule
+{
+	protected function getModule($id)
+	{
 		return $this->getApplication()->getModule($id);
 	}
 }
-?>

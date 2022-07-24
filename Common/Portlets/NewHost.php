@@ -41,10 +41,9 @@ use Bacularis\Common\Portlets\PortletTemplate;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Control
- * @package Baculum Common
  */
-class NewHost extends PortletTemplate {
-
+class NewHost extends PortletTemplate
+{
 	private $error = false;
 
 	private $show_buttons = true;
@@ -55,7 +54,8 @@ class NewHost extends PortletTemplate {
 
 	private $api_required;
 
-	public function onLoad($param) {
+	public function onLoad($param)
+	{
 		$host_name = $this->getForceHostName();
 		if (!empty($host_name)) {
 			$this->APIHostName->Text = $host_name;
@@ -63,17 +63,18 @@ class NewHost extends PortletTemplate {
 		}
 	}
 
-	public function connectionAPITest($sender, $param) {
+	public function connectionAPITest($sender, $param)
+	{
 		$host = $this->APIAddress->Text;
 		if (empty($host)) {
 			$host = false;
 		}
-		$host_params = array(
+		$host_params = [
 			'protocol' => $this->APIProtocol->SelectedValue,
 			'address' => $this->APIAddress->Text,
 			'port' => $this->APIPort->Text,
 			'url_prefix' => ''
-		);
+		];
 
 		if ($this->AuthBasic->Checked) {
 			$host_params['auth_type'] = 'basic';
@@ -90,7 +91,7 @@ class NewHost extends PortletTemplate {
 
 		// Catalog test
 		$api->setHostParams($host, $host_params);
-		$catalog = $api->get(array('catalog'), $host, false);
+		$catalog = $api->get(['catalog'], $host, false);
 
 		// Console test
 		$api->setHostParams($host, $host_params);
@@ -101,7 +102,7 @@ class NewHost extends PortletTemplate {
 			unset($_SESSION['director']);
 		}
 
-		$console = $api->set(array('console'), array('version'), $host, false);
+		$console = $api->set(['console'], ['version'], $host, false);
 		if (!is_null($director)) {
 			// Revert director setting if any
 			$_SESSION['director'] = $director;
@@ -109,7 +110,7 @@ class NewHost extends PortletTemplate {
 
 		// Config test
 		$api->setHostParams($host, $host_params);
-		$config = $api->get(array('config'), $host, false);
+		$config = $api->get(['config'], $host, false);
 
 		$is_catalog = (is_object($catalog) && $catalog->error === 0);
 		$is_console = (is_object($console) && $console->error === 0);
@@ -146,8 +147,9 @@ class NewHost extends PortletTemplate {
 		$this->APIConfigSupportNo->Display = ($is_config === false) ? 'Dynamic' : 'None';
 	}
 
-	public function addNewHost($sender, $param) {
-		$cfg_host = array(
+	public function addNewHost($sender, $param)
+	{
+		$cfg_host = [
 			'auth_type' => '',
 			'login' => '',
 			'password' => '',
@@ -155,7 +157,7 @@ class NewHost extends PortletTemplate {
 			'client_secret' => '',
 			'redirect_uri' => '',
 			'scope' => ''
-		);
+		];
 		$cfg_host['protocol'] = $this->APIProtocol->Text;
 		$cfg_host['address'] = $this->APIAddress->Text;
 		$cfg_host['port'] = $this->APIPort->Text;
@@ -166,7 +168,7 @@ class NewHost extends PortletTemplate {
 			$cfg_host['auth_type'] = 'basic';
 			$cfg_host['login'] = $this->APIBasicLogin->Text;
 			$cfg_host['password'] = $this->APIBasicPassword->Text;
-		} elseif($this->AuthOAuth2->Checked == true) {
+		} elseif ($this->AuthOAuth2->Checked == true) {
 			$cfg_host['auth_type'] = 'oauth2';
 			$cfg_host['client_id'] = $this->APIOAuth2ClientId->Text;
 			$cfg_host['client_secret'] = $this->APIOAuth2ClientSecret->Text;
@@ -209,27 +211,32 @@ class NewHost extends PortletTemplate {
 		$this->onCallback($param);
 	}
 
-	public function setForceHostName($host_name) {
+	public function setForceHostName($host_name)
+	{
 		$this->force_host_name = $host_name;
 	}
 
-	public function getForceHostName() {
+	public function getForceHostName()
+	{
 		return $this->force_host_name;
 	}
 
-	public function setShowButtons($show) {
+	public function setShowButtons($show)
+	{
 		$show = TPropertyValue::ensureBoolean($show);
 		$this->show_buttons = $show;
 	}
 
-	public function getShowButtons() {
+	public function getShowButtons()
+	{
 		return $this->show_buttons;
 	}
 
-	public function bubbleEvent($sender, $param) {
+	public function bubbleEvent($sender, $param)
+	{
 		if ($param instanceof TCommandEventParameter) {
 			if ($this->error === true) {
-				$this->raiseBubbleEvent($this,$param);
+				$this->raiseBubbleEvent($this, $param);
 			}
 			return true;
 		} else {
@@ -237,25 +244,29 @@ class NewHost extends PortletTemplate {
 		}
 	}
 
-	public function setAPIRequired($api_required) {
+	public function setAPIRequired($api_required)
+	{
 		$this->api_required = explode('|', $api_required);
 	}
 
-	public function getAPIRequired() {
+	public function getAPIRequired()
+	{
 		return $this->api_required;
 	}
 
-	public function setClientMode($client_mode) {
+	public function setClientMode($client_mode)
+	{
 		$client_mode = TPropertyValue::ensureBoolean($client_mode);
 		$this->client_mode = $client_mode;
 	}
 
-	public function getClientMode() {
+	public function getClientMode()
+	{
 		return $this->client_mode;
 	}
 
-	public function onCallback($param) {
+	public function onCallback($param)
+	{
 		$this->raiseEvent('OnCallback', $this, $param);
 	}
-
 }

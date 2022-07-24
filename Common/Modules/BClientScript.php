@@ -37,10 +37,9 @@ use Bacularis\Common\Modules\Params;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Client Script
- * @package Baculum Common
  */
-class BClientScript extends TClientScript {
-
+class BClientScript extends TClientScript
+{
 	public function getScriptUrl()
 	{
 		$url = parent::getScriptUrl();
@@ -49,6 +48,4 @@ class BClientScript extends TClientScript {
 		}
 		return $url;
 	}
-
 }
-?>

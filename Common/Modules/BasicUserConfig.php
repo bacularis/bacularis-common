@@ -36,30 +36,30 @@ use Bacularis\Common\Modules\CommonModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class BasicUserConfig extends CommonModule {
-
+class BasicUserConfig extends CommonModule
+{
 	/**
 	 * Stores user config path.
 	 */
 	protected $config_path;
-	
+
 	/**
 	 * User name allowed characters pattern
 	 */
-	const USER_PATTERN = '[a-zA-Z0-9]+';
+	public const USER_PATTERN = '[a-zA-Z0-9]+';
 
 	/**
 	 * Password allowed characters pattern.
 	 */
-	const PASSWORD_PATTERN = '[\S\s]{5,60}';
+	public const PASSWORD_PATTERN = '[\S\s]{5,60}';
 
 	/**
 	 * Get config file path to store users' parameters.
 	 * @return string config path
 	 */
-	public function getConfigPath() {
+	public function getConfigPath()
+	{
 		return $this->config_path;
 	}
 
@@ -69,7 +69,8 @@ class BasicUserConfig extends CommonModule {
 	 * @param string $path path to config file
 	 * @return none
 	 */
-	public function setConfigPath($path) {
+	public function setConfigPath($path)
+	{
 		$this->config_path = $path;
 	}
 
@@ -79,12 +80,13 @@ class BasicUserConfig extends CommonModule {
 	 * @access public
 	 * @param string $user username
 	 * @param string $password user's password
-	 * @param boolean $clear_config determine if clear config before save
+	 * @param bool $clear_config determine if clear config before save
 	 * @param mixed $old_user previous username before change
 	 * @param array $opts setting user options
-	 * @return boolean true if user saved successfully, otherwise false
+	 * @return bool true if user saved successfully, otherwise false
 	 */
-	public function setUsersConfig($user, $password, $clear_config = false, $old_user = null, $opts = []) {
+	public function setUsersConfig($user, $password, $clear_config = false, $old_user = null, $opts = [])
+	{
 		if ($clear_config === true) {
 			$this->clearUsersConfig();
 		}
@@ -124,13 +126,15 @@ class BasicUserConfig extends CommonModule {
 	 *
 	 * @access public
 	 * @param string $patter regular expression pattern
+	 * @param mixed $pattern
 	 * @return array users/passwords list
 	 */
-	public function getUsers($pattern = '') {
+	public function getUsers($pattern = '')
+	{
 		$all_users = [];
 		if ($this->isUsersConfig() === true) {
 			$users = file($this->getConfigPath(), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-			for($i = 0; $i < count($users); $i++) {
+			for ($i = 0; $i < count($users); $i++) {
 				if (preg_match("/^(?P<user>\S+)\:(?P<hash>\S+)$/", $users[$i], $match) === 1) {
 					if ($pattern && !fnmatch($pattern, $match['user'])) {
 						// wildcard pattern doesn't match, skip it
@@ -147,9 +151,11 @@ class BasicUserConfig extends CommonModule {
 	 * Get user and password hash from config.
 	 *
 	 * @param string $user username
+	 * @param mixed $username
 	 * @return array username and password hash or empty array if user not found
 	 */
-	public function getUserCfg($username) {
+	public function getUserCfg($username)
+	{
 		$user = [];
 		$u = $this->getUsers($username);
 		if (count($u) == 1) {
@@ -168,10 +174,11 @@ class BasicUserConfig extends CommonModule {
 	 *
 	 * @access public
 	 * @param array $all_users users/passwords list
-	 * @return boolean true if users file saved successfully, otherwise false
+	 * @return bool true if users file saved successfully, otherwise false
 	 */
-	public function saveUserConfig($all_users) {
-		$users = array();
+	public function saveUserConfig($all_users)
+	{
+		$users = [];
 		foreach ($all_users as $user => $pwd) {
 			$users[] = "$user:$pwd";
 		}
@@ -190,9 +197,10 @@ class BasicUserConfig extends CommonModule {
 	 *
 	 * @access public
 	 * @param string $username user name to remove
-	 * @return boolean true if users file saved successfully, otherwise false
+	 * @return bool true if users file saved successfully, otherwise false
 	 */
-	public function removeUser($username) {
+	public function removeUser($username)
+	{
 		$result = false;
 		$all_users = $this->getUsers();
 		if (array_key_exists($username, $all_users)) {
@@ -206,9 +214,10 @@ class BasicUserConfig extends CommonModule {
 	 * Remove multiple user from users file.
 	 *
 	 * @param array $usernames user names to remove
-	 * @return boolean true if users removed successfully, otherwise false
+	 * @return bool true if users removed successfully, otherwise false
 	 */
-	public function removeUsers(array $usernames) {
+	public function removeUsers(array $usernames)
+	{
 		$all_users = $this->getUsers();
 		for ($i = 0; $i < count($usernames); $i++) {
 			if (key_exists($usernames[$i], $all_users)) {
@@ -222,9 +231,10 @@ class BasicUserConfig extends CommonModule {
 	 * Check if users configuration file exists.
 	 *
 	 * @access public
-	 * @return boolean true if file exists, otherwise false
+	 * @return bool true if file exists, otherwise false
 	 */
-	public function isUsersConfig() {
+	public function isUsersConfig()
+	{
 		return file_exists($this->getConfigPath());
 	}
 
@@ -232,14 +242,16 @@ class BasicUserConfig extends CommonModule {
 	 * Clear all content of users file.
 	 *
 	 * @access public
-	 * @return boolean true if file cleared successfully, otherwise false
+	 * @return bool true if file cleared successfully, otherwise false
 	 */
-	public function clearUsersConfig() {
+	public function clearUsersConfig()
+	{
 		$result = file_put_contents($this->getConfigPath(), '', LOCK_EX) !== false;
 		return $result;
 	}
 
-	public function validateUsername($username) {
+	public function validateUsername($username)
+	{
 		return (preg_match('/^' . self::USER_PATTERN . '$/', $username) === 1);
 	}
 }

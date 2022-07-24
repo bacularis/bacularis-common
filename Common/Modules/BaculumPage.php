@@ -38,16 +38,17 @@ use Prado\Web\UI\TPage;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Page
- * @package Baculum Common
  */
-class BaculumPage extends TPage {
-
-	public function onPreInit($param) {
+class BaculumPage extends TPage
+{
+	public function onPreInit($param)
+	{
 		parent::onPreInit($param);
 		$this->setURLPrefixForSubdir();
 	}
 
-	public function onInit($param) {
+	public function onInit($param)
+	{
 		parent::onInit($param);
 		$this->setStyleSheetFiles();
 	}
@@ -60,7 +61,8 @@ class BaculumPage extends TPage {
 	 * @param string $name application module name
 	 * @return object module class instance
 	 */
-	public function getModule($name) {
+	public function getModule($name)
+	{
 		return $this->getApplication()->getModule($name);
 	}
 
@@ -74,7 +76,8 @@ class BaculumPage extends TPage {
 	 * @param string $fragment address fragment/hash
 	 * @return none
 	 */
-	public function goToPage($page_name, $params = null, $fragment = null) {
+	public function goToPage($page_name, $params = null, $fragment = null)
+	{
 		$url = $this->Service->constructUrl($page_name, $params, false);
 		$url = str_replace('/index.php', '', $url);
 		if (is_string($fragment)) {
@@ -91,7 +94,8 @@ class BaculumPage extends TPage {
 	 * @param array $params HTTP GET method parameters in associative array
 	 * @return none
 	 */
-	public function goToDefaultPage($params = null) {
+	public function goToDefaultPage($params = null)
+	{
 		$this->goToPage($this->Service->DefaultPage, $params);
 	}
 
@@ -107,7 +111,8 @@ class BaculumPage extends TPage {
 	 * @access private
 	 * @return none
 	 */
-	private function setURLPrefixForSubdir() {
+	private function setURLPrefixForSubdir()
+	{
 		$full_document_root = preg_replace('#(\/)$#', '', $this->getFullDocumentRoot());
 		$url_prefix = str_replace($full_document_root, '', APPLICATION_WEBROOT);
 		if (!empty($url_prefix)) {
@@ -122,15 +127,16 @@ class BaculumPage extends TPage {
 	 * @access private
 	 * return string full document root directory path
 	 */
-	private function getFullDocumentRoot() {
-		$root_dir = array();
+	private function getFullDocumentRoot()
+	{
+		$root_dir = [];
 		$dirs = explode('/', $_SERVER['DOCUMENT_ROOT']);
-		for($i = 0; $i < count($dirs); $i++) {
-			$document_root_part =  implode('/', $root_dir) . '/' . $dirs[$i];
+		for ($i = 0; $i < count($dirs); $i++) {
+			$document_root_part = implode('/', $root_dir) . '/' . $dirs[$i];
 			if (is_link($document_root_part)) {
 				$temp = readlink($document_root_part);
 				$temp = rtrim($temp, '/');
-				$root_dir = array($temp);
+				$root_dir = [$temp];
 			} else {
 				$root_dir[] = $dirs[$i];
 			}
@@ -148,7 +154,8 @@ class BaculumPage extends TPage {
 	 * @param string $password plain text user's password
 	 * @return string full login URL
 	 */
-	public function getFullLoginUrl($user, $password) {
+	public function getFullLoginUrl($user, $password)
+	{
 		$protocol = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http';
 		$host = $_SERVER['SERVER_NAME'];
 		$port = $_SERVER['SERVER_PORT'];
@@ -166,7 +173,8 @@ class BaculumPage extends TPage {
 		return $location;
 	}
 
-	public function setStyleSheetFiles(){
+	public function setStyleSheetFiles()
+	{
 		$theme = $this->getPage()->getTheme();
 		if (is_null($theme)) {
 			return;
@@ -194,4 +202,3 @@ class BaculumPage extends TPage {
 		}
 	}
 }
-?>

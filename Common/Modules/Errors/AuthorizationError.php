@@ -34,12 +34,10 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class AuthorizationError extends GenericError
+{
+	public const ERROR_ACCESS_ATTEMPT_TO_NOT_ALLOWED_RESOURCE = 7;
 
-class AuthorizationError extends GenericError {
-
-	const ERROR_ACCESS_ATTEMPT_TO_NOT_ALLOWED_RESOURCE = 7;
-
-	const MSG_ERROR_ACCESS_ATTEMPT_TO_NOT_ALLOWED_RESOURCE = 'Access attempt to not allowed resource. Permission denied.';
+	public const MSG_ERROR_ACCESS_ATTEMPT_TO_NOT_ALLOWED_RESOURCE = 'Access attempt to not allowed resource. Permission denied.';
 }

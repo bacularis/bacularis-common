@@ -17,32 +17,33 @@ namespace Bacularis\Common\Modules;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-class Totp extends CommonModule {
-
+class Totp extends CommonModule
+{
 	/**
 	 * Time interval to regenerate new token.
 	 */
-	const TIME_INTERVAL = 30;
+	public const TIME_INTERVAL = 30;
 
 	/**
 	 * Length generated token.
 	 */
-	const TOKEN_LENGTH = 6;
+	public const TOKEN_LENGTH = 6;
 
 	/**
 	 * Supported hash algorithms.
 	 */
-	const ALG_SHA1 = 'sha1';
-	const ALG_SHA256 = 'sha256';
-	const ALG_SHA512 = 'sha512';
+	public const ALG_SHA1 = 'sha1';
+	public const ALG_SHA256 = 'sha256';
+	public const ALG_SHA512 = 'sha512';
 
 	/**
 	 * Get counter.
 	 * For TOTP the counter bases on current time.
 	 *
-	 * @return integer counter
+	 * @return int counter
 	 */
-	public static function getCounter() {
+	public static function getCounter()
+	{
 		$ts = microtime(true) / self::TIME_INTERVAL;
 		return floor($ts);
 	}
@@ -51,10 +52,11 @@ class Totp extends CommonModule {
 	 * Get token.
 	 *
 	 * @param string $secret secret key
-	 * @param integer $counter time counter
+	 * @param int $counter time counter
 	 * @param string $alg hash algorithm
 	 */
-	public function getToken($secret, $counter, $alg = self::ALG_SHA1) {
+	public function getToken($secret, $counter, $alg = self::ALG_SHA1)
+	{
 		$ret = '';
 		if (strlen($secret) < 8) {
 			// secret too short
@@ -75,10 +77,13 @@ class Totp extends CommonModule {
 	 * Validate token using secret.
 	 *
 	 * @param string secret shared secret key
-	 * @param integer digit token
-	 * @return boolean true if token is valid, otherwise false
+	 * @param int digit token
+	 * @param mixed $secret
+	 * @param mixed $token
+	 * @return bool true if token is valid, otherwise false
 	 */
-	public function validateToken($secret, $token) {
+	public function validateToken($secret, $token)
+	{
 		$counter = $this->getCounter();
 		$token_gen = $this->getToken($secret, $counter);
 		return (!empty($token) && $token === $token_gen);
@@ -89,7 +94,8 @@ class Totp extends CommonModule {
 	 *
 	 * @return array supported algorithms
 	 */
-	private function getHashAlgs() {
+	private function getHashAlgs()
+	{
 		return [
 			self::ALG_SHA1,
 			self::ALG_SHA256,
@@ -101,9 +107,10 @@ class Totp extends CommonModule {
 	 * Validate hash algorithm.
 	 *
 	 * @param string $alg algorithm name
-	 * @return boolean true if valid, otherwise false
+	 * @return bool true if valid, otherwise false
 	 */
-	private function validateAlg($alg) {
+	private function validateAlg($alg)
+	{
 		$algs = $this->getHashAlgs();
 		return in_array($alg, $algs);
 	}
@@ -112,9 +119,10 @@ class Totp extends CommonModule {
 	 * Get token from hash.
 	 *
 	 * @param string $hash token hash.
-	 * @return integer token value
+	 * @return int token value
 	 */
-	private function getTokenFromHash($hash) {
+	private function getTokenFromHash($hash)
+	{
 		$offset = ord($hash[strlen($hash) - 1]) & 0xF;
 
 		$token = (

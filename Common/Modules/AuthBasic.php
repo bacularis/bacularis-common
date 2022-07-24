@@ -36,33 +36,33 @@ use Bacularis\Common\Modules\IUserConfig;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class AuthBasic extends AuthBase implements IAuthModule {
-
+class AuthBasic extends AuthBase implements IAuthModule
+{
 	/**
 	 * Generic name (used e.g. in config files).
 	 */
-	const NAME = 'basic';
+	public const NAME = 'basic';
 
 	/**
 	 * Realms for particular application services.
 	 */
-	const REALM_API = 'Bacularis API';
-	const REALM_PANEL = 'Bacularis Panel';
-	const REALM_WEB = 'Bacularis Web';
+	public const REALM_API = 'Bacularis API';
+	public const REALM_PANEL = 'Bacularis Panel';
+	public const REALM_WEB = 'Bacularis Web';
 
 	/**
 	 * Request header value pattern.
 	 */
-	const REQUEST_HEADER_CREDENTIALS_PATTERN = '/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{4})$/';
+	public const REQUEST_HEADER_CREDENTIALS_PATTERN = '/^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{4})$/';
 
 	/**
 	 * Get auth type.
 	 *
 	 * @return string auth type.
 	 */
-	public function getAuthType() {
+	public function getAuthType()
+	{
 		return 'Basic';
 	}
 
@@ -70,9 +70,10 @@ class AuthBasic extends AuthBase implements IAuthModule {
 	 * Validate auth request header.
 	 *
 	 * @param string $header auth request header value (ex: 'Basic dGVzdGVyOnRlc3Q=')
-	 * @return boolean true - valid, false - validation error
+	 * @return bool true - valid, false - validation error
 	 */
-	public function validateRequestHeader($header) {
+	public function validateRequestHeader($header)
+	{
 		$valid = false;
 		$value = $this->getRequestHeaderValue($header);
 		if (is_array($value)) {
@@ -85,14 +86,15 @@ class AuthBasic extends AuthBase implements IAuthModule {
 	 * Get parsed request header value.
 	 *
 	 * @param string $header auth request header value (ex: 'Basic dGVzdGVyOnRlc3Q=')
-	 * @return array|null list with type and credentials or null if header is invalid
+	 * @return null|array list with type and credentials or null if header is invalid
 	 */
-	public function getRequestHeaderValue($header) {
+	public function getRequestHeaderValue($header)
+	{
 		$ret = null;
 		if (is_string($header)) {
 			$values = explode(' ', $header, 2);
 			if (count($values) == 2) {
-				list($type, $credentials) = $values;
+				[$type, $credentials] = $values;
 				$ret = ['type' => $type, 'credentials' => $credentials];
 			}
 		}
@@ -106,13 +108,15 @@ class AuthBasic extends AuthBase implements IAuthModule {
 	 *
 	 * @param object $auth_mod module responsible for handling basic config
 	 * @param string realm realm name
-	 * @param boolean $check_conf check if user exists in basic user config
-	 * @return boolean true if user authenticated successfully, false otherwise
+	 * @param bool $check_conf check if user exists in basic user config
+	 * @param mixed $realm
+	 * @return bool true if user authenticated successfully, false otherwise
 	 */
-	public function authenticate($auth_mod, $realm, $check_conf = true) {
+	public function authenticate($auth_mod, $realm, $check_conf = true)
+	{
 		$is_auth = false;
-		$username = isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
-		$password = isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
+		$username = $_SERVER['PHP_AUTH_USER'] ?? null;
+		$password = $_SERVER['PHP_AUTH_PW'] ?? null;
 		if ($auth_mod instanceof IUserConfig && $auth_mod->validateUsernamePassword($username, $password, $check_conf)) {
 			// authentication valid
 			$is_auth = true;
@@ -125,4 +129,3 @@ class AuthBasic extends AuthBase implements IAuthModule {
 		return $is_auth;
 	}
 }
-?>

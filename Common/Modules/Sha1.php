@@ -37,12 +37,11 @@ use Bacularis\Common\Modules\CommonModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class Sha1 extends CommonModule {
-
+class Sha1 extends CommonModule
+{
 	// SHA-1 hash prefix
-	const HASH_PREFIX = '{SHA}';
+	public const HASH_PREFIX = '{SHA}';
 
 	/**
 	 * Get hashed password using SHA-1 algorithm.
@@ -50,7 +49,8 @@ class Sha1 extends CommonModule {
 	 * @param string $password plain text password
 	 * @return string hashed password
 	 */
-	public function crypt($password) {
+	public function crypt($password)
+	{
 		$hash = sha1($password, true);
 		$bh = base64_encode($hash);
 		$ret = self::HASH_PREFIX . $bh;
@@ -62,11 +62,11 @@ class Sha1 extends CommonModule {
 	 *
 	 * @param string $password password to check
 	 * @param string $hash hash to check
-	 * @return boolean true if password and hash are match, otherwise false
+	 * @return bool true if password and hash are match, otherwise false
 	 */
-	public function verify($password, $hash) {
+	public function verify($password, $hash)
+	{
 		$hash2 = $this->crypt($password);
 		return ($hash === $hash2);
 	}
 }
-?>

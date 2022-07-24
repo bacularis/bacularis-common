@@ -34,18 +34,16 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class ActionsError extends GenericError
+{
+	public const ERROR_ACTIONS_ACTION_DOES_NOT_EXIST = 110;
+	public const ERROR_ACTIONS_DISABLED = 111;
+	public const ERROR_ACTIONS_WRONG_EXITCODE = 112;
+	public const ERROR_ACTIONS_NOT_CONFIGURED = 113;
 
-class ActionsError extends GenericError {
-
-	const ERROR_ACTIONS_ACTION_DOES_NOT_EXIST = 110;
-	const ERROR_ACTIONS_DISABLED = 111;
-	const ERROR_ACTIONS_WRONG_EXITCODE = 112;
-	const ERROR_ACTIONS_NOT_CONFIGURED = 113;
-
-	const MSG_ERROR_ACTIONS_ACTION_DOES_NOT_EXIST = 'Action does not exist.';
-	const MSG_ERROR_ACTIONS_DISABLED = 'Actions support is disabled.';
-	const MSG_ERROR_ACTIONS_WRONG_EXITCODE = 'Action command returned wrong exitcode.';
-	const MSG_ERROR_ACTIONS_NOT_CONFIGURED = 'Action is not configured.';
+	public const MSG_ERROR_ACTIONS_ACTION_DOES_NOT_EXIST = 'Action does not exist.';
+	public const MSG_ERROR_ACTIONS_DISABLED = 'Actions support is disabled.';
+	public const MSG_ERROR_ACTIONS_WRONG_EXITCODE = 'Action command returned wrong exitcode.';
+	public const MSG_ERROR_ACTIONS_NOT_CONFIGURED = 'Action is not configured.';
 }

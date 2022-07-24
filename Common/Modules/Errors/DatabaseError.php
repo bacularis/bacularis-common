@@ -34,13 +34,12 @@ namespace Bacularis\Common\Modules\Errors;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
- * @package Baculum Common
  */
+class DatabaseError extends GenericError
+{
+	public const ERROR_DB_CONNECTION_PROBLEM = 2;
+	public const ERROR_DATABASE_ACCESS_NOT_SUPPORTED = 3;
 
-class DatabaseError extends GenericError {
-	const ERROR_DB_CONNECTION_PROBLEM = 2;
-	const ERROR_DATABASE_ACCESS_NOT_SUPPORTED = 3;
-	
-	const MSG_ERROR_DB_CONNECTION_PROBLEM = 'Problem with connection to database.';
-	const MSG_ERROR_DATABASE_ACCESS_NOT_SUPPORTED = 'Database access is not supported by this API instance.';
+	public const MSG_ERROR_DB_CONNECTION_PROBLEM = 'Problem with connection to database.';
+	public const MSG_ERROR_DATABASE_ACCESS_NOT_SUPPORTED = 'Database access is not supported by this API instance.';
 }

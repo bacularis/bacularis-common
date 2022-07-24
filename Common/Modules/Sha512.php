@@ -37,17 +37,16 @@ use Bacularis\Common\Modules\CommonModule;
  *
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
- * @package Baculum Common
  */
-class Sha512 extends CommonModule {
-
+class Sha512 extends CommonModule
+{
 	// SHA-512 hash prefix
-	const HASH_PREFIX = '$6';
+	public const HASH_PREFIX = '$6';
 
 	// Salt length
-	const DEF_SALT_LEN = 16;
+	public const DEF_SALT_LEN = 16;
 
-	const SHA512_ROUNDS = 10000;
+	public const SHA512_ROUNDS = 10000;
 
 	/**
 	 * Get hashed password using SHA-512 algorithm and salt.
@@ -56,7 +55,8 @@ class Sha512 extends CommonModule {
 	 * @param string $salt cryptographic salt
 	 * @return string hashed password
 	 */
-	public function crypt($password, $salt = null) {
+	public function crypt($password, $salt = null)
+	{
 		if (is_null($salt)) {
 			// Salt string  - 16 characters for SHA-512
 			$salt = $this->getModule('crypto')->getRandomString(self::DEF_SALT_LEN);
@@ -76,9 +76,10 @@ class Sha512 extends CommonModule {
 	 *
 	 * @param string $password password to check
 	 * @param string $hash hash to check
-	 * @return boolean true if password and hash are match, otherwise false
+	 * @return bool true if password and hash are match, otherwise false
 	 */
-	public function verify($password, $hash) {
+	public function verify($password, $hash)
+	{
 		$valid = false;
 		$parts = explode('$', $hash, 5);
 		if (count($parts) === 5) {
@@ -89,4 +90,3 @@ class Sha512 extends CommonModule {
 		return $valid;
 	}
 }
-?>

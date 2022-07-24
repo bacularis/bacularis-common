@@ -33,10 +33,11 @@ use Bacularis\Common\Modules\BaculumPage;
  * Common page class.
  *
  * @category Page
- * @package Baculum Common
  */
-class CommonPage extends BaculumPage {
-	public function onInit($param) {
+class CommonPage extends BaculumPage
+{
+	public function onInit($param)
+	{
 		parent::onInit($param);
 		/**
 		 * Go to web service if API config exists and pathinfo is empty.
@@ -53,4 +54,3 @@ class CommonPage extends BaculumPage {
 		}
 	}
 }
-?>
