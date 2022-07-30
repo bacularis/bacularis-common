@@ -515,6 +515,13 @@ table.component td:nth-of-type(1) {
 	height: 79px;
 	-webkit-transition: height 0.3s; /* For Safari 3.1 to 6.0 */
 	transition: height 0.3s;
+	border-radius: 5px;
+}
+
+@media (max-width:600px) {
+	.usage_box {
+		border-radius: 0;
+	}
 }
 
 .usage_box:hover {
@@ -527,7 +534,10 @@ table.component td:nth-of-type(1) {
 }
 
 .usage_box h4 {
-	margin-top: 3px;
+	margin-top: 1px;
+	font-size: 28px;
+	font-weight: bold;
+	line-height: normal;
 }
 
 .info {
