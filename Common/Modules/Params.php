@@ -39,7 +39,7 @@ use Bacularis\Common\Modules\CommonModule;
  */
 class Params extends CommonModule
 {
-	public const BACULARIS_VERSION = '1.0.11';
+	public const BACULARIS_VERSION = '1.0.12';
 
 	public static $months = [
 		'jan' => 'January',
