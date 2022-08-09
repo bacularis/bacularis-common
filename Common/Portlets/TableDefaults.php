@@ -29,8 +29,6 @@
 
 namespace Bacularis\Common\Portlets;
 
-use Bacularis\Common\Portlets\PortletTemplate;
-
 /**
  * Table default options control.
  *

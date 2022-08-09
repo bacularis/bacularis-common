@@ -30,7 +30,6 @@
 namespace Bacularis\Common\Modules;
 
 use Prado\Web\UI\WebControls\TStyleSheet;
-use Bacularis\Common\Modules\Params;
 
 /**
  * Baculum loading stylesheel class.

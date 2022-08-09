@@ -29,8 +29,6 @@
 
 namespace Bacularis\Common\Modules;
 
-use Bacularis\Common\Modules\CommonModule;
-
 /**
  * Manage basic auth method users.
  *
@@ -67,7 +65,6 @@ class BasicUserConfig extends CommonModule
 	 * Set config file path.
 	 *
 	 * @param string $path path to config file
-	 * @return none
 	 */
 	public function setConfigPath($path)
 	{

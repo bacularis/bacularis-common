@@ -29,8 +29,6 @@
 
 namespace Bacularis\Common\Modules;
 
-use Bacularis\Common\Modules\CommonModule;
-
 /**
  * Cryptographic BCrypt hashing function module
  * Module is responsible for providing BCrypt support.

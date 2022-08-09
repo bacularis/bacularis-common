@@ -27,6 +27,8 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
+namespace Bacularis\Common\Modules;
+
 /**
  * General requirement class with common dependencies both for API and Web.
  *
@@ -96,7 +98,6 @@ abstract class GeneralRequirements
 	 * @param string $app_dir full path to main application directory
 	 * @param string $prot_dir full path to protected directory
 	 * @param string $base_dir full path to service specific base directory
-	 * @return none
 	 */
 	private function validateEnvironment($app_dir, $prot_dir, $base_dir)
 	{
@@ -110,7 +111,6 @@ abstract class GeneralRequirements
 	 * @param string $app_dir full path to main application directory
 	 * @param string $prot_dir full path to protected directory
 	 * @param string $base_dir full path to service specific base directory
-	 * @return none
 	 */
 	private function validateDirectories($app_dir, $prot_dir, $base_dir)
 	{
@@ -144,7 +144,6 @@ abstract class GeneralRequirements
 	 * Validate PHP extensions.
 	 *
 	 * @param array $req_exts extension list
-	 * @return none
 	 */
 	protected static function validateExtensions($req_exts)
 	{
@@ -159,7 +158,6 @@ abstract class GeneralRequirements
 	 * Simple method to show results.
 	 *
 	 * @param string $product product name ('Baculum Web' or 'Baculum API'...etc.)
-	 * @return none
 	 */
 	protected static function showResult($product)
 	{

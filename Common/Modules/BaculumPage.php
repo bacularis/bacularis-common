@@ -74,7 +74,6 @@ class BaculumPage extends TPage
 	 * @param string $page_name page name to redirect
 	 * @param array $params HTTP GET method parameters in associative array
 	 * @param string $fragment address fragment/hash
-	 * @return none
 	 */
 	public function goToPage($page_name, $params = null, $fragment = null)
 	{
@@ -92,7 +91,6 @@ class BaculumPage extends TPage
 	 *
 	 * @access public
 	 * @param array $params HTTP GET method parameters in associative array
-	 * @return none
 	 */
 	public function goToDefaultPage($params = null)
 	{
@@ -109,7 +107,6 @@ class BaculumPage extends TPage
 	 * http://localhost:9095/baculum/
 	 *
 	 * @access private
-	 * @return none
 	 */
 	private function setURLPrefixForSubdir()
 	{

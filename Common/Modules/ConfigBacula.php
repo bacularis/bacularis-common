@@ -71,7 +71,6 @@ class ConfigBacula extends CommonModule implements IConfigFormat
 	 *
 	 * @access public
 	 * @param string $source config file path
-	 * @return none
 	 */
 	public function read($source)
 	{

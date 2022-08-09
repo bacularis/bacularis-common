@@ -29,8 +29,6 @@
 
 namespace Bacularis\Common\Modules;
 
-use Bacularis\Common\Modules\CommonModule;
-
 /**
  * Cryptographic APR1-MD5 hashing function module.
  * Module is responsible for providing APR1-MD5 support.

@@ -29,8 +29,6 @@
 
 namespace Bacularis\Common\Modules;
 
-use Bacularis\Common\Modules\CommonModule;
-
 /**
  * Cryptographic SHA-256 hashing function module
  * Module is responsible for providing SHA-256 support.

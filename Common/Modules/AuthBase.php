@@ -50,7 +50,6 @@ abstract class AuthBase extends CommonModule
 	 * Public constructor.
 	 *
 	 * @param THttpRequest $request HTTP request object.
-	 * @return none
 	 */
 	public function initialize(THttpRequest $request)
 	{

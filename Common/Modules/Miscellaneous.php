@@ -141,7 +141,7 @@ class Miscellaneous extends TModule
 
 	public function getJobState($jobStateLetter = null)
 	{
-		$state;
+		$state = null;
 		if (is_null($jobStateLetter)) {
 			$state = $this->jobStates;
 		} else {

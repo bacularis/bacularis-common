@@ -29,8 +29,6 @@
 
 namespace Bacularis\Common\Modules;
 
-use Bacularis\Common\Modules\CommonModule;
-
 /**
  * The module supports basic operations on LDAP server.
  * To work it uses php-ldap module.
@@ -131,7 +129,6 @@ class Ldap extends CommonModule
 	 *
 	 * @param array $param parameters to work with LDAP
 	 * @param array $params
-	 * @return none
 	 */
 	public function setParams(array $params)
 	{
@@ -143,7 +140,6 @@ class Ldap extends CommonModule
 	/**
 	 * Set LDAP connection specific options.
 	 *
-	 * @return none
 	 */
 	public function setConnectionOpts()
 	{
@@ -261,7 +257,6 @@ class Ldap extends CommonModule
 	 * Set LDAP errors in error property.
 	 * Used to get the most information from LDAP server.
 	 *
-	 * @return none
 	 */
 	public function setLdapError()
 	{

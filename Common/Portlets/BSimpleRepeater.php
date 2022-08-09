@@ -57,7 +57,6 @@ class BSimpleRepeater extends TDataBoundControl
 	 * Set template for items.
 	 *
 	 * @param ITemplate $tpl template
-	 * @return none
 	 */
 	public function setItemTemplate($tpl)
 	{
@@ -70,7 +69,6 @@ class BSimpleRepeater extends TDataBoundControl
 	 * Data binding.
 	 *
 	 * @param $data data from data source
-	 * @return none
 	 */
 	protected function performDataBinding($data)
 	{

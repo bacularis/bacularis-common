@@ -30,6 +30,7 @@
 namespace Bacularis\Common\Modules;
 
 use Prado\Web\TAssetManager;
+use Prado\Exceptions\TInvalidDataValueException;
 
 /**
  * Baculum asset manager.

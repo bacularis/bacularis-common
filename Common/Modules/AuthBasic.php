@@ -29,8 +29,6 @@
 
 namespace Bacularis\Common\Modules;
 
-use Bacularis\Common\Modules\IUserConfig;
-
 /**
  * Basic authentication auth module.
  *

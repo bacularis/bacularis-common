@@ -30,7 +30,6 @@
 namespace Bacularis\Common\Modules;
 
 use Prado\Web\UI\WebControls\TClientScript;
-use Bacularis\Common\Modules\Params;
 
 /**
  * Baculum client script class.
