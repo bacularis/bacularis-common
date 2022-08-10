@@ -37,5 +37,7 @@ define('APPLICATION_PROTECTED', APPLICATION_DIRECTORY . '/protected');
 define('PRADO_VENDORDIR', APPLICATION_PROTECTED . '/vendor');
 
 require(APPLICATION_PROTECTED . '/autoload.php');
+require(APPLICATION_PROTECTED . '/API/Init.php');
+require(APPLICATION_PROTECTED . '/Web/Init.php');
 $application = new \Prado\TApplication(APPLICATION_PROTECTED);
 $application->run();
