@@ -217,9 +217,10 @@ function set_file_perms() {
 function prepare_web_server_cfg()
 {
 	local web_server="$1"
-	local web_root="$2"
-	local web_user="$3"
-	local php_sock="$4"
+	local web_server_cfg_dir="$2"
+	local web_root="$3"
+	local web_user="$4"
+	local php_sock="$5"
 
 	server_file=''
 	case $web_server in
@@ -234,13 +235,25 @@ function prepare_web_server_cfg()
 	if [ ! -z "$server_file" ]
 	then
 		local ws_file=`basename $server_file`
-		msg 0 "Web server config file you can find in ${WEBDIR}/$ws_file"
-		msg 0 "Please move it to appropriate location."
+		local ws_cfg_dest=''
+		if [ ! -z "$web_server_cfg_dir" ]
+		then
+			# web server config destination path given
+			ws_cfg_dest="${web_server_cfg_dir}/$ws_file"
+		else
+			# default web server config destination
+			ws_cfg_dest="${WEBDIR}/$ws_file"
+		fi
+		msg 0 "Web server config file you can find in $ws_cfg_dest"
+		if [ -z "$web_server_cfg_dir" ]
+		then
+			msg 0 "Please move it to appropriate location."
+		fi
 		cat "$server_file" | sed \
 			-e "s!###WEBUSER###!${web_user}!g" \
 			-e "s!###WEBROOT###!${web_root}!g" \
 			-e "s!###PHPSOCK###!${php_sock}!g" \
-			> "${WEBDIR}/$ws_file"
+			> "$ws_cfg_dest"
 		if [ $? -ne 0 ]
 		then
 			msg 2 "Error while preparing web server config ${WEBDIR}/$ws_file"
@@ -252,10 +265,11 @@ function prepare_web_server_cfg()
 
 function usage()
 {
-	echo "$0 [-u web_user] [-w web_server] [-n] [-s] [-h]:
+	echo "$0 [-u web_user] [-w web_server] [-c web_server_cfg_dir ] [-n] [-s] [-h]:
 		-u WEB_USER		web server user
 		-w WEB_SERVER		web server type (apache, nginx or lighttpd)
 					parameter possible to use multiple times
+		-c WEB_SERVER_CFG_DIR   web server config directory (default: WEB_ROOT_DIR/../)
 		-d WEB_ROOT_DIR		web server document root directory (web root)
 		-n			don't set directory ownership and permissions
 		-p PHP_SOCK_PATH	PHP-FPM unix socket path
@@ -271,6 +285,7 @@ function main()
 	local web_user=''
 	local web_servers=''
 	local web_root=''
+	local web_server_cfg_dir=''
 	local php_sock="${DEFAULT_PHP_SOCK}"
 	local no_perm=0
 
@@ -279,7 +294,7 @@ function main()
 		usage
 	fi
 
-	while getopts "d:np:su:w:h" opt
+	while getopts "d:np:su:w:c:h" opt
 	do
 		case $opt in
 			d)
@@ -290,6 +305,9 @@ function main()
 				;;
 			w)
 				web_servers="$web_servers $OPTARG"
+				;;
+			c)
+				web_server_cfg_dir="$OPTARG"
 				;;
 			n)
 				no_perm=1
@@ -342,7 +360,7 @@ function main()
 
 	for ws in $web_servers
 	do
-		prepare_web_server_cfg "$ws" "$web_root" "$web_user" "$php_sock"
+		prepare_web_server_cfg "$ws" "$web_server_cfg_dir" "$web_root" "$web_user" "$php_sock"
 	done
 }
 
