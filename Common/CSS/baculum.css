@@ -252,6 +252,7 @@ img.reset_btn, img.remove_btn {
 .step {
 	/*width: 30% !important;*/
 	min-height: 100px;
+	border-radius: 4px;
 }
 
 .step_title {
