@@ -1,6 +1,76 @@
+body {
+	--text-color: black;
+	--bkg-color: #f1f1f1;
+	--color-strong: white;
+	--color-main: #4caf50;
+	--color-error: #f44336;
+	--anchor-color: black;
+	--bkg-color-modal: white;
+	--text-color-table-head: white;
+	--bkg-color-table-head: #4c4b4b;
+	--bkg-color-table-row-odd: white;
+	--bkg-color-table-row-even: #f1f1f1;
+	--bkg-color-table-row-hover: #ffcf9e;
+	--bkg-color-table-row-selected: #f5a55b;
+	--text-color-table-row-selected: black;
+	--bkg-color-dt-button: #e9e9e9;
+	--bkg-image-dt-button: linear-gradient(to bottom, white 0%, #e9e9e9 100%);
+	--text-color-dt-button: black;
+	--bkg-color-light-green: #8bc34a;
+	--bkg-color-tab-hover: #e7e7e7;
+	color-scheme: light;
+}
+
+body.dark-theme {
+	--text-color: #e5e5e5;
+	--bkg-color: #121212;
+	--color-strong: #080707;
+	--color-main: #364a89;
+	--color-error: #d33a2f;
+	--anchor-color: #e5e5e5;
+	--bkg-color-modal: #121212;
+	--text-color-table-head: #e5e5e5;
+	--bkg-color-table-head: black;
+	--bkg-color-table-row-odd: #121212;
+	--bkg-color-table-row-even: black;
+	--bkg-color-table-row-hover: #606060;
+	--bkg-color-table-row-selected: #e5e5e5;
+	--text-color-table-row-selected: black;
+	--bkg-color-dt-button: black;
+	--bkg-image-dt-button: none;
+	--text-color-dt-button: white;
+	--bkg-color-light-green: #2d53cb;
+	--bkg-color-tab-hover: #606060;
+	color-scheme: dark;
+}
+
+body {
+	color: var(--text-color);
+	background-color: var(--bkg-color);
+}
+
+a {
+	color: var(--anchor-color);
+}
+
+.light-dark {
+	color: white !important;
+	background-color: #121212 !important;
+}
+
+.deep-dark {
+	color: white !important;
+	background-color: 'black' !important;
+}
+
 #page_main > header {
 	display: inline-block;
 	margin-top: 8px;
+}
+
+#sidebar {
+	color: var(--text-color);
+	background-color: var(--color-strong);
 }
 
 #jobs_summary_graph, #jobs_bytes_files_graph {
@@ -47,6 +117,15 @@ table.dataTable {
 	border: 1px solid #c1c1c1;
 }
 
+
+table.dataTable tr.odd,  .w3-striped tbody tr:nth-child(odd) {
+	background-color: var(--bkg-color-table-row-odd) !important;
+}
+
+table.dataTable tbody tr, table.dataTable tr.even, .w3-striped tbody tr:nth-child(even) {
+	background-color: var(--bkg-color-table-row-even) !important;
+}
+
 table.dataTable button.w3-button, table.dataTable a.w3-button {
 	font-size: 10px;
 }
@@ -60,8 +139,8 @@ table.dataTable thead th, table.dataTable thead td {
 }
 
 table.dataTable thead tr {
-	background-color: #4c4b4b;
-	color: white;
+	background-color: var(--bkg-color-table-head);
+	color: var(--text-color-table-head);
 }
 
 th, table.dataTable thead td {
@@ -82,17 +161,18 @@ table.dataTable.no-footer {
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
 	border: 1px solid #4CAF50 !important;
-	background: #4CAF50 !important;
+	background: var(--color-main) !important;
+	border: 1px solid var(--color-main) !important;
 	border-radius: unset !important;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
 	background: none !important;
-	border: 1px solid #4CAF50 !important;
+	border: 1px solid var(--color-main) !important;
 	border-radius: unset !important;
 }
 .dataTables_wrapper .dataTables_paginate .paginate_button:active, .dataTables_wrapper .dataTables_paginate .paginate_button.current:active {
-	border: 1px solid #4CAF50 !important;
+	border: 1px solid var(--color-main) !important;
 	box-shadow: none !important;
 }
 
@@ -104,9 +184,24 @@ table.dataTable.no-footer {
 	padding: .57em .5em !important;
 	border: 1px solid #999 !important;
 	border-radius: 2px !important;
-	background-color: #e9e9e9 !important;
-	background-image: linear-gradient(to bottom, white 0%, #e9e9e9 100%) !important;
+	color: var(--text-color-dt-button) !important;
+	background: var(--bkg-color-dt-button) var(--bkg-image-dt-button) !important;
 }
+
+div.dt-buttons .dt-button.active {
+	color: var(--color-strong) !important;
+	background: var(--text-color) !important;
+}
+
+div.dt-button-info, div.dt-button-info h2 {
+	color: var(--text-color-dt-button) !important;
+	background: var(--bkg-color-dt-button) var(--bkg-image-dt-button) !important;
+}
+
+div.dt-button-collection {
+	background: var(--bkg-color-dt-button) !important;
+}
+
 div.dt-buttons .dt-button:nth-of-type(1), div.dt-buttons .dt-button:nth-of-type(2) {
 	padding: .6em .8em !important;
 }
@@ -161,8 +256,8 @@ table.dataTable thead .sorting_desc_disabled {
 	background-image: url("/themes/Baculum-v2/sort_desc_disabled.png") !important;
 }
 
-.dataTables_wrapper .dataTables_filter input {
-	background-color: white;
+.dataTables_info, .dataTables_paginate, .dataTables_length, .dataTables_wrapper .dataTables_paginate .paginate_button, .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+	color: var(--text-color) !important;
 }
 
 .dataTables_info span.select-info {
@@ -222,11 +317,12 @@ div.table_toolbar select {
 }
 
 table.dataTable tbody > tr.selected, table.dataTable tbody > tr > .selected {
-	background-color: #f5a55b !important;
+	color: var(--text-color-table-row-selected);
+	background-color: var(--bkg-color-table-row-selected) !important;
 }
 
 .w3-hoverable tbody tr:hover,.w3-ul.w3-hoverable li:hover {
-	background-color: #ffcf9e !important;
+	background-color: var(--bkg-color-table-row-hover) !important;
 }
 
 th.action_col, td.action_col {
@@ -257,7 +353,10 @@ img.reset_btn, img.remove_btn {
 
 .step_title {
 	clear: left;
-	
+}
+
+.step.w3-light-green {
+	background-color: var(--bkg-color-light-green) !important;
 }
 
 div.opentip, div.opentip-container canvas {
@@ -277,6 +376,7 @@ div.opentip div.ot-content {
 
 div.TDatePicker_default {
 	z-index: 10 !important;
+	background-color: var(--color-strong) !important;
 }
 
 i.directive_required {
@@ -369,7 +469,7 @@ div.config_loader {
 	width: 50%;
 	overflow-y: auto;
 	overflow-x: none;
-	background-color: white;
+	background-color: var(--color-strong);
 	padding: 0;
 	height: 384px;
 }
@@ -408,7 +508,7 @@ div.config_loader {
 .item:hover, .item_included:hover, .item_excluded:hover {
 	width: 100%;
 	height: 30px;
-	background-color: #e7e7e7;
+	background-color: var(--bkg-color-tab-hover);
 }
 
 .item_inc_exc_btn {
@@ -446,6 +546,7 @@ ul.new_element_menu li {
 
 ul.new_element_menu li a {
 	text-decoration: none;
+	color: var(--text-color);
 }
 
 table.status_table tr {
@@ -480,7 +581,6 @@ table.status_table td, table.status_table td i {
 	transform: translateX(-50%);
 	top: 4px;
 	font-weight: bold;
-	text-shadow: 1px 1px 0 #fff;
 }
 
 .smallbox {
@@ -493,6 +593,7 @@ table.status_table td, table.status_table td i {
 
 a.raw {
 	text-decoration: none;
+	color: var(--text-color);
 }
 
 .option_cell {
@@ -553,7 +654,7 @@ table.component td:nth-of-type(1) {
 }
 
 .info {
-	color: #333;
+	color: var(--text-color) !important;
 }
 
 .error {
@@ -621,7 +722,7 @@ table.component td:nth-of-type(1) {
 }
 
 .status_header:hover {
-	background-color: #e9e9e9;
+	background-color: var(--bkg-color-tab-hover);
 	border-radius: 3px;
 }
 
@@ -706,7 +807,7 @@ img.job_weather_icon {
 }
 
 div.directive_help dt, div.directive_help dd {
-	color: #333;
+	color: var(--text-color);
 }
 
 div.directive_help dt {
@@ -730,6 +831,11 @@ div.directive_help dd {
 	display: inline-block;
 	width: 60px;
 	height: 34px;
+}
+
+.switch.small {
+	width: 52px;
+	height: 25px;
 }
 
 .switch input {
@@ -762,12 +868,17 @@ div.directive_help dd {
 	transition: .4s;
 }
 
+.slider.small:before {
+	width: 17px;
+	height: 17px;
+}
+
 input:checked + .slider {
-	background-color: #4CAF50;
+	background-color: var(--color-main);
 }
 
 input:focus + .slider {
-	box-shadow: 0 0 1px #4CAF50;
+	box-shadow: 0 0 1px var(--color-main);
 }
 
 input:checked + .slider:before {
@@ -792,3 +903,185 @@ input:checked + .slider:before {
 		display: initial;
 	}
 }
+
+.w3-modal-content {
+	background-color: var(--bkg-color-modal) !important;
+}
+
+.w3-card {
+	background-color: var(--color-strong);
+}
+
+.w3-code {
+	border-left: 4px solid var(--color-main);
+	background-color: var(--color-strong);
+}
+
+.w3-green, .w3-blue {
+	background-color: var(--color-main) !important;
+}
+
+.w3-text-green:not(.fa-check-square) {
+	color: var(--color-main) !important;
+}
+
+.w3-red {
+	background-color: var(--color-error) !important;
+}
+
+.w3-text-red {
+	color: var(--color-error) !important;
+}
+
+.subtab_btn:hover {
+	background-color: var(--bkg-color-tab-hover) !important;
+}
+
+/** START Progress bar **/
+.ui-widget-header {
+	background: var(--color-main) !important;
+}
+
+.ui-progressbar .ui-progressbar-value {
+	margin: 0 !important;
+}
+
+.ui-widget-content {
+	color: var(--text-color);
+	background-color: var(--color-strong);
+}
+/** END Progress bar **/
+
+/** START Wizards **/
+
+#restore-browser {
+	width: 100%;
+}
+
+#restore-browser td {
+	width: 45%;
+}
+
+#restore-browser-files, #restore-browser-versions, #restore-browser-selected {
+	overflow: auto;
+	width: 100%;
+	height: 100% !important;
+	background-color: var(--color-strong);
+}
+
+#restore-browser-files {
+	height: calc(100% - 57px) !important;
+	overflow-x: auto;
+}
+
+@media only screen and (max-width: 600px) {
+	#restore-browser-files {
+		/* On small devices bottom toolbar with search, offset and limit is not displayed */
+		height: 100% !important;
+	}
+}
+
+@media only screen and (max-width: 1650px) {
+	.offset_limit {
+		display: none;
+	}
+}
+
+#restore-browser-files-loading {
+	position: absolute;
+	z-index: 10;
+}
+#restore-browser-files-loading i {
+	position: absolute;
+	width: 75px;
+	height: 75px;
+	margin: auto;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	color: var(--color-main);
+}
+
+#restore-browser-files-content, #restore-browser-files-content-flat {
+	position: relative;
+	height: 100%;
+}
+
+.file-browser-detail {
+	width: 100%;
+}
+
+div.file-browser-element {
+	cursor: pointer;
+	padding: 4px 8px;
+	clear: both;
+}
+
+.restore-browser-element-right {
+	float: right;
+	width: 137px;
+}
+
+.restore-browser-element-right {
+	line-height: 24px;
+}
+
+#restore-browser-files-content-tree ul {
+	padding-left: 14px;
+	list-style-type: none;
+	margin: 0;
+}
+
+#restore-browser-files-content-tree > ul {
+	padding: 0;
+}
+
+li.file-browser-element {
+	padding: 1px 0;
+	cursor: pointer;
+}
+
+li.file-browser-element > div {
+	padding: 1px 8px;
+}
+
+li.file-browser-element > div:hover, div.file-browser-element:hover {
+	background-color: var(--bkg-color-tab-hover);
+}
+
+.file-browser-watermark {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	font-size: 21px;
+	color: rgb(185, 184, 184);
+}
+
+a.remove_selected_item {
+	padding-top: 2px;
+}
+
+#backup-to-restore-field > div {
+	height: 467px;
+	overflow-y: auto;
+}
+
+.normal {
+	font-weight: normal;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+/* Overwrite jQuery-UI draggable class to solve problem with
+ * scrolling file list on mobile devices
+ */
+.ui-draggable-handle {
+    touch-action: auto !important;
+}
+
+/** END Wizards **/

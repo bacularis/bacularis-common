@@ -133,6 +133,99 @@ var W3SideBar = {
 	}
 };
 
+const ThemeMode = {
+	modes: {
+		light: 'light',
+		dark: 'dark'
+	},
+	ids: {
+		switcher: 'theme_mode_switcher'
+	},
+	css: {
+		dark_theme: 'dark-theme',
+		light_dark: 'light-dark',
+		deep_dark: 'deep_dark'
+	},
+	ls_key: 'bacularis-theme-mode',
+	default_mode: 'light',
+	cbs: [],
+	pre_init: function() {
+		const mode = this.get_mode();
+		this.set_theme(mode);
+	},
+	init: function() {
+		this.set_events();
+		this.init_theme();
+	},
+	add_cb(cb) {
+		this.cbs.push(cb);
+	},
+	init_theme: function() {
+		const mode = this.get_mode();
+		this.set_theme(mode);
+		this.set_switcher(mode);
+	},
+	set_mode: function(mode) {
+		localStorage.setItem(this.ls_key, mode);
+	},
+	get_mode: function() {
+		return localStorage.getItem(this.ls_key) || this.default_mode;
+	},
+	set_theme: function(mode) {
+		if (mode === this.modes.light) {
+			document.body.classList.remove(this.css.dark_theme);
+		} else if (mode === this.modes.dark) {
+			document.body.classList.add(this.css.dark_theme);
+		}
+	},
+	set_switcher: function(mode) {
+		const switcher = document.getElementById(this.ids.switcher);
+		if (switcher) {
+			switcher.checked = (mode === this.modes.dark);
+		}
+	},
+	set_events: function() {
+		const switcher = document.getElementById(this.ids.switcher);
+		if (!switcher) {
+			return;
+		}
+		const self = this;
+		switcher.addEventListener('click', function() {
+			if (this.checked) {
+				self.switch_mode(self.modes.light);
+			} else {
+				self.switch_mode(self.modes.dark);
+			}
+		});
+	},
+	toggle_mode: function() {
+		const mode = this.get_mode();
+		if (mode === this.modes.light) {
+			this.switch_mode(this.modes.dark);
+		} else if (mode === this.modes.dark) {
+			this.switch_mode(this.modes.light);
+		}
+	},
+	switch_mode: function(mode) {
+		this.set_mode(mode);
+		this.set_theme(mode);
+		this.trigger_post_switch_actions();
+	},
+	trigger_post_switch_actions: function() {
+		for (let i = 0; i < this.cbs.length; i++) {
+			if (typeof(this.cbs[i]) !== 'function') {
+				continue;
+			}
+			this.cbs[i]();
+		}
+	},
+	is_dark: function() {
+		const mode = this.get_mode();
+		return (mode === this.modes.dark);
+	}
+};
+ThemeMode.pre_init();
+
 var touch_start_x = null;
 var touch_start_y = null;
 
@@ -336,8 +429,11 @@ dtEscapeRegex = function(value) {
 	return $.fn.dataTable.util.escapeRegex(value);
 };
 
-$(function() {
-	W3SideBar.init();
-	set_global_listeners();
-	set_tab_by_url_fragment();
-});
+if (typeof($) == 'function') {
+	$(function() {
+		ThemeMode.init();
+		W3SideBar.init();
+		set_global_listeners();
+		set_tab_by_url_fragment();
+	});
+}
