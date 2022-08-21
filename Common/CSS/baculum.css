@@ -189,8 +189,8 @@ table.dataTable.no-footer {
 }
 
 div.dt-buttons .dt-button.active {
-	color: var(--color-strong) !important;
-	background: var(--text-color) !important;
+	color: var(--text-color) !important;
+	background: var(--bkg-color) !important;
 }
 
 div.dt-button-info, div.dt-button-info h2 {
