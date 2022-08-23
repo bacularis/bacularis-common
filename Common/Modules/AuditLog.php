@@ -21,8 +21,8 @@ namespace Bacularis\Common\Modules;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-abstract class AuditLog extends CommonModule {
-
+abstract class AuditLog extends CommonModule
+{
 	/**
 	 * Message categories.
 	 */
@@ -95,7 +95,8 @@ abstract class AuditLog extends CommonModule {
 	 * @param string $category log category
 	 * @return bool true if is valid, otherwise false
 	 */
-	private function validateCategory($category) {
+	private function validateCategory($category)
+	{
 		$valid = true;
 		$categories = $this->getCategories();
 		if (!in_array($category, $categories)) {
@@ -134,7 +135,8 @@ abstract class AuditLog extends CommonModule {
 	 * @param string $type log type
 	 * @return bool true if is valid, otherwise false
 	 */
-	private function validateType($type) {
+	private function validateType($type)
+	{
 		$valid = true;
 		$types = $this->getTypes();
 		if (!in_array($type, $types)) {
