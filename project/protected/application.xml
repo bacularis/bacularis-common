@@ -14,6 +14,7 @@
 		<module id="config_ini" class="Bacularis\Common\Modules\ConfigIni" />
 		<module id="config_bacula" class="Bacularis\Common\Modules\ConfigBacula" />
 		<module id="config_section" class="Bacularis\Common\Modules\ConfigSection" />
+		<module id="expect" class="Bacularis\Common\Modules\BExpect" />
 		<!-- authentication and authorization modules -->
 		<module id="auth_basic" class="Bacularis\Common\Modules\AuthBasic" />
 		<module id="auth_oauth2" class="Bacularis\Common\Modules\AuthOAuth2" />
