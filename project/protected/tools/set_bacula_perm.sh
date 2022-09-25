@@ -67,6 +67,17 @@ for file in bacula-dir.conf bacula-sd.conf bacula-fd.conf bconsole.conf
 do
 	if [ -e "${BACULA_CONFIG_DIR}/${file}" ]
 	then
+		fuser=`stat -c '%U' "${BACULA_CONFIG_DIR}/${file}"`
+		fgroup=`stat -c '%G' "${BACULA_CONFIG_DIR}/${file}"`
+		if  [ "$fuser" = "root" -a "$fgroup" = "bacula" ]
+		then
+			if [ "$file" = "bacula-dir.conf" -o "$file" = "bacula-sd.conf" ]
+			then
+				echo "[WARNING] The file '${BACULA_CONFIG_DIR}/${file}' may need manual permission settings to be readable/writeable by web server and Bacula component."
+				continue
+			fi
+		fi
+
 		# set file group
 		chown :${WEB_SERVER_USER_GROUP} "${BACULA_CONFIG_DIR}/${file}"
 		if [ $? -ne 0 ]
