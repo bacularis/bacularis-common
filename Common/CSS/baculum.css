@@ -4,6 +4,7 @@ body {
 	--color-strong: white;
 	--color-main: #4caf50;
 	--color-error: #f44336;
+	--color-warning: #ffffcc;
 	--anchor-color: black;
 	--bkg-color-modal: white;
 	--text-color-table-head: white;
@@ -27,6 +28,7 @@ body.dark-theme {
 	--color-strong: #080707;
 	--color-main: #364a89;
 	--color-error: #d33a2f;
+	--color-warning: #080707;
 	--anchor-color: #e5e5e5;
 	--bkg-color-modal: #121212;
 	--text-color-table-head: #e5e5e5;
@@ -153,6 +155,10 @@ table.dataTable tbody td {
 
 table.dataTable.no-footer {
 	border-bottom: 1px solid #c1c1c1;
+}
+
+.dataTables_wrapper .dataTables_filter {
+	color: var(--text-color) !important;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {
@@ -343,6 +349,11 @@ img.reset_btn, img.remove_btn {
         display: none;
         cursor: pointer;
         vertical-align: middle;
+}
+
+.w3-pale-yellow {
+	color: var(--text-color) !important;
+	background-color: var(--color-warning) !important;
 }
 
 .step {
