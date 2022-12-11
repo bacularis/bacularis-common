@@ -1,4 +1,4 @@
-module bacularis 1.0.1;
+module bacularis 1.0.2;
 
 require {
 	type init_t;
@@ -57,7 +57,7 @@ require {
 	class chr_file { open read write ioctl getattr };
 	class fifo_file { write };
 	class netlink_audit_socket { write nlmsg_relay create read };
-	class capability { audit_write sys_resource net_admin setfcap fsetid fowner };
+	class capability { audit_write sys_resource net_admin sys_admin setfcap fsetid fowner };
 	class service { start stop status };
 	class unix_stream_socket { connectto };
 	class process { setrlimit noatsecure rlimitinh siginh transition setexec signull };
@@ -82,7 +82,7 @@ allow httpd_t sudo_exec_t:file { read execute open };
 allow httpd_t httpd_cache_t:dir { read create };
 allow httpd_t httpd_cache_t:file { read write create };
 allow httpd_t self:netlink_audit_socket { write nlmsg_relay create read };
-allow httpd_t self:capability { audit_write sys_resource net_admin setfcap fsetid fowner };
+allow httpd_t self:capability { audit_write sys_resource net_admin sys_admin setfcap fsetid fowner };
 allow httpd_t self:process { setrlimit setexec};
 allow httpd_t httpd_sys_rw_content_t:dir { read write };
 allow httpd_t httpd_sys_rw_content_t:file { create append };
