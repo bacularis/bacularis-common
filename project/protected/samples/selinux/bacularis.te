@@ -1,4 +1,4 @@
-module bacularis 1.0.2;
+module bacularis 1.0.3;
 
 require {
 	type init_t;
@@ -50,9 +50,12 @@ require {
 	type devpts_t;
 	type ptmx_t;
 	type ssh_port_t;
+	type ld_so_cache_t;
+	type ldconfig_cache_t;
+	type session_dbusd_tmp_t;
 	class tcp_socket { name_bind name_connect };
 	class dir { search read write create add_name remove_name getattr relabelfrom relabelto setattr rmdir };
-	class file { append read write create getattr setattr open execute execute_no_trans ioctl unlink lock rename map relabelfrom relabelto };
+	class file { append read write create getattr setattr open execute execute_no_trans ioctl link unlink lock rename map relabelfrom relabelto };
 	class lnk_file { create setattr relabelfrom relabelto unlink rename };
 	class chr_file { open read write ioctl getattr };
 	class fifo_file { write };
@@ -64,6 +67,7 @@ require {
 	class dbus { send_msg };
 	class security { compute_create };
 	class system { reload };
+	class sock_file { getattr };
 }
 
 #============= httpd_t ==============
@@ -75,7 +79,7 @@ allow httpd_t hplip_port_t:tcp_socket name_connect;
 allow httpd_t bacula_etc_t:dir { read write search add_name remove_name setattr relabelfrom relabelto rmdir };
 allow httpd_t bacula_etc_t:file { getattr read write open create setattr relabelfrom relabelto unlink rename };
 allow httpd_t bacula_exec_t:file { getattr setattr read execute execute_no_trans open relabelto rename unlink };
-allow httpd_t bacula_spool_t:dir { write add_name remove_name relabelfrom relabelto setattr rmdir };
+allow httpd_t bacula_spool_t:dir { read write add_name remove_name relabelfrom relabelto setattr rmdir };
 allow httpd_t bacula_spool_t:file { getattr create open read write ioctl unlink };
 allow httpd_t scsi_generic_device_t:chr_file { open read write ioctl };
 allow httpd_t sudo_exec_t:file { read execute open };
@@ -122,7 +126,7 @@ allow httpd_t selinux_config_t:file { read open getattr };
 allow httpd_t systemd_unit_file_t:dir { write add_name create remove_name };
 allow httpd_t systemd_unit_file_t:file { create getattr open write setattr unlink relabelfrom relabelto rename };
 allow httpd_t bin_t:dir { write add_name remove_name create relabelfrom relabelto setattr rmdir };
-allow httpd_t bin_t:file { create relabelfrom relabelto rename setattr write  unlink };
+allow httpd_t bin_t:file { create relabelfrom relabelto rename setattr write link unlink };
 allow httpd_t man_t:dir { add_name remove_name write };
 allow httpd_t man_t:file { create relabelfrom relabelto rename setattr write unlink };
 allow httpd_t rpm_script_t:process { noatsecure rlimitinh siginh transition };
@@ -135,10 +139,14 @@ allow httpd_t rpm_t:process signull;
 allow httpd_t mysqld_etc_t:dir { add_name remove_name relabelto write relabelfrom rmdir setattr };
 allow httpd_t mysqld_etc_t:file { create write relabelfrom relabelto rename setattr unlink };
 allow httpd_t user_tmp_t:file { execute execute_no_trans };
-allow httpd_t var_spool_t:dir { add_name create relabelfrom setattr remove_name write };
+allow httpd_t var_spool_t:dir { add_name create relabelfrom setattr remove_name read write };
 allow httpd_t devpts_t:chr_file { open getattr ioctl read write };
 allow httpd_t ptmx_t:chr_file { ioctl open read write };
 allow httpd_t ssh_port_t:tcp_socket name_connect;
+allow httpd_t ld_so_cache_t:file unlink;
+allow httpd_t ldconfig_cache_t:dir { add_name write remove_name };
+allow httpd_t ldconfig_cache_t:file { getattr map create open read write rename unlink };
+allow httpd_t session_dbusd_tmp_t:sock_file getattr;
 
 #============= systemd_logind_t ==============
 allow systemd_logind_t httpd_t:dbus send_msg;
