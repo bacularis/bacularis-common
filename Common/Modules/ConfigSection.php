@@ -81,7 +81,7 @@ class ConfigSection extends CommonModule implements IConfigFormat
 	/**
 	 * Set indent size.
 	 *
-	 * @param integer $size indent size
+	 * @param int $size indent size
 	 */
 	public function setIndentSize($size)
 	{
@@ -91,14 +91,15 @@ class ConfigSection extends CommonModule implements IConfigFormat
 	/**
 	 * Get indent size.
 	 *
-	 * @return integer indent size
+	 * @return int indent size
 	 */
 	public function getIndentSize()
 	{
 		return $this->indent_size;
 	}
 
-	private function getIndent() {
+	private function getIndent()
+	{
 		return str_repeat($this->indent_char, $this->indent_size);
 	}
 
@@ -139,9 +140,11 @@ class ConfigSection extends CommonModule implements IConfigFormat
 	 * Parse config content.
 	 *
 	 * @param content config with one line per array item
+	 * @param array $content
 	 * @return array parsed config
 	 */
-	private function parseConfig(array $content) {
+	private function parseConfig(array $content)
+	{
 		$config = [];
 		$section = '';
 		$pattern_sect = '/^' . $this->section . '\s(?P<section>\S+)$/';
@@ -179,7 +182,8 @@ class ConfigSection extends CommonModule implements IConfigFormat
 		return $content;
 	}
 
-	public function isConfigValid($required_options, $config, $path) {
+	public function isConfigValid($required_options, $config, $path)
+	{
 		// @TODO: Add validating section config
 		return true;
 	}

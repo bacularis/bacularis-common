@@ -28,7 +28,7 @@ class BExpect extends CommonModule
 	/**
 	 * Default timeout in seconds for particular bexpect command actions.
 	 */
-	const DEFAULT_CMD_TIMEOUT = 3;
+	public const DEFAULT_CMD_TIMEOUT = 3;
 
 	/**
 	 * Command to execute.
@@ -65,9 +65,10 @@ class BExpect extends CommonModule
 	 *
 	 * @param string $expected regex pattern to find requested output
 	 * @param string $action action to do on requested output (string sent to stdin)
-	 * @param integer $timeout timeout in seconds
+	 * @param int $timeout timeout in seconds
 	 */
-	public function addAction($expected, $action = null, $timeout = null) {
+	public function addAction($expected, $action = null, $timeout = null)
+	{
 		$this->actions[] = [
 			'expected' => $expected,
 			'action' => $action,
@@ -159,7 +160,7 @@ class BExpect extends CommonModule
 
 	/**
 	 * Read from standard output (stdout).
-	 * 
+	 *
 	 * @return string value read from stdout
 	 */
 	private function readFromStdOut()
@@ -170,7 +171,7 @@ class BExpect extends CommonModule
 
 	/**
 	 * Read from standard error (stderr).
-	 * 
+	 *
 	 * @return string value read from stderr
 	 */
 	private function readFromStdErr()

@@ -21,7 +21,8 @@ namespace Bacularis\Common\Modules\Errors;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Errors
  */
-class SoftwareManagementError extends GenericError {
+class SoftwareManagementError extends GenericError
+{
 	public const ERROR_SOFTWARE_MANAGEMENT_COMMAND_DOES_NOT_EXIST = 150;
 	public const ERROR_SOFTWARE_MANAGEMENT_DISABLED = 151;
 	public const ERROR_SOFTWARE_MANAGEMENT_WRONG_EXITCODE = 152;
