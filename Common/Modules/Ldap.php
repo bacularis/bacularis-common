@@ -184,7 +184,7 @@ class Ldap extends CommonModule
 			$filter = sprintf('(%s=%s)', $this->params['user_attr'], $username);
 			$user = $this->search($this->params['base_dn'], $filter);
 			$cnt = ldap_count_entries($this->conn, $user);
-			if ($cnt === 1) {
+			if ($cnt > 0) {
 				$entry = ldap_first_entry($this->conn, $user);
 				if ($entry) {
 					$user_dn = ldap_get_dn($this->conn, $entry);
