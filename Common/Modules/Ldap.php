@@ -145,6 +145,9 @@ class Ldap extends CommonModule
 	{
 		ldap_set_option($this->conn, LDAP_OPT_PROTOCOL_VERSION, $this->params['protocol_ver']);
 		ldap_set_option($this->conn, LDAP_OPT_REFERRALS, 0);
+		if (key_exists('starttls', $this->params) && $this->params['starttls'] == 1) {
+			ldap_start_tls($this->conn);
+		}
 	}
 
 	/**
