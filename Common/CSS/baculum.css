@@ -70,7 +70,7 @@ a {
 	margin-top: 8px;
 }
 
-#sidebar {
+#sidebar, #quick_resource_edit {
 	color: var(--text-color);
 	background-color: var(--color-strong);
 }
@@ -332,7 +332,7 @@ table.dataTable tbody > tr.selected, table.dataTable tbody > tr > .selected {
 }
 
 th.action_col, td.action_col {
-	width: 110px !important;
+	width: 120px !important;
 	text-align: center !important;
 }
 
