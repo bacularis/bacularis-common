@@ -102,12 +102,9 @@ abstract class AuditLog extends CommonModule
 		if (!in_array($category, $categories)) {
 			$valid = false;
 			$emsg = 'Wrong audit log category.';
-			$this->getModule('logging')->log(
-				__FUNCTION__,
-				$emsg,
+			Logging::log(
 				Logging::CATEGORY_APPLICATION,
-				__FILE__,
-				__LINE__
+				$emsg
 			);
 		} elseif (!in_array($category, $this->categories)) {
 			$valid = false;
@@ -142,12 +139,9 @@ abstract class AuditLog extends CommonModule
 		if (!in_array($type, $types)) {
 			$valid = false;
 			$emsg = 'Wrong audit log type.';
-			$this->getModule('logging')->log(
-				__FUNCTION__,
-				$emsg,
+			Logging::log(
 				Logging::CATEGORY_APPLICATION,
-				__FILE__,
-				__LINE__
+				$emsg
 			);
 		} elseif (!in_array($type, $this->types)) {
 			$valid = false;
@@ -238,12 +232,9 @@ abstract class AuditLog extends CommonModule
 			flock($fp, LOCK_UN);
 		} else {
 			$emsg = 'Could not get the exclusive lock: ' . $f;
-			$this->getModule('logging')->log(
-				__FUNCTION__,
-				$emsg,
+			Logging::log(
 				Logging::CATEGORY_APPLICATION,
-				__FILE__,
-				__LINE__
+				$emsg
 			);
 		}
 		fclose($fp);
@@ -269,12 +260,9 @@ abstract class AuditLog extends CommonModule
 			flock($fp, LOCK_UN);
 		} else {
 			$emsg = 'Could not get the shared lock: ' . $f;
-			$this->getModule('logging')->log(
-				__FUNCTION__,
-				$emsg,
+			Logging::log(
 				Logging::CATEGORY_APPLICATION,
-				__FILE__,
-				__LINE__
+				$emsg
 			);
 		}
 		fclose($fp);

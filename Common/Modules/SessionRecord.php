@@ -76,12 +76,9 @@ class SessionRecord extends CommonModule implements ISessionItem
 				self::forceRefresh();
 			} else {
 				$emsg = 'Unable to exclusive lock ' . $sessfile;
-				$this->getModule('logging')->log(
-					__FUNCTION__,
-					$emsg,
+				Logging::log(
 					Logging::CATEGORY_APPLICATION,
-					__FILE__,
-					__LINE__
+					$emsg
 				);
 			}
 			fclose($fp);
@@ -103,12 +100,9 @@ class SessionRecord extends CommonModule implements ISessionItem
 					flock($fp, LOCK_UN);
 				} else {
 					$emsg = 'Unable to shared lock ' . $sessfile;
-					$this->getModule('logging')->log(
-						__FUNCTION__,
-						$emsg,
+					Logging::log(
 						Logging::CATEGORY_APPLICATION,
-						__FILE__,
-						__LINE__
+						$emsg
 					);
 				}
 				fclose($fp);

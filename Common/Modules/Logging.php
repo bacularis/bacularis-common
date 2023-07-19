@@ -30,6 +30,7 @@
 namespace Bacularis\Common\Modules;
 
 use Prado\Prado;
+use Prado\Util\TLogger;
 
 /**
  * Logger class.
@@ -47,43 +48,80 @@ class Logging extends CommonModule
 	public const CATEGORY_GENERAL = 'General';
 	public const CATEGORY_SECURITY = 'Security';
 
-	private function getLogCategories()
+	private static function getLogCategories()
 	{
-		$categories = [
+		return [
 			self::CATEGORY_EXECUTE,
 			self::CATEGORY_EXTERNAL,
 			self::CATEGORY_APPLICATION,
 			self::CATEGORY_GENERAL,
 			self::CATEGORY_SECURITY
 		];
-		return $categories;
 	}
 
-	public function log($cmd, $output, $category, $file, $line)
+	public static function log($category, $message)
 	{
 		if (self::$debug_enabled !== true) {
 			return;
 		}
-		$current_mode = $this->Application->getMode();
+		$current_mode = Prado::getApplication()->getMode();
 
 		// switch application to debug mode
-		$this->Application->setMode('Debug');
+		Prado::getApplication()->setMode('Debug');
 
-		if (!in_array($category, $this->getLogCategories())) {
+		if (!in_array($category, self::getLogCategories())) {
 			$category = self::CATEGORY_SECURITY;
 		}
 
-		$log = sprintf(
-			'Command=%s, Output=%s, File=%s, Line=%d',
-			$cmd,
-			print_r($output, true),
-			$file,
-			(int) $line
-		);
+		self::prepareLog($message);
 
-		Prado::trace($log, $category);
+		Prado::log($message, TLogger::INFO, $category);
 
 		// switch back application to original mode
-		$this->Application->setMode($current_mode);
+		Prado::getApplication()->setMode($current_mode);
+	}
+
+	/**
+	 * Prepare log line to write to file.
+	 *
+	 * @param array|object|string $log message to log
+	 */
+	private static function prepareLog(&$log)
+	{
+		if (is_object($log) || is_array($log)) {
+			$log = print_r($log, true);
+		}
+		$file_line = '';
+		$trace = debug_backtrace();
+		if (isset($trace[1]['file']) && isset($trace[1]['line'])) {
+			$file_line = sprintf(
+				'%s:%s: ',
+				basename($trace[1]['file']),
+				$trace[1]['line']
+			);
+			$log = $file_line . $log;
+		}
+		$log .= PHP_EOL . PHP_EOL;
+	}
+
+	/**
+	 * Prepare command type log.
+	 * It is output from binaries and scripts.
+	 *
+	 * @param string $command executed command
+	 * @param array|object|string $output command output
+	 * @return string formatted command output log
+	 */
+	public static function prepareCommand($command, $output) {
+		if (is_array($output)) {
+			$output = implode(PHP_EOL . ' ', $output);
+		} elseif (is_object($output)) {
+			$output = print_r($output, true);
+		}
+		return sprintf(
+			"\n\n==> COMMAND: %s\n\n==> OUTPUT: %s",
+			$command,
+			$output
+		);
 	}
 }

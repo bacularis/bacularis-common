@@ -172,12 +172,9 @@ class ConfigIni extends CommonModule implements IConfigFormat
 				$emsg = "ERROR [$source] Internal error";
 			}
 
-			$this->getModule('logging')->log(
-				__FUNCTION__,
-				$emsg,
+			Logging::log(
 				Logging::CATEGORY_APPLICATION,
-				__FILE__,
-				__LINE__
+				$emsg
 			);
 		}
 		return $valid;

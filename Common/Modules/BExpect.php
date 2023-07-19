@@ -120,23 +120,17 @@ class BExpect extends CommonModule
 		while (true) {
 			if ($action['timeout'] <= (time() - $start_time)) {
 				// timeout occured, break
-				$this->getModule('logging')->log(
-					'Process running in BExpect timed out.',
-					'',
+				Logging::log(
 					Logging::CATEGORY_EXECUTE,
-					__FILE__,
-					__LINE__
+					'Process running in BExpect timed out.'
 				);
 				break;
 			}
 			if (feof($this->pipes[1])) {
 				// EOF, break
-				$this->getModule('logging')->log(
-					'Process running in BExpect unexpectedly finished.',
-					'',
+				Logging::log(
 					Logging::CATEGORY_EXECUTE,
-					__FILE__,
-					__LINE__
+					'Process running in BExpect unexpectedly finished.'
 				);
 				break;
 			}
@@ -212,12 +206,9 @@ class BExpect extends CommonModule
 			array_merge(['LANG' => 'C'], $env)
 		);
 		if (!is_resource($this->proc)) {
-			$this->getModule('logging')->log(
-				'Cannot create spawn process',
-				'',
+			Logging::log(
 				Logging::CATEGORY_EXECUTE,
-				__FILE__,
-				__LINE__
+				'Cannot create spawn process'
 			);
 		}
 	}
