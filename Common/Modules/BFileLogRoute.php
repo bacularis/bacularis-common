@@ -23,14 +23,15 @@ use Prado\Util\TFileLogRoute;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-class BFileLogRoute extends TFileLogRoute {
-
-        protected function formatLogMessage($log, $level, $category, $time) {
-                $timestamp = date('Y-m-d H:i:s');
-                $format = sprintf('[%s]', $category);
-                return implode(
-                        ' ',
-                        [$timestamp, $format, $log]
-                );
-        }
+class BFileLogRoute extends TFileLogRoute
+{
+	protected function formatLogMessage($log, $level, $category, $time)
+	{
+		$timestamp = date('Y-m-d H:i:s');
+		$format = sprintf('[%s]', $category);
+		return implode(
+			' ',
+			[$timestamp, $format, $log]
+		);
+	}
 }

@@ -112,7 +112,8 @@ class Logging extends CommonModule
 	 * @param array|object|string $output command output
 	 * @return string formatted command output log
 	 */
-	public static function prepareCommand($command, $output) {
+	public static function prepareCommand($command, $output)
+	{
 		if (is_array($output)) {
 			$output = implode(PHP_EOL . ' ', $output);
 		} elseif (is_object($output)) {
