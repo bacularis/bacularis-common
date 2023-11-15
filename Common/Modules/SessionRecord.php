@@ -116,7 +116,7 @@ class SessionRecord extends CommonModule implements ISessionItem
 	{
 		$is_saved = false;
 		$is_updated = false;
-		$vals = & self::get();
+		$vals = &self::get();
 		$c = get_called_class();
 		$primary_key = $c::getPrimaryKey();
 		for ($i = 0; $i < count($vals); $i++) {
@@ -170,7 +170,7 @@ class SessionRecord extends CommonModule implements ISessionItem
 	{
 		self::restore();
 		$result = null;
-		$vals = & self::get();
+		$vals = &self::get();
 		for ($i = 0; $i < count($vals); $i++) {
 			if ($vals[$i][$field] === $value) {
 				$result = $vals[$i];
@@ -185,7 +185,7 @@ class SessionRecord extends CommonModule implements ISessionItem
 		self::restore();
 		$result = false;
 		$c = get_called_class();
-		$vals = & self::get();
+		$vals = &self::get();
 		$primary_key = $c::getPrimaryKey();
 		for ($i = 0; $i < count($vals); $i++) {
 			if ($vals[$i][$primary_key] === $pk) {
