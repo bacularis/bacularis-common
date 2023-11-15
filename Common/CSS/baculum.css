@@ -24,21 +24,21 @@ body {
 
 body.dark-theme {
 	--text-color: #e5e5e5;
-	--bkg-color: #121212;
-	--color-strong: #080707;
+	--bkg-color: #242424;
+	--color-strong: #0e0e0e;
 	--color-main: #364a89;
 	--color-error: #d33a2f;
-	--color-warning: #080707;
+	--color-warning: #0e0e0e;
 	--anchor-color: #e5e5e5;
-	--bkg-color-modal: #121212;
+	--bkg-color-modal: #242424;
 	--text-color-table-head: #e5e5e5;
-	--bkg-color-table-head: black;
-	--bkg-color-table-row-odd: #121212;
-	--bkg-color-table-row-even: black;
+	--bkg-color-table-head: #181717;
+	--bkg-color-table-row-odd: #242424;
+	--bkg-color-table-row-even: #181717;
 	--bkg-color-table-row-hover: #606060;
 	--bkg-color-table-row-selected: #e5e5e5;
-	--text-color-table-row-selected: black;
-	--bkg-color-dt-button: black;
+	--text-color-table-row-selected: #181717;
+	--bkg-color-dt-button: #181717;
 	--bkg-image-dt-button: none;
 	--text-color-dt-button: white;
 	--bkg-color-light-green: #2d53cb;
