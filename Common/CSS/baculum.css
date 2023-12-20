@@ -70,7 +70,7 @@ a {
 	margin-top: 8px;
 }
 
-#sidebar, #quick_resource_edit {
+#sidebar, #quick_resource_edit, #quick_volume_edit {
 	color: var(--text-color);
 	background-color: var(--color-strong);
 }
