@@ -1,9 +1,7 @@
 
-This is a minor bug fix and improvements release. Main changes have been done
-in the dark theme. Since now the dark colours are more friendly for eyes.
+This is a bug fix release. We fixed displaying quick volume edit drawer
+in the dark mode.
 
 Changes:
- - Mitigate color palette in dark theme to be more friendly for eyes
- - Fix unary operator spaces error
- - Remove no longer needed action step
- - Update php-cs-fixer config
+ - Update version
+ - Fix quick volume edit drawer colour in dark mode
