@@ -381,13 +381,21 @@ function set_tab_by_url_fragment() {
 
 
 function copy_to_clipboard(text) {
-	var input = document.createElement('INPUT');
-	document.body.appendChild(input);
-	input.value = text;
-	input.focus();
-	input.setSelectionRange(0, text.length);
-	document.execCommand('copy');
-	document.body.removeChild(input);
+	if (navigator.clipboard) {
+		navigator.clipboard.writeText(text);
+	}
+}
+
+function save_file(data, filename, type) {
+	const file = new Blob([data], {type: type});
+	const a = document.createElement('A');
+	const url = URL.createObjectURL(file);
+	a.href = url;
+	a.download = filename;
+	document.body.appendChild(a);
+	a.click();
+	document.body.removeChild(a);
+	window.URL.revokeObjectURL(url);
 }
 
 function getClosestScrollEl(el) {
