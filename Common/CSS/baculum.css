@@ -448,6 +448,21 @@ div.details_card {
 	}
 }
 
+div.details_card_long {
+	min-height: 190px;
+}
+
+@media screen and (max-width: 620px) {
+	div.details_card_long {
+		width: 100%;
+	}
+}
+@media screen and (min-width: 621px) {
+	div.details_card_long {
+		width: 330px;
+	}
+}
+
 .button_fixed {
 	min-width: 125px;
 }
