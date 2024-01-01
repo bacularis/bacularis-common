@@ -383,6 +383,17 @@ function set_tab_by_url_fragment() {
 function copy_to_clipboard(text) {
 	if (navigator.clipboard) {
 		navigator.clipboard.writeText(text);
+	} else {
+		const textarea = document.createElement("TEXTAREA");
+		textarea.style.width = 0;
+		textarea.style.height = 0;
+		textarea.textContent = text;
+		document.body.appendChild(textarea);
+		textarea.select();
+		textarea.focus();
+		document.execCommand('copy');
+		textarea.blur();
+		document.body.removeChild(textarea);
 	}
 }
 
