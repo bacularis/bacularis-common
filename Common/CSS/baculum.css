@@ -331,14 +331,18 @@ table.dataTable tbody > tr.selected, table.dataTable tbody > tr > .selected {
 	background-color: var(--bkg-color-table-row-hover) !important;
 }
 
-th.action_col, td.action_col {
+th.action_col, td.action_col, th.action_col_long, td.action_col_long {
 	width: 120px !important;
 	text-align: center !important;
 }
 
-td.action_col button {
+td.action_col button, td.action_col_long button {
 	display: inline-block;
 	margin: 0 auto;
+}
+
+td.action_col_long {
+	width: 200px !important;
 }
 
 .hide {
