@@ -1,8 +1,8 @@
 
-This is a bug fix release. We fixed copying job log to clipboard
-and PHP warning in case TLS LDAP connection problem.
+This is a new feature and bug fix release. We added capability to set read-only,
+read-write and no access permissions per Bacula configuration resource for
+users, hosts and host groups. It makes Bacularis granular permission control
+even more powerful and attractive.
 
 Changes:
- - Add wide action column styles
- - Fix copying job log to clipboard if HTTP protocol is used
- - Fix PHP warning if TLS LDAP connection cannot be set
+ - Add Bacula resource permission settings
