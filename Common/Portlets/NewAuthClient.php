@@ -66,7 +66,8 @@ class NewAuthClient extends PortletTemplate
 		if ($this->getAuthType() === self::AUTH_TYPE_BASIC) {
 			$basic_config = $this->getModule('basic_config');
 			$props = [
-				'bconsole_cfg_path' => $this->APIBasicBconsoleCfgPath->Text
+				'bconsole_cfg_path' => $this->APIBasicBconsoleCfgPath->Text,
+				...$this->ResourcePermissions->getPermissions()
 			];
 			if ($this->Mode == self::MODE_TYPE_ADD) {
 				$users = $this->getModule('basic_apiuser')->getUsers();
@@ -96,7 +97,8 @@ class NewAuthClient extends PortletTemplate
 						'redirect_uri' => $this->APIOAuth2RedirectURI->Text,
 						'scope' => $this->APIOAuth2Scope->Text,
 						'bconsole_cfg_path' => $this->APIOAuth2BconsoleCfgPath->Text,
-						'name' => $this->APIOAuth2Name->Text
+						'name' => $this->APIOAuth2Name->Text,
+						...$this->ResourcePermissions->getPermissions()
 					];
 					$result = $this->getModule('oauth2_config')->setConfig($oauth2_cfg);
 				} else {
@@ -109,7 +111,8 @@ class NewAuthClient extends PortletTemplate
 					'redirect_uri' => $this->APIOAuth2RedirectURI->Text,
 					'scope' => $this->APIOAuth2Scope->Text,
 					'bconsole_cfg_path' => $this->APIOAuth2BconsoleCfgPath->Text,
-					'name' => $this->APIOAuth2Name->Text
+					'name' => $this->APIOAuth2Name->Text,
+					...$this->ResourcePermissions->getPermissions()
 				];
 				$result = $this->getModule('oauth2_config')->setConfig($oauth2_cfg);
 			}

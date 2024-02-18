@@ -251,6 +251,11 @@
 			</div>
 		</div>
 	</div>
+	<h3><%[ Resource permissions ]%></h3>
+	<p class="italic"><%[ By default, all resources have read-write permissions. ]%></p>
+	<com:Application.Common.Portlets.BaculaResourcePermissions
+		ID="ResourcePermissions"
+	/>
 	<div class="w3-center w3-section" style="<%=($this->getShowButtons() ? '' : 'display: none;')%>">
 		<com:TActiveLinkButton
 			CssClass="w3-button w3-red"
@@ -262,7 +267,7 @@
 			ID="NewAuthClient"
 			ValidationGroup="<%=$this->ClientID%>NewAuthClientGroup"
 			OnCommand="TemplateControl.saveNewAuthClient"
-			Attributes.onclick="return <%=$this->ClientID%>oNewAuthClient.fields_validation()"
+			Attributes.onclick="return (<%=$this->ResourcePermissions->ClientID%>ResourcePermissions.save_user_props() && <%=$this->ClientID%>oNewAuthClient.fields_validation())"
 			CssClass="w3-button w3-green"
 		>
 			<prop:ClientSide.OnPreDispatch>
@@ -313,6 +318,7 @@ var <%=$this->ClientID%>oNewAuthClient = {
 				document.getElementById(this.ids.basic.bconsole_cfg_path).value = props.bconsole_cfg_path;
 			}
 		}
+		<%=$this->ResourcePermissions->ClientID%>ResourcePermissions.set_user_props(props);
 	},
 	set_oauth2_props: function(props) {
 		if (!props || typeof(props) != 'object') {
@@ -337,6 +343,7 @@ var <%=$this->ClientID%>oNewAuthClient = {
 		if (props.hasOwnProperty('name')) {
 			document.getElementById(this.ids.oauth2.name).value = props.name;
 		}
+		<%=$this->ResourcePermissions->ClientID%>ResourcePermissions.set_user_props(props);
 	},
 	clear_basic_fields: function() {
 		document.getElementById(this.ids.basic.username).value = '';

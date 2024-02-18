@@ -102,6 +102,10 @@ pre {
 	font-weight: bold;
 }
 
+.italic {
+	font-style: italic;
+}
+
 a.w3-button:not(.w3-bar-item), button.w3-button:not(.w3-bar-item) {
 	border: 1px solid rgba(27, 31, 35, .15);
 	border-radius: 4px;

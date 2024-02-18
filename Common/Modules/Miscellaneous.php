@@ -127,6 +127,44 @@ class Miscellaneous extends TModule
 		]
 	];
 
+	private $resources = [
+		'dir' => [
+			'Director',
+			'JobDefs',
+			'Job',
+			'Client',
+			'Storage',
+			'Catalog',
+			'Schedule',
+			'FileSet',
+			'Pool',
+			'Messages',
+			'Console',
+			'Statistics'
+		],
+		'sd' => [
+			'Storage',
+			'Director',
+			'Device',
+			'Autochanger',
+			'Messages',
+			'Cloud',
+			'Statistics'
+		],
+		'fd' => [
+			'FileDaemon',
+			'Director',
+			'Messages',
+			'Schedule',
+			'Console',
+			'Statistics'
+		],
+		'bcons' => [
+			'Director',
+			'Console'
+		]
+	];
+
 	private $replace_opts = [
 		'always',
 		'ifnewer',
@@ -191,6 +229,17 @@ class Miscellaneous extends TModule
 			$name = $this->components[$type]['url_name'];
 		}
 		return $name;
+	}
+
+	public function getResources($component = null)
+	{
+		$resources = null;
+		if (key_exists($component, $this->resources)) {
+			$resources = $this->resources[$component];
+		} else {
+			$resources = $this->resources;
+		}
+		return $resources;
 	}
 
 	public function getJobStatesByType($type)
@@ -341,5 +390,78 @@ class Miscellaneous extends TModule
 			}
 		}
 		return $jobid;
+	}
+
+	public function prepareResourcePermissionsConfig($config)
+	{
+		$res_perm_fn = function ($key, $item) {
+			return ['resource' => $key, 'perm' => $item];
+		};
+
+		// Director resource permissions
+		$perm = [];
+		$dir_res = $this->getResources('dir');
+		for ($i = 0; $i < count($dir_res); $i++) {
+			$perm[$dir_res[$i]] = 'rw'; // read write is default value
+		}
+		if (key_exists('dir_res_perm', $config)) {
+			$perm = [...$perm, ...$config['dir_res_perm']];
+		}
+		$dir_res_perm = array_map(
+			$res_perm_fn,
+			array_keys($perm),
+			array_values($perm)
+		);
+
+		// Storage resource permissions
+		$perm = [];
+		$sd_res = $this->getResources('sd');
+		for ($i = 0; $i < count($sd_res); $i++) {
+			$perm[$sd_res[$i]] = 'rw'; // read write is default value
+		}
+		if (key_exists('sd_res_perm', $config)) {
+			$perm = [...$perm, ...$config['sd_res_perm']];
+		}
+		$sd_res_perm = array_map(
+			$res_perm_fn,
+			array_keys($perm),
+			array_values($perm)
+		);
+
+		// Client resource permissions
+		$perm = [];
+		$fd_res = $this->getResources('fd');
+		for ($i = 0; $i < count($fd_res); $i++) {
+			$perm[$fd_res[$i]] = 'rw'; // read write is default value
+		}
+		if (key_exists('fd_res_perm', $config)) {
+			$perm = [...$perm, ...$config['fd_res_perm']];
+		}
+		$fd_res_perm = array_map(
+			$res_perm_fn,
+			array_keys($perm),
+			array_values($perm)
+		);
+
+		// Bconsole resource permissions
+		$perm = [];
+		$bcons_res = $this->getResources('bcons');
+		for ($i = 0; $i < count($bcons_res); $i++) {
+			$perm[$bcons_res[$i]] = 'rw'; // read write is default value
+		}
+		if (key_exists('bcons_res_perm', $config)) {
+			$perm = [...$perm, ...$config['bcons_res_perm']];
+		}
+		$bcons_res_perm = array_map(
+			$res_perm_fn,
+			array_keys($perm),
+			array_values($perm)
+		);
+		return [
+			'dir_res_perm' => $dir_res_perm,
+			'sd_res_perm' => $sd_res_perm,
+			'fd_res_perm' => $fd_res_perm,
+			'bcons_res_perm' => $bcons_res_perm
+		];
 	}
 }

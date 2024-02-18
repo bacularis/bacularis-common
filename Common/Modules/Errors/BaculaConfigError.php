@@ -42,10 +42,14 @@ class BaculaConfigError extends GenericError
 	public const ERROR_CONFIG_NO_JSONTOOL_READY = 92;
 	public const ERROR_WRITE_TO_CONFIG_ERROR = 93;
 	public const ERROR_CONFIG_VALIDATION_ERROR = 94;
+	public const ERROR_USER_NOT_ALLOWED_TO_READ_RESOURCE_CONFIG = 95;
+	public const ERROR_USER_NOT_ALLOWED_TO_WRITE_RESOURCE_CONFIG = 96;
 
 	public const MSG_ERROR_CONFIG_DIR_NOT_WRITABLE = 'Config directory is not writable.';
 	public const MSG_ERROR_UNEXPECTED_BACULA_CONFIG_VALUE = 'Unexpected Bacula config value.';
 	public const MSG_ERROR_CONFIG_NO_JSONTOOL_READY = 'No JSON tool ready.';
 	public const MSG_ERROR_WRITE_TO_CONFIG_ERROR = 'Write to config file error.';
 	public const MSG_ERROR_CONFIG_VALIDATION_ERROR = 'Config validation error.';
+	public const MSG_ERROR_USER_NOT_ALLOWED_TO_READ_RESOURCE_CONFIG = 'User is not allowed to read resource config.';
+	public const MSG_ERROR_USER_NOT_ALLOWED_TO_WRITE_RESOURCE_CONFIG = 'User is not allowed to write resource config.';
 }
