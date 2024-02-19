@@ -405,7 +405,7 @@ class Miscellaneous extends TModule
 			$perm[$dir_res[$i]] = 'rw'; // read write is default value
 		}
 		if (key_exists('dir_res_perm', $config)) {
-			$perm = [...$perm, ...$config['dir_res_perm']];
+			$perm = array_merge($perm, $config['dir_res_perm']);
 		}
 		$dir_res_perm = array_map(
 			$res_perm_fn,
@@ -420,7 +420,7 @@ class Miscellaneous extends TModule
 			$perm[$sd_res[$i]] = 'rw'; // read write is default value
 		}
 		if (key_exists('sd_res_perm', $config)) {
-			$perm = [...$perm, ...$config['sd_res_perm']];
+			$perm = array_merge($perm, $config['sd_res_perm']);
 		}
 		$sd_res_perm = array_map(
 			$res_perm_fn,
@@ -435,7 +435,7 @@ class Miscellaneous extends TModule
 			$perm[$fd_res[$i]] = 'rw'; // read write is default value
 		}
 		if (key_exists('fd_res_perm', $config)) {
-			$perm = [...$perm, ...$config['fd_res_perm']];
+			$perm = array_merge($perm, $config['fd_res_perm']);
 		}
 		$fd_res_perm = array_map(
 			$res_perm_fn,
@@ -450,7 +450,7 @@ class Miscellaneous extends TModule
 			$perm[$bcons_res[$i]] = 'rw'; // read write is default value
 		}
 		if (key_exists('bcons_res_perm', $config)) {
-			$perm = [...$perm, ...$config['bcons_res_perm']];
+			$perm = array_merge($perm, $config['bcons_res_perm']);
 		}
 		$bcons_res_perm = array_map(
 			$res_perm_fn,
