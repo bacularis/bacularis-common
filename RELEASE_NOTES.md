@@ -1,8 +1,5 @@
 
-This is a new feature and bug fix release. We added capability to set read-only,
-read-write and no access permissions per Bacula configuration resource for
-users, hosts and host groups. It makes Bacularis granular permission control
-even more powerful and attractive.
+We fixed support for PHP 7.4 and 8.0 that has been broken in 2.5.0.
 
 Changes:
- - Add Bacula resource permission settings
+ - Fix support for PHP 7.4 and 8.0
