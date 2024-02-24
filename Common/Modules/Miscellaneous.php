@@ -319,6 +319,11 @@ class Miscellaneous extends TModule
 		return (preg_match('/^\d+$/', $id) === 1);
 	}
 
+	public function isValidOrderType($val)
+	{
+		return (preg_match('/^(asc|desc)$/i', $val) === 1);
+	}
+
 	public function isValidPath($path)
 	{
 		return (preg_match('/^[\p{L}\p{N}\p{Z}\p{Sc}\p{Pd}\[\]\-\'\/\\(){}:.#~_,+!$]{0,10000}$/u', $path) === 1);
