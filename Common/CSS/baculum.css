@@ -5,6 +5,7 @@ body {
 	--color-main: #4caf50;
 	--color-error: #f44336;
 	--color-warning: #ffffcc;
+	--color-function: #f1f1f1;
 	--anchor-color: black;
 	--bkg-color-modal: white;
 	--text-color-table-head: white;
@@ -29,6 +30,7 @@ body.dark-theme {
 	--color-main: #364a89;
 	--color-error: #d33a2f;
 	--color-warning: #0e0e0e;
+	--color-function: #606060;
 	--anchor-color: #e5e5e5;
 	--bkg-color-modal: #242424;
 	--text-color-table-head: #e5e5e5;
@@ -965,6 +967,10 @@ input:checked + .slider:before {
 
 .w3-text-red {
 	color: var(--color-error) !important;
+}
+
+.w3-light-gray {
+	background-color: var(--color-function) !important;
 }
 
 .subtab_btn:hover {

@@ -294,6 +294,9 @@ function set_global_listeners() {
 
 
 var get_random_string = function(allowed, len) {
+	if (!allowed) {
+		allowed = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	}
 	var random_string = '';
 	for(var i = 0; i < len; i++) {
 		random_string += allowed.charAt(Math.floor(Math.random() * allowed.length));
