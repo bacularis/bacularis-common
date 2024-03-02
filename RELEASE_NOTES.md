@@ -1,5 +1,9 @@
 
-We fixed support for PHP 7.4 and 8.0 that has been broken in 2.5.0.
+This is a new function release. We added common changes required to
+data views function working.
 
 Changes:
- - Fix support for PHP 7.4 and 8.0
+ - Add changes for data views function
+ - Add order type validator
+ - Update actions/checkout and actions/cache to version 4
+
