@@ -101,7 +101,7 @@ class NewAuthClient extends PortletTemplate
 						'name' => $this->APIOAuth2Name->Text
 					];
 					$perms = $this->ResourcePermissions->getPermissions();
-					$oauth2_cfg = array_merge($oauth2_cfg, $perms);
+					$oauth2_cfg[$this->APIOAuth2ClientId->Text] = array_merge($oauth2_cfg[$this->APIOAuth2ClientId->Text], $perms);
 					$result = $this->getModule('oauth2_config')->setConfig($oauth2_cfg);
 				} else {
 					$exists = true;
@@ -116,7 +116,7 @@ class NewAuthClient extends PortletTemplate
 					'name' => $this->APIOAuth2Name->Text
 				];
 				$perms = $this->ResourcePermissions->getPermissions();
-				$oauth2_cfg = array_merge($oauth2_cfg, $perms);
+				$oauth2_cfg[$this->APIOAuth2ClientIdHidden->Value] = array_merge($oauth2_cfg[$this->APIOAuth2ClientIdHidden->Value], $perms);
 				$result = $this->getModule('oauth2_config')->setConfig($oauth2_cfg);
 			}
 		}
