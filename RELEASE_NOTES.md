@@ -1,9 +1,7 @@
 
-This is a new function release. We added common changes required to
-data views function working.
+This is a bug fix release. We fixed an important bug for creating
+OAuth2 accounts in API panel.
 
 Changes:
- - Add changes for data views function
- - Add order type validator
- - Update actions/checkout and actions/cache to version 4
+ - Fix creating OAuth2 accounts in API panel
 
