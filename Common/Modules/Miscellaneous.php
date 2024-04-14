@@ -42,6 +42,12 @@ class Miscellaneous extends TModule
 {
 	public const RPATH_PATTERN = '/^b2\d+$/';
 
+	/**
+	 * Sort order types.
+	 */
+	public const ORDER_ASC = 'asc';
+	public const ORDER_DESC = 'desc';
+
 	public $job_types = [
 		'B' => 'Backup',
 		'M' => 'Migrated',
@@ -321,7 +327,8 @@ class Miscellaneous extends TModule
 
 	public function isValidOrderType($val)
 	{
-		return (preg_match('/^(asc|desc)$/i', $val) === 1);
+		$val = strtolower($val);
+		return in_array($val, [self::ORDER_ASC, self::ORDER_DESC]);
 	}
 
 	public function isValidPath($path)
@@ -468,5 +475,36 @@ class Miscellaneous extends TModule
 			'fd_res_perm' => $fd_res_perm,
 			'bcons_res_perm' => $bcons_res_perm
 		];
+	}
+
+	/**
+	 * Sort array by given property.
+	 * Supported ascending and descending sorting.
+	 * Note: for many items, it can be a bit slow
+	 *
+	 * @param array $result array with results to sort
+	 * @param string $order_by order property to sort
+	 * @param string $order_type order type (asc or desc)
+	 * @param int|string $key if we sort nested array, it is key that stores data to sort
+	 */
+	public static function sortByProperty(&$result, $order_by, $order_type, $key = null)
+	{
+		$order_by = strtolower($order_by);
+		$order_type = strtolower($order_type);
+		$sort_by_func = function ($a, $b) use ($order_by, $order_type, $key) {
+			$cmp = 0;
+			if (is_string($key) || is_int($key)) {
+				$a = $a[$key];
+				$b = $b[$key];
+			}
+			if ($a[$order_by] != $b[$order_by]) {
+				$cmp = strnatcasecmp($a[$order_by], $b[$order_by]);
+				if ($order_type === self::ORDER_DESC) {
+					$cmp = -$cmp;
+				}
+			}
+			return $cmp;
+		};
+		usort($result, $sort_by_func);
 	}
 }
