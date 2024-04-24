@@ -184,7 +184,10 @@ class Ldap extends CommonModule
 	{
 		$success = false;
 		if ($this->adminBind()) {
-			$filter = sprintf('(%s=%s)', $this->params['user_attr'], $username);
+			$filter = $this->getFilter($this->params['user_attr'], $username);
+			if (key_exists('filters', $this->params) && !empty($this->params['filters'])) {
+				$filter = $this->joinFiltersAnd([$this->params['filters'], $filter]);
+			}
 			$user = $this->search($this->params['base_dn'], $filter);
 			$cnt = ldap_count_entries($this->conn, $user);
 			if ($cnt > 0) {
@@ -229,6 +232,9 @@ class Ldap extends CommonModule
 	{
 		$user_attr = [];
 		if ($this->adminBind()) {
+			if (key_exists('filters', $this->params) && !empty($this->params['filters'])) {
+				$filter = $this->joinFiltersAnd([$this->params['filters'], $filter]);
+			}
 			$search = $this->search($this->params['base_dn'], $filter, $attr);
 			if ($search) {
 				$user_attr = ldap_get_entries($this->conn, $search);
@@ -316,5 +322,18 @@ class Ldap extends CommonModule
 	public function getFilter($key, $value)
 	{
 		return sprintf('(%s=%s)', $key, $value);
+	}
+
+	/**
+	 * Join filters using AND operator.
+	 * Filters are used to search on LDAP server.
+	 *
+	 * @param array $filters filters to join
+	 * @return formatted string with joined filters
+	 */
+	public function joinFiltersAnd(array $filters): string
+	{
+		$filters = implode('', $filters);
+		return sprintf('(&%s)', $filters);
 	}
 }
