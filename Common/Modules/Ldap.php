@@ -183,7 +183,7 @@ class Ldap extends CommonModule
 	public function login($username, $password)
 	{
 		$success = false;
-		if ($this->adminBind()) {
+		if ($this->adminBind() && $password !== '') {
 			$filter = $this->getFilter($this->params['user_attr'], $username);
 			if (key_exists('filters', $this->params) && !empty($this->params['filters'])) {
 				$filter = $this->joinFiltersAnd([$this->params['filters'], $filter]);
