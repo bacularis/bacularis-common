@@ -376,6 +376,11 @@ class Miscellaneous extends TModule
 		return (preg_match('/^(all|deleted)$/', $type) === 1);
 	}
 
+	public function isValidDiffMethod(string $method): bool
+	{
+		return (preg_match('/^(a|b)_(and|until|not)_(a|b)$/', $method) === 1);
+	}
+
 	public function isValidOutput($type)
 	{
 		return (preg_match('/^(raw|json)$/', $type) === 1);
