@@ -1,3 +1,19 @@
+const Components = {
+	comp: {
+		'dir': {full_name: 'Director'},
+		'sd': {full_name: 'Storage Daemon'},
+		'fd': {full_name: 'File Daemon'},
+		'bcons': {full_name: 'Console'}
+	},
+	get_full_name: function(comp) {
+		let name = '';
+		if (this.comp.hasOwnProperty(comp)) {
+			name = this.comp[comp].full_name;
+		}
+		return name;
+	}
+};
+
 var Cookies = {
 	default_exipration_time: 31536000000, // 1 year in miliseconds
 	set_cookie: function(name, value, expiration) {
