@@ -92,6 +92,8 @@ class ConfigIni extends CommonModule implements IConfigFormat
 						if (!$is_assoc) {
 							// array with numeric indexes, set empty key
 							$k = '';
+						} else {
+							$k = '"' . $k . '"';
 						}
 						$content .= "{$option}[$k] = $v\n";
 					}
