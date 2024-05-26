@@ -1,7 +1,7 @@
 
-This is a major new function release.
+This is a new bug fix release. We fixed using apostrophe character
+in data view name.
 
 Changes:
- - Add job file difference method validator
- - Add missing components object
+ - Fix support for apostrophe in data view name
 
