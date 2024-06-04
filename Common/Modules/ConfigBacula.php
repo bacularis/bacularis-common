@@ -96,12 +96,11 @@ class ConfigBacula extends CommonModule implements IConfigFormat
 	/**
 	 * Prepare single resource content in Bacula format.
 	 *
-	 * @access private
 	 * @param array $resource resource data
 	 * @param string $nesting_number current (sub)resource number
 	 * @return string resource content
 	 */
-	private function prepareResource($resource, $nesting_number = 0)
+	public function prepareResource($resource, $nesting_number = 0)
 	{
 		$content = '';
 		foreach ($resource as $name => $value) {
