@@ -248,6 +248,14 @@ class Miscellaneous extends TModule
 		return $resources;
 	}
 
+	public function setResourceToAPIForm(string $resource): string
+	{
+		if ($resource == 'FileSet') {
+			$resource = 'Fileset';
+		}
+		return $resource;
+	}
+
 	public function getJobStatesByType($type)
 	{
 		$statesByType = [];
