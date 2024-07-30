@@ -29,6 +29,7 @@
 
 namespace Bacularis\Common\Modules;
 
+use Prado\Prado;
 use Prado\Web\TAssetManager;
 use Prado\Exceptions\TInvalidDataValueException;
 
@@ -59,7 +60,7 @@ class BAssetManager extends TAssetManager
 	{
 		if (!is_dir($dst)) {
 			@mkdir($dst);
-			@chmod($dst, PRADO_CHMOD);
+			@chmod($dst, Prado::getDefaultDirPermissions());
 		}
 		$dst_file = $dst . DIRECTORY_SEPARATOR . basename($src);
 		$src_mtime = @filemtime($src);
@@ -75,7 +76,7 @@ class BAssetManager extends TAssetManager
 	{
 		if (!is_dir($dst)) {
 			@mkdir($dst);
-			@chmod($dst, PRADO_CHMOD);
+			@chmod($dst, Prado::getDefaultDirPermissions());
 		}
 		if ($folder = @opendir($src)) {
 			while ($file = @readdir($folder)) {
@@ -90,7 +91,7 @@ class BAssetManager extends TAssetManager
 						if ($src_mtime !== false) {
 							@touch($dst_file, $src_mtime);
 						}
-						@chmod($dst_file, PRADO_CHMOD);
+						@chmod($dst_file, Prado::getDefaultFilePermissions());
 					}
 				} else {
 					$this->copyDirectory($src_file, $dst_file);
