@@ -179,7 +179,7 @@ class BasicUserConfig extends CommonModule
 		foreach ($all_users as $user => $pwd) {
 			$users[] = "$user:$pwd";
 		}
-		$usersToFile = implode("\n", $users);
+		$usersToFile = implode(PHP_EOL, $users) . PHP_EOL;
 		$old_umask = umask(0);
 		umask(0077);
 		$result = file_put_contents($this->getConfigPath(), $usersToFile, LOCK_EX) !== false;
