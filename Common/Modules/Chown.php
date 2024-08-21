@@ -119,7 +119,7 @@ class Chown extends CommonModule
 	 * @param int $ptype command pattern type
 	 * @return string full command string
 	 */
-	private function prepareCommand(string $file, string $chuser = '', string $chgroup = '', array $params = [], int $ptype)
+	private function prepareCommand(string $file, string $chuser = '', string $chgroup = '', array $params = [], int $ptype = self::PTYPE_REG_CMD)
 	{
 		$opts = [];
 		if (key_exists('recursive', $params) && $params['recursive'] === true) {

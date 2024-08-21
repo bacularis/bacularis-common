@@ -55,6 +55,7 @@ class Su extends CommonModule
 	 * @param string $password password to log in
 	 * @param array $params SU command parameters
 	 * @param int $ptype command pattern type
+	 * @param array $env_vars environment variables
 	 * @return array command output
 	 */
 	public function execCommand(string $user, string $password, array $params, int $ptype = self::PTYPE_REG_CMD, $env_vars = []): array
