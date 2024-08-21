@@ -16,6 +16,10 @@
 		<module id="config_section" class="Bacularis\Common\Modules\ConfigSection" />
 		<module id="expect" class="Bacularis\Common\Modules\BExpect" />
 		<module id="data_deps" class="Bacularis\Common\Modules\DataDependencies" />
+		<module id="su" class="Bacularis\Common\Modules\Su" />
+		<module id="cp" class="Bacularis\Common\Modules\Cp" />
+		<module id="chown" class="Bacularis\Common\Modules\Chown" />
+		<module id="chmod" class="Bacularis\Common\Modules\Chmod" />
 		<!-- authentication and authorization modules -->
 		<module id="auth_basic" class="Bacularis\Common\Modules\AuthBasic" />
 		<module id="auth_oauth2" class="Bacularis\Common\Modules\AuthOAuth2" />
