@@ -73,8 +73,8 @@ do
 		then
 			if [ "$file" = "bacula-dir.conf" -o "$file" = "bacula-sd.conf" ]
 			then
-				echo "[WARNING] The file '${BACULA_CONFIG_DIR}/${file}' may need manual permission settings to be readable/writeable by web server and Bacula component."
-				continue
+				# Switch bacula user to be able set web server group below
+				chown 'bacula' "${BACULA_CONFIG_DIR}/${file}"
 			fi
 		fi
 
