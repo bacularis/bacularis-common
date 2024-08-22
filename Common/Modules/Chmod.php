@@ -75,7 +75,7 @@ class Chmod extends CommonModule
 			$use_sudo = true;
 		}
 		if ($use_sudo) {
-			$cmd = sprintf('%s %s', self::SUDO, $cmd);
+			$cmd = sprintf('LANG=C %s %s', self::SUDO, $cmd);
 		}
 
 		if (!empty($user) && !empty($password)) {
