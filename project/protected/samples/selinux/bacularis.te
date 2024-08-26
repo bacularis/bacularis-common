@@ -133,7 +133,7 @@ allow httpd_t mysqld_etc_t:file { create write relabelfrom relabelto rename seta
 allow httpd_t mysqld_port_t:tcp_socket name_connect;
 allow httpd_t postfix_etc_t:file read;
 allow httpd_t postgresql_db_t:dir { create add_name remove_name read write rmdir relabelfrom relabelto setattr };
-allow httpd_t postgresql_db_t:file { create getattr setattr open relabelfrom relabelto write unlink rename read link ioctl };
+allow httpd_t postgresql_db_t:file { append create getattr setattr open relabelfrom relabelto write unlink rename read link ioctl };
 allow httpd_t postgresql_exec_t:file { getattr setattr unlink relabelto read open rename execute execute_no_trans map };
 allow httpd_t postgresql_log_t:dir relabelto;
 allow httpd_t postgresql_log_t:file { open write };
@@ -190,3 +190,5 @@ allow systemd_logind_t httpd_t:dbus send_msg;
 #============= groupadd_t ==============
 allow groupadd_t httpd_t:fifo_file { read ioctl };
 
+#============= fprintd_t ==============
+allow fprintd_t httpd_t:dbus send_msg;
