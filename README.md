@@ -3,10 +3,10 @@
 Common Bacularis files shared between the Bacularis API and the Bacularis Web services.
 
 
-[![Latest Stable Version](http://poser.pugx.org/bacularis/bacularis-common/v)](https://packagist.org/packages/bacularis/bacularis-common)
-[![Total Downloads](http://poser.pugx.org/bacularis/bacularis-common/downloads)](https://packagist.org/packages/bacularis/bacularis-common)
-[![License](http://poser.pugx.org/bacularis/bacularis-common/license)](https://packagist.org/packages/bacularis/bacularis-common)
-[![PHP Version Require](http://poser.pugx.org/bacularis/bacularis-common/require/php)](https://packagist.org/packages/bacularis/bacularis-common)
+![GitHub Release](https://img.shields.io/github/v/release/bacularis/bacularis-common)
+![Packagist Downloads](https://img.shields.io/packagist/dt/bacularis/bacularis-common)
+![Packagist License](https://img.shields.io/packagist/l/bacularis/bacularis-common)
+![Packagist Dependency Version](https://img.shields.io/packagist/dependency-v/bacularis/bacularis-common/PHP)
 
 # Bacularis - The Bacula web interface
 
