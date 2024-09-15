@@ -5,5 +5,6 @@ On the bug fixes side we fixed installing Bacula in initial wizard if the SELinu
 
 **Changes**
  - Add interfaces to create new plugins
+ - Add checking method if subtab is opened
  - Fix install Bacula using initial wizard if SELinux is enabled
 
