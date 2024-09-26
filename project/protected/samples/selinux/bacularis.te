@@ -149,7 +149,7 @@ allow httpd_t rpm_script_t:process { noatsecure rlimitinh siginh transition };
 allow httpd_t rpm_t:dbus send_msg;
 allow httpd_t rpm_t:dir search;
 allow httpd_t rpm_t:process signull;
-allow httpd_t rpm_var_cache_t:dir { read write add_name remove_name };
+allow httpd_t rpm_var_cache_t:dir { create read write add_name remove_name };
 allow httpd_t rpm_var_cache_t:file { getattr setattr write open read ioctl create lock unlink };
 allow httpd_t rpm_var_lib_t:dir { read write add_name remove_name create };
 allow httpd_t rpm_var_lib_t:file { setattr getattr read write open lock map create unlink };
