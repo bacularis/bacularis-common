@@ -69,7 +69,7 @@ do
 	then
 		fuser=`stat -c '%U' "${BACULA_CONFIG_DIR}/${file}"`
 		fgroup=`stat -c '%G' "${BACULA_CONFIG_DIR}/${file}"`
-		if  [ "$fuser" = "root" -a "$fgroup" = "bacula" ]
+		if  [ "$fuser" = "root" -a "$fgroup" = "bacula" ] || [ "$fuser" = "root" -a "$fgroup" = "tape" ]
 		then
 			if [ "$file" = "bacula-dir.conf" -o "$file" = "bacula-sd.conf" ]
 			then
