@@ -1,10 +1,15 @@
 
-This is a new feature and bug fix release. We added an interface to add plugins.
+In the common part of the Bacularis 4.2.0 we moved a couple of things
+from API and Web to have one common interface for plugins.
 
-On the bug fixes side we fixed installing Bacula in initial wizard if the SELinux is used.
+Besides that we updated SELinux policy module and fixed other issues
+related to the deployment function.
 
 **Changes**
- - Add interfaces to create new plugins
- - Add checking method if subtab is opened
- - Fix install Bacula using initial wizard if SELinux is enabled
+ - Add interface for Bacula config plugins
+ - Update SELinux policy module
+ - Improve plugin support organization
+ - Fix SD config permission setting
+ - Move table toolbar function to Common
+ - Move Bacula config module to API
 
