@@ -12,7 +12,6 @@
 		<module id="logging" class="Bacularis\Common\Modules\Logging" />
 		<module id="misc" class="Bacularis\Common\Modules\Miscellaneous" />
 		<module id="config_ini" class="Bacularis\Common\Modules\ConfigIni" />
-		<module id="config_bacula" class="Bacularis\Common\Modules\ConfigBacula" />
 		<module id="config_section" class="Bacularis\Common\Modules\ConfigSection" />
 		<module id="expect" class="Bacularis\Common\Modules\BExpect" />
 		<module id="data_deps" class="Bacularis\Common\Modules\DataDependencies" />
