@@ -1,4 +1,4 @@
-module bacularis 1.0.4;
+module bacularis 1.0.5;
 
 require {
 	type admin_home_t;
