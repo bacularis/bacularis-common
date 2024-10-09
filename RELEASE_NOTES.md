@@ -1,8 +1,7 @@
 
-In Bacularis 4.2.0 we found a non-existing module definition that causes
-Bacularis break. Bacularis 4.2.1 is a bug fix release that fixes this
-error.
+This is a bug fix release. We fixed a javascript error in the resource
+permission settings.
 
 **Changes**
- - Fix non-existing module definition
+ - Fix javascript error in Bacula resource permission settings
 
