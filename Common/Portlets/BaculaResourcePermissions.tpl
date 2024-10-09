@@ -449,52 +449,60 @@ var <%=$this->ClientID%>ResourcePermissions = {
 		let perms;
 
 		// Save director settings
-		const dir_enabled = document.getElementById(this.director.ids.enabled);
-		const dir_input = document.getElementById(this.ids.dir_perm_settings);
-		perms = [];
-		if (dir_enabled.checked) {
-			const dir_settings = this.director.get_settings();
-			for (let i = 0; i < dir_settings.length; i++) {
-				perms.push(dir_settings[i].resource + ':' + dir_settings[i].perm);
+		if (this.director) {
+			const dir_enabled = document.getElementById(this.director.ids.enabled);
+			const dir_input = document.getElementById(this.ids.dir_perm_settings);
+			perms = [];
+			if (dir_enabled.checked) {
+				const dir_settings = this.director.get_settings();
+				for (let i = 0; i < dir_settings.length; i++) {
+					perms.push(dir_settings[i].resource + ':' + dir_settings[i].perm);
+				}
 			}
+			dir_input.value = perms.join(' ');
 		}
-		dir_input.value = perms.join(' ');
 
 		// Save storage settings
-		const sd_enabled = document.getElementById(this.storage.ids.enabled);
-		const sd_input = document.getElementById(this.ids.sd_perm_settings);
-		perms = [];
-		if (sd_enabled.checked) {
-			const sd_settings = this.storage.get_settings();
-			for (let i = 0; i < sd_settings.length; i++) {
-				perms.push(sd_settings[i].resource + ':' + sd_settings[i].perm);
+		if (this.storage) {
+			const sd_enabled = document.getElementById(this.storage.ids.enabled);
+			const sd_input = document.getElementById(this.ids.sd_perm_settings);
+			perms = [];
+			if (sd_enabled.checked) {
+				const sd_settings = this.storage.get_settings();
+				for (let i = 0; i < sd_settings.length; i++) {
+					perms.push(sd_settings[i].resource + ':' + sd_settings[i].perm);
+				}
 			}
+			sd_input.value = perms.join(' ');
 		}
-		sd_input.value = perms.join(' ');
 
 		// Save client settings
-		const fd_enabled = document.getElementById(this.client.ids.enabled);
-		const fd_input = document.getElementById(this.ids.fd_perm_settings);
-		perms = [];
-		if (fd_enabled.checked) {
-			const fd_settings = this.client.get_settings();
-			for (let i = 0; i < fd_settings.length; i++) {
-				perms.push(fd_settings[i].resource + ':' + fd_settings[i].perm);
+		if (this.client) {
+			const fd_enabled = document.getElementById(this.client.ids.enabled);
+			const fd_input = document.getElementById(this.ids.fd_perm_settings);
+			perms = [];
+			if (fd_enabled.checked) {
+				const fd_settings = this.client.get_settings();
+				for (let i = 0; i < fd_settings.length; i++) {
+					perms.push(fd_settings[i].resource + ':' + fd_settings[i].perm);
+				}
 			}
+			fd_input.value = perms.join(' ');
 		}
-		fd_input.value = perms.join(' ');
 
 
-		const bcons_enabled = document.getElementById(this.bconsole.ids.enabled);
-		const bcons_input = document.getElementById(this.ids.bcons_perm_settings);
-		perms = [];
-		if (bcons_enabled.checked) {
-			const bcons_settings = this.bconsole.get_settings();
-			for (let i = 0; i < bcons_settings.length; i++) {
-				perms.push(bcons_settings[i].resource + ':' + bcons_settings[i].perm);
+		if (this.bconsole) {
+			const bcons_enabled = document.getElementById(this.bconsole.ids.enabled);
+			const bcons_input = document.getElementById(this.ids.bcons_perm_settings);
+			perms = [];
+			if (bcons_enabled.checked) {
+				const bcons_settings = this.bconsole.get_settings();
+				for (let i = 0; i < bcons_settings.length; i++) {
+					perms.push(bcons_settings[i].resource + ':' + bcons_settings[i].perm);
+				}
 			}
+			bcons_input.value = perms.join(' ');
 		}
-		bcons_input.value = perms.join(' ');
 	},
 	cleanup: function() {
 		[
