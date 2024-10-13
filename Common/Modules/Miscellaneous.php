@@ -303,6 +303,11 @@ class Miscellaneous extends TModule
 		return (preg_match('/^[\w:\.\-\s]{1,127}$/', $name) === 1);
 	}
 
+	public function filterValidNameList(array $name_list): array
+	{
+		return array_filter($name_list, fn($item) => $this->isValidName($item));
+	}
+
 	public function isValidState($state)
 	{
 		return (preg_match('/^[\w\-]+$/', $state) === 1);
@@ -341,7 +346,7 @@ class Miscellaneous extends TModule
 
 	public function isValidPath($path)
 	{
-		return (preg_match('/^[\p{L}\p{N}\p{Z}\p{Sc}\p{Pd}\[\]\-\'\/\\(){}:.#~_,+!$]{0,10000}$/u', $path) === 1);
+		return (preg_match('/^[\p{L}\p{N}\p{Z}\p{Sc}\p{Pd}\[\]\-\'\/\\(){}:.#~_,+!$%]{0,10000}$/u', $path) === 1);
 	}
 
 	public function isValidFilename($path)
