@@ -43,6 +43,7 @@ class DeviceError extends GenericError
 	public const ERROR_DEVICE_AUTOCHANGER_DRIVE_DOES_NOT_EXIST = 133;
 	public const ERROR_DEVICE_WRONG_SLOT_NUMBER = 134;
 	public const ERROR_DEVICE_DRIVE_DOES_NOT_BELONG_TO_AUTOCHANGER = 135;
+	public const ERROR_DEVICE_INVALID_VALUE = 136;
 
 	public const MSG_ERROR_DEVICE_DEVICE_CONFIG_DOES_NOT_EXIST = 'Device config does not exist.';
 	public const MSG_ERROR_DEVICE_INVALID_COMMAND = 'Invalid changer command.';
@@ -50,4 +51,5 @@ class DeviceError extends GenericError
 	public const MSG_ERROR_DEVICE_AUTOCHANGER_DRIVE_DOES_NOT_EXIST = 'Autochanger drive does not exist.';
 	public const MSG_ERROR_DEVICE_WRONG_SLOT_NUMBER = 'Wrong slot number.';
 	public const MSG_ERROR_DEVICE_DRIVE_DOES_NOT_BELONG_TO_AUTOCHANGER = 'Drive does not belong to selected autochanger.';
+	public const MSG_ERROR_DEVICE_INVALID_VALUE = 'Invalid device value.';
 }
