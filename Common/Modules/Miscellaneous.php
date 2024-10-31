@@ -305,7 +305,7 @@ class Miscellaneous extends TModule
 
 	public function filterValidNameList(array $name_list): array
 	{
-		return array_filter($name_list, fn($item) => $this->isValidName($item));
+		return array_filter($name_list, fn ($item) => $this->isValidName($item));
 	}
 
 	public function isValidState($state)
