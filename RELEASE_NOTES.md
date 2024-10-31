@@ -1,7 +1,8 @@
 
-This is a bug fix release. We fixed a javascript error in the resource
-permission settings.
+This is a new function and bug fix release. In the common part we did small
+changes in error codes and general validation.
 
 **Changes**
- - Fix javascript error in Bacula resource permission settings
+ - Extend device error codes
+ - General validation improvements
 
