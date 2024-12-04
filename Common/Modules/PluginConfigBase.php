@@ -33,6 +33,11 @@ abstract class PluginConfigBase extends ConfigFileModule
 	public const SETTINGS_NAME_PATTERN = '(?!^\d+$)[\p{L}\p{N}\p{Z}\-\'\\/\\(\\)\\{\\}:.#~_,+!$]{1,100}';
 
 	/**
+	 * Plugin directory path.
+	 */
+	private const PLUGIN_DIR_PATH = 'Bacularis.Common.Plugins';
+
+	/**
 	 * Plugin types.
 	 */
 	public const PLUGIN_TYPE_BACULA_CONFIGURATION = 'bacula-configuration';
@@ -67,7 +72,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 	 * @param string $section specific config settings section
 	 * @return array plugins config
 	 */
-	public function getConfig($section = null): array
+	public function getConfig($section = null, $skip_default = false): array
 	{
 		$config = [];
 		if (is_null($this->config)) {
@@ -77,7 +82,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 				$config_file_path,
 				$config_file_format
 			);
-			$this->prepareConfigUse($config);
+			$this->prepareConfigUse($config, $skip_default);
 			$this->config = $config;
 		}
 		if (is_string($section)) {
@@ -115,7 +120,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 	 *
 	 * @param int $config config reference
 	 */
-	private function prepareConfigUse(array &$config): void
+	private function prepareConfigUse(array &$config, $skip_default = false): void
 	{
 		foreach ($config as $name => &$settings) {
 			$settings['name'] = $name;
@@ -127,6 +132,13 @@ abstract class PluginConfigBase extends ConfigFileModule
 				foreach ($settings['parameters'] as $sparam => &$svalue) {
 					$pprops = $this->plugins[$settings['plugin']]['parameters'][$i];
 					if ($pprops['name'] != $sparam) {
+						continue;
+					}
+					if ($pprops['type'] == 'boolean') {
+						$svalue = (bool) $svalue;
+					}
+					if ($skip_default && $svalue == $pprops['default']) {
+						unset($settings['parameters'][$sparam]);
 						continue;
 					}
 					// Prepare data for specific field types
@@ -215,38 +227,51 @@ abstract class PluginConfigBase extends ConfigFileModule
 	/**
 	 * Get installed plugin list with properties.
 	 *
-	 * @param string $ftype plugin type
+	 * @param string|null $ftype plugin type
+	 * @param string|null $pname plugin name (file/class name)
 	 * @return array plugin list
 	 */
-	public function getPlugins(?string $ftype = null): array
+	public function getPlugins(?string $ftype = null, ?string $pname = null): array
 	{
 		$plugins = [];
 		$plugin_dir_path = $this->getPluginDirPath();
-		$path = Prado::getPathOfNamespace($plugin_dir_path);
-		$pattern = $path . DIRECTORY_SEPARATOR . static::PLUGIN_FILE_PATTERN;
-		$iterator = new \GlobIterator($pattern);
-		while ($iterator->valid()) {
-			$plugin = $iterator->current()->getFilename();
-			$ppath = $iterator->current()->getPathname();
-			require_once($ppath);
-			$cls = rtrim($plugin, '.php');
-			$name = $cls::getName();
-			$version = $cls::getVersion();
-			$type = $cls::getType();
-			$parameters = $cls::getParameters();
-			if (is_string($ftype) && $type !== $ftype) {
-				// filter by type
-				continue;
+		$paths = [
+			self::PLUGIN_DIR_PATH,
+			$plugin_dir_path
+		];
+		for ($i = 0; $i < count($paths); $i++) {
+			$path = Prado::getPathOfNamespace($paths[$i]);
+			$pattern = $path . DIRECTORY_SEPARATOR . static::PLUGIN_FILE_PATTERN;
+			$iterator = new \GlobIterator($pattern);
+			while ($iterator->valid()) {
+				$plugin = $iterator->current()->getFilename();
+				$ppath = $iterator->current()->getPathname();
+				require_once($ppath);
+				$cls = preg_replace('/\.php$/', '', $plugin);
+				$name = $cls::getName();
+				$version = $cls::getVersion();
+				$type = $cls::getType();
+				$parameters = $cls::getParameters();
+				if (is_string($ftype) && $type !== $ftype) {
+					// filter by type
+					$iterator->next();
+					continue;
+				}
+				if (is_string($pname) && $cls !== $pname) {
+					// filter by plugin name
+					$iterator->next();
+					continue;
+				}
+				$plugins[$cls] = [
+					'cls' => $cls,
+					'path' => $ppath,
+					'name' => $name,
+					'version' => $version,
+					'type' => $type,
+					'parameters' => $parameters
+				];
+				$iterator->next();
 			}
-			$plugins[$cls] = [
-				'cls' => $cls,
-				'path' => $ppath,
-				'name' => $name,
-				'version' => $version,
-				'type' => $type,
-				'parameters' => $parameters
-			];
-			$iterator->next();
 		}
 		return $plugins;
 	}
