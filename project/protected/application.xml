@@ -34,6 +34,13 @@
 		<!-- communication modules -->
 		<module id="request" class="THttpRequest" UrlManager="url_manager" UrlFormat="HiddenPath" />
 		<module id="url_manager" class="Bacularis\Common\Modules\BaculumUrlMapping" EnableCustomUrl="true" />
+		<!-- plugin modules -->
+		<module id="plugins" class="Bacularis\Common\Modules\Plugins" />
+		<module id="bpipe" class="Bacularis\Common\Modules\BPipe" />
+		<module id="mysqlbackup_plugin" class="Bacularis\Common\Plugins\MySQLBackup" />
+		<module id="mariadbbackup_plugin" class="Bacularis\Common\Plugins\MariaDBBackup" />
+		<!-- web modules available in common -->
+		<module id="host_config" class="Bacularis\Web\Modules\HostConfig" />
 	</modules>
 	<services>
 		<service id="page" class="TPageService" BasePath="Bacularis.Common.Pages" DefaultPage="CommonPage" />
