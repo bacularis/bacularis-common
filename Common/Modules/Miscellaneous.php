@@ -183,6 +183,11 @@ class Miscellaneous extends TModule
 		return $this->jobLevels;
 	}
 
+	public function getJobLevelLong($level)
+	{
+		return ($this->jobLevels[$level] ?? '');
+	}
+
 	public function getJobState($jobStateLetter = null)
 	{
 		$state = null;
@@ -346,12 +351,12 @@ class Miscellaneous extends TModule
 
 	public function isValidPath($path)
 	{
-		return (preg_match('/^[\p{L}\p{N}\p{Z}\p{Sc}\p{Pd}\[\]\-\'\/\\(){}:.#~_,+!$%]{0,10000}$/u', $path) === 1);
+		return (preg_match('/^[\p{L}\p{N}\p{Z}\p{Sc}\p{Pd}\[\]\-\'\/\\(){}:.#~_,+!$%=]{0,10000}$/u', $path) === 1);
 	}
 
 	public function isValidFilename($path)
 	{
-		return (preg_match('/^[\p{L}\p{N}\p{Z}\p{Sc}\p{Pd}\[\]\-\'\\(){}:.#~_,+!$]{0,1000}$/u', $path) === 1);
+		return (preg_match('/^[\p{L}\p{N}\p{Z}\p{Sc}\p{Pd}\[\]\-\'\\(){}:.#~_,+!$=]{0,1000}$/u', $path) === 1);
 	}
 
 	public function isValidReplace($replace)
@@ -524,5 +529,19 @@ class Miscellaneous extends TModule
 			return $cmp;
 		};
 		usort($result, $sort_by_func);
+	}
+
+	public function maskPassword($pwd) {
+		return preg_replace('/./', '*', $pwd);
+	}
+
+	public function maskPasswordParams(array $params) {
+		for ($i = 0; $i < count($params); $i++) {
+			if (preg_match('/(?P<param>(pass(word|phrase)?|pwd))[= ](?P<pwd>[^ ]+)/i', $params[$i], $match) == 1) {
+				$pwd_mask = $this->maskPassword($match['pwd']);
+				$params[$i] = str_replace($match['pwd'], $pwd_mask, $params[$i]);
+			}
+		}
+		return $params;
 	}
 }
