@@ -152,6 +152,232 @@ var W3SideBar = {
 	}
 };
 
+const oPluginForm = {
+	ids: {
+		plugin_form: '',
+		settings_name: ''
+	},
+	save_cb: null,
+	types: {
+		arr: 'array',
+		arr_multi: 'array_multiple',
+		str: 'string',
+		str_long: 'string_long',
+		bool: 'boolean',
+		int: 'integer',
+		pwd: 'password'
+	},
+	name_prefix: 'plugin_form_',
+	form_props: null,
+	current_cat: null,
+	init: function(opts) {
+		this.opts = opts;
+	},
+	build_form: function(props) {
+		this.clear_plugin_settings_form();
+		this.form_props = props;
+		for (let i = 0; i < this.form_props.parameters.length; i++) {
+			this.add_category(this.form_props.parameters[i]);
+			this.add_field(this.form_props.parameters[i]);
+		}
+	},
+	set_form_fields: function(props, plugin_fields) {
+		let el, type, name, value, def_value;
+		for (let i = 0; i < plugin_fields.length; i++) {
+			type = plugin_fields[i].type;
+			name = plugin_fields[i].name;
+			value = props ? props[name] : '';
+			def_value = plugin_fields[i].default;
+			el = document.getElementById(this.name_prefix + name);
+			if (!el) {
+				continue;
+			}
+			if (type == this.types.str || type == this.types.pwd || type == this.types.str_long || type == this.types.int || type == this.types.arr) {
+				el.value = value || def_value;
+			} else if (type == this.types.bool) {
+				el.checked = (value && value != def_value) ? (value == 1) : def_value;
+			} else if (type == this.types.arr_multi) {
+				const vals = value.length > 0 ? value : def_value;
+				el.value = '';
+				OUTER:
+				for (let j = 0; j < vals.length; j++) {
+					INNER:
+					for (let k = 0; k < el.options.length; k++) {
+						if (vals[j] === el.options[k].value) {
+							el.options[k].selected = true;
+							continue OUTER;
+						}
+					}
+				}
+			}
+		}
+	},
+	add_row: function(prop, field) {
+		const container = document.getElementById(this.opts.ids.plugin_form);
+		const row = document.createElement('DIV');
+		row.classList.add('w3-row', 'directive_field');
+		const rleft = document.createElement('DIV');
+		rleft.classList.add('w3-col', 'w3-third');
+		const rright = document.createElement('DIV');
+		rright.classList.add('w3-col', 'w3-half');
+		const label = document.createElement('DIV');
+		label.setAttribute('for', this.name_prefix + prop.name);
+		label.textContent = prop.label + ':';
+		rleft.appendChild(label);
+		rright.appendChild(field);
+		row.appendChild(rleft);
+		row.appendChild(rright);
+		container.appendChild(row);
+	},
+	add_category: function(props) {
+		const category = Array.isArray(props.category) && props.category.length > 0 ? props.category[0] : '';
+		if (!category || category === this.current_cat) {
+			return;
+		}
+		const container = document.getElementById(this.opts.ids.plugin_form);
+		const row = document.createElement('DIV');
+		row.classList.add('w3-row', 'directive_field');
+		const header = document.createElement('H4');
+		header.textContent = category;
+		row.appendChild(header);
+		container.appendChild(row);
+		this.current_cat = category;
+	},
+	add_field: function(prop) {
+		let field;
+		if (prop.type == this.types.str || prop.type == this.types.int || prop.type == this.types.pwd) {
+			field = this.get_text_field(prop);
+		} else if (prop.type == this.types.str_long) {
+			field = this.get_text_long_field(prop);
+		} else if (prop.type == this.types.bool) {
+			field = this.get_bool_field(prop);
+		} else if (prop.type == this.types.arr) {
+			field = this.get_list_field(prop);
+		} else if (prop.type == this.types.arr_multi) {
+			field = this.get_list_multi_field(prop);
+		}
+		if (field) {
+			this.add_row(prop, field);
+		}
+	},
+	get_text_field: function(prop) {
+		const input = document.createElement('INPUT');
+		if (prop.type == this.types.pwd) {
+			input.type = 'password';
+		} else {
+			input.type = 'text';
+		}
+		input.id = this.name_prefix + prop.name;
+		input.name = this.name_prefix + prop.name;
+		input.classList.add('w3-input', 'w3-border');
+		return input;
+	},
+	get_text_long_field: function(prop) {
+		const textarea = document.createElement('TEXTAREA');
+		textarea.id = this.name_prefix + prop.name;
+		textarea.name = this.name_prefix + prop.name;
+		textarea.setAttribute('rows', '4');
+		textarea.classList.add('w3-input', 'w3-border');
+		return textarea;
+	},
+	get_bool_field: function(prop) {
+		const input = document.createElement('INPUT');
+		input.type = 'checkbox';
+		input.id = this.name_prefix + prop.name;
+		input.name = this.name_prefix + prop.name;
+		input.classList.add('w3-check');
+		return input;
+	},
+	get_list_field: function(prop) {
+		const select = document.createElement('SELECT');
+		select.id = this.name_prefix + prop.name;
+		select.name = this.name_prefix + prop.name;
+		select.classList.add('w3-select', 'w3-border');
+		let opt, txt;
+		for (let i = 0; i < prop.data.length; i++) {
+			opt = document.createElement('OPTION');
+			opt.value = prop.data[i];
+			txt = document.createTextNode(prop.data[i]);
+			opt.appendChild(txt);
+			select.appendChild(opt);
+		}
+		return select;
+	},
+	get_list_multi_field: function(prop) {
+		container = document.createElement('DIV');
+		const select = document.createElement('SELECT');
+		select.id = this.name_prefix + prop.name;
+		select.name = this.name_prefix + prop.name;
+		select.classList.add('w3-select', 'w3-border');
+		select.setAttribute('multiple', 'multiple');
+		let opt, txt;
+		for (let i = 0; i < prop.data.length; i++) {
+			opt = document.createElement('OPTION');
+			opt.value = prop.data[i];
+			txt = document.createTextNode(prop.data[i]);
+			opt.appendChild(txt);
+			select.appendChild(opt);
+		}
+		const tip = document.createElement('P');
+		tip.style.marginTop = '0';
+		tip.textContent = '<%[ Use CTRL + left-click to multiple item selection ]%>';
+		container.appendChild(select);
+		container.appendChild(tip);
+		return container;
+	},
+	clear_plugin_settings_form: function() {
+		const form = document.getElementById(this.opts.ids.plugin_form);
+		while (form.firstChild) {
+			form.removeChild(form.firstChild);
+		}
+		this.form_props = null;
+	},
+	validate_form: function() {
+		let state = true;
+		const name = document.getElementById(this.opts.ids.settings_name);
+		if (name) {
+			if (!name.checkValidity()) {
+				name.reportValidity();
+				state = false;
+			} else {
+				name.setCustomValidity('');
+			}
+		}
+		return state;
+	},
+	save_form: function() {
+		if (this.form_props === null || !this.validate_form()) {
+			return;
+		}
+		const fields = {};
+		let prop, el;
+		for (let i = 0; i < this.form_props.parameters.length; i++) {
+			prop = this.form_props.parameters[i];
+			el = document.getElementById(this.name_prefix + prop.name);
+			if (prop.type == this.types.str || prop.type == this.types.pwd || prop.type == this.types.int || prop.type == this.types.str_long) {
+				fields[prop.name] = el.value;
+			} else if (prop.type == this.types.bool) {
+				fields[prop.name] = el.checked ? '1' : '0';
+			} else if (prop.type == this.types.arr) {
+				fields[prop.name] = el.value;
+			} else if (prop.type == this.types.arr_multi) {
+				const values = [];
+				for (let j = 0; j < el.options.length; j++) {
+					if (el.options[j].selected) {
+						values.push(el.options[j].value);
+					}
+				}
+				fields[prop.name] = values;
+			}
+		}
+		if (this.opts.save_cb) {
+			this.opts.save_cb.setCallbackParameter(fields);
+			this.opts.save_cb.dispatch();
+		}
+		return fields;
+	}
+};
+
 const ThemeMode = {
 	modes: {
 		light: 'light',
