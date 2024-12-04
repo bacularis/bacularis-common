@@ -531,11 +531,13 @@ class Miscellaneous extends TModule
 		usort($result, $sort_by_func);
 	}
 
-	public function maskPassword($pwd) {
+	public function maskPassword($pwd)
+	{
 		return preg_replace('/./', '*', $pwd);
 	}
 
-	public function maskPasswordParams(array $params) {
+	public function maskPasswordParams(array $params)
+	{
 		for ($i = 0; $i < count($params); $i++) {
 			if (preg_match('/(?P<param>(pass(word|phrase)?|pwd))[= ](?P<pwd>[^ ]+)/i', $params[$i], $match) == 1) {
 				$pwd_mask = $this->maskPassword($match['pwd']);

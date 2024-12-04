@@ -70,12 +70,13 @@ abstract class PluginConfigBase extends ConfigFileModule
 	 * Get plugins config.
 	 *
 	 * @param string $section specific config settings section
+	 * @param mixed $skip_default skip getting default values
 	 * @return array plugins config
 	 */
 	public function getConfig($section = null, $skip_default = false): array
 	{
 		$config = [];
-		if (is_null($this->config)) {
+		if (is_null($this->config) || $skip_default) {
 			$config_file_path = $this->getConfigFilePath();
 			$config_file_format = $this->getConfigFileFormat();
 			$config = $this->readConfig(
@@ -119,6 +120,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 	 * Prepare settings config to use.
 	 *
 	 * @param int $config config reference
+	 * @param mixed $skip_default skip default values
 	 */
 	private function prepareConfigUse(array &$config, $skip_default = false): void
 	{
@@ -227,8 +229,8 @@ abstract class PluginConfigBase extends ConfigFileModule
 	/**
 	 * Get installed plugin list with properties.
 	 *
-	 * @param string|null $ftype plugin type
-	 * @param string|null $pname plugin name (file/class name)
+	 * @param null|string $ftype plugin type
+	 * @param null|string $pname plugin name (file/class name)
 	 * @return array plugin list
 	 */
 	public function getPlugins(?string $ftype = null, ?string $pname = null): array

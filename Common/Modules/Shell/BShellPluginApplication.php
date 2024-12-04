@@ -24,7 +24,6 @@ use Bacularis\Common\Modules\Params;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-
 class BShellPluginApplication extends BShellApplication
 {
 	/**
@@ -43,6 +42,8 @@ class BShellPluginApplication extends BShellApplication
 
 	/**
 	 * Run the plugin shell application.
+	 *
+	 * @param null|array $args command line parameters
 	 */
 	public function run($args = null)
 	{
@@ -58,7 +59,8 @@ class BShellPluginApplication extends BShellApplication
 	 *
 	 * @param object $exception exception object
 	 */
-	public static function handleError($exception) {
+	public static function handleError($exception)
+	{
 		$msg = $exception->getMessage();
 		$trace = $exception->getTraceAsString();
 		fwrite(STDERR, $msg);

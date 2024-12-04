@@ -28,7 +28,6 @@ use Bacularis\Common\Modules\BacularisCommonPluginBase;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-
 abstract class BShellApplication extends TApplication
 {
 	/**

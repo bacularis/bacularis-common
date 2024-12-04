@@ -16,7 +16,7 @@
 namespace Bacularis\Common\Modules\Shell\Actions;
 
 use Bacularis\Common\Modules\Shell\BShellAction;
-Use Prado\Shell\TShellWriter;
+use Prado\Shell\TShellWriter;
 
 /**
  * Bacularis plugin command action.
@@ -24,7 +24,6 @@ Use Prado\Shell\TShellWriter;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-
 class PluginCommandAction extends BShellAction
 {
 	protected $action = 'command';

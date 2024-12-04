@@ -511,16 +511,14 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 				$backup_path = $this->getBackupSQLPath($args, self::SYSTEM_DATA_DIR, $item);
 				break;
 			}
-			case self::ACTION_SQL_ALL_DBS:
-			{
+			case self::ACTION_SQL_ALL_DBS: {
 				$backup_cmd = $this->getBackupSQLAllDbsCommand($args);
 				$restore_cmd = $this->getRestoreSQLCommand($args, $action, $item);
 				$action_fm = $this->getFormattedFile($action, $args['job-starttime'], $args['job-id'], $args['job-level']);
 				$backup_path = $this->getBackupSQLPath($args, $item, $action_fm);
 				break;
 			}
-			case self::ACTION_SQL_DATA:
-			{
+			case self::ACTION_SQL_DATA: {
 				$backup_cmd = $this->getBackupSQLDataCommand($args);
 				$restore_cmd = $this->getRestoreSQLCommand($args, $action, $item);
 				$action_fm = $this->getFormattedFile($action, $args['job-starttime'], $args['job-id'], $args['job-level']);
@@ -708,6 +706,8 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 	 * Get SQL dump restore plugin command.
 	 *
 	 * @param array $args plugin options
+	 * @param string $raction restore action
+	 * @param string $item restore item
 	 * @return string restore command
 	 */
 	private function getRestoreSQLCommand(array $args, string $raction, string $item): string
@@ -1126,7 +1126,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 			$cmd_params['skip-add-drop-table'] = true;
 		}
 		if (key_exists('dump-option', $args)) {
-			$dump_option = $args['dump-option']; 
+			$dump_option = $args['dump-option'];
 			if (!is_array($dump_option)) {
 				$dump_option = [$dump_option];
 			}
@@ -1350,7 +1350,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 
 		// Set parameters
 		$cmd = $this->prepareCommandParameters($cmd_params);
-		$cmd[] = '2>&1'; // it is because the backup program output is printed on stderr 
+		$cmd[] = '2>&1'; // it is because the backup program output is printed on stderr
 		$bin = $this->getBinPath($args, self::BIN_BACKUP_PROGRAM);
 		array_unshift($cmd, $bin);
 
@@ -1416,7 +1416,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 
 		// Set parameters
 		$cmd = $this->prepareCommandParameters($cmd_params);
-		$cmd[] = '2>&1'; // it is because the backup program output is printed on stderr 
+		$cmd[] = '2>&1'; // it is because the backup program output is printed on stderr
 		$bin = $this->getBinPath($args, self::BIN_BACKUP_PROGRAM);
 		array_unshift($cmd, $bin);
 
@@ -1774,7 +1774,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 		$result = $this->execCommand($cmd);
 		if ($result['exitcode'] == 0) {
 			$dbs = $result['output'];
-			$dbs = array_filter($dbs, fn($db) => !in_array($db, self::IGNORE_SYSTEM_TABLES));
+			$dbs = array_filter($dbs, fn ($db) => !in_array($db, self::IGNORE_SYSTEM_TABLES));
 			$dbs = array_values($dbs);
 		}
 		return $dbs;
@@ -1859,7 +1859,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 
 	/**
 	 * Get binary log file list.
-	 * 
+	 *
 	 * @param array $args plugin options
 	 * @param string $start_with starting log file (used for incremental backup)
 	 * @return array binary log list
@@ -1886,7 +1886,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 			$bin_logs_len = count($bin_logs);
 			if ($start_with && $bin_logs_len > 0) {
 				$index = array_search($start_with, $bin_logs);
-				$bin_logs = array_splice($bin_logs, $index, $bin_logs_len - $index); 
+				$bin_logs = array_splice($bin_logs, $index, $bin_logs_len - $index);
 			}
 		} else {
 			$output = implode(PHP_EOL, $result['output']);
@@ -1899,7 +1899,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 	/**
 	 * Parse binary log list.
 	 *
-	 * @param array binary log list command output
+	 * @param array $output binary log list command output
 	 * @return array parsed binary log list
 	 */
 	private function parseBinLogList(array $output): array
@@ -2287,7 +2287,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 	 * Get backup position coordinates.
 	 *
 	 * @param string $job_name backup job name
-	 * @param string backup method ('dump', 'binary', 'binlog')
+	 * @param string $method backup method ('dump', 'binary', 'binlog')
 	 * @return array backup position coordinates or empty array if no coordinates to get
 	 */
 	private function getJobBackupCors(string $job_name, string $method): array
@@ -2305,7 +2305,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 	 * Get backup position coordinates file path.
 	 *
 	 * @param string $job_name backup job name
-	 * @param string backup method ('dump', 'binary', 'binlog')
+	 * @param string $method backup method ('dump', 'binary', 'binlog')
 	 * @return string backup coordinates file path
 	 */
 	private function getJobCorsPath(string $job_name, string $method): string
@@ -2368,7 +2368,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 	/**
 	 * Get state file parameters.
 	 *
-	 * @param string file name suffix
+	 * @param string $suffix file name suffix
 	 * @return array with directory and file prefix
 	 */
 	private function getFileParams(string $suffix): array
@@ -2383,7 +2383,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 	 * Write debug log.
 	 *
 	 * @param mixed $msg debug message
-	 * @param integer|null $force_dest force log destination
+	 * @param null|int $force_dest force log destination
 	 */
 	private function debug($msg, ?int $force_dest = null): void
 	{
@@ -2429,7 +2429,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 	{
 		$path = $bin;
 		if (key_exists('binary-path', $args) && $args['binary-path']) {
-			$path = implode(DIRECTORY_SEPARATOR,[
+			$path = implode(DIRECTORY_SEPARATOR, [
 				rtrim($args['binary-path'], '/'),
 				$bin
 			]);

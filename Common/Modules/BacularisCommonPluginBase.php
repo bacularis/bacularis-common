@@ -73,11 +73,12 @@ abstract class BacularisCommonPluginBase extends CommonModule
 	 * Prepare parameters to use in plugin commands.
 	 *
 	 * @param array $params parameters to prepare
+	 * @param bool $encode if true, decode the parameters
 	 * @return array prepared parameters
 	 */
 	public function prepareCommandParameters(array $params, bool $encode = false): array
 	{
-		$params_encode = fn($param) => str_replace(self::ENCODE_PARAM_CHARS, self::DECODE_PARAM_CHARS, $param);
+		$params_encode = fn ($param) => str_replace(self::ENCODE_PARAM_CHARS, self::DECODE_PARAM_CHARS, $param);
 		$cmd = [];
 		foreach ($params as $key => $value) {
 			if ($value === true) {
@@ -111,7 +112,7 @@ abstract class BacularisCommonPluginBase extends CommonModule
 	 */
 	protected static function parseCommandParameter(string $param): array
 	{
-		$params_decode = fn($param) => str_replace(self::DECODE_PARAM_CHARS, self::ENCODE_PARAM_CHARS, $param);
+		$params_decode = fn ($param) => str_replace(self::DECODE_PARAM_CHARS, self::ENCODE_PARAM_CHARS, $param);
 		$values = [];
 		$is_param = (preg_match('/^--(?P<key>[^=]+)(="?(?<value>[^"]*)"?)?$/', $param, $match) === 1);
 		if ($is_param) {
@@ -175,6 +176,7 @@ abstract class BacularisCommonPluginBase extends CommonModule
 	 * @param string $action command action (ex. command/backup)
 	 * @param array $params command parameters
 	 * @param bool $runs_on_client if true, command is prepared to run on the FD side, otherwise it is executed on the Director side
+	 * @param bool $encode_params if true, encode parameters
 	 * @return array command ready to execute
 	 */
 	public function getPluginCommand(string $action, array $params, bool $runs_on_client = false, bool $encode_params = true): array
@@ -187,7 +189,7 @@ abstract class BacularisCommonPluginBase extends CommonModule
 		];
 		$cparams = $this->prepareCommandParameters($params, $encode_params);
 		$cmd = [];
-		$cmd[] = ($runs_on_client ? '\\\\' : ''). implode(DIRECTORY_SEPARATOR, $path);
+		$cmd[] = ($runs_on_client ? '\\\\' : '') . implode(DIRECTORY_SEPARATOR, $path);
 		$cmd[] = $action;
 		$cmd = array_merge($cmd, $cparams);
 		return $cmd;
@@ -207,7 +209,7 @@ abstract class BacularisCommonPluginBase extends CommonModule
 			'plugin-name' => $args['plugin-name']
 		];
 		$first = '';
-		$params = $this instanceof IBaculaBackupPlugin ? static::getParameters() : [];
+		$params = $this->getParameters();
 		for ($i = 0; $i < count($params); $i++) {
 			if (!key_exists($params[$i]['name'], $args)) {
 				// argument does not exist, check if it has default value
@@ -229,5 +231,16 @@ abstract class BacularisCommonPluginBase extends CommonModule
 			$result = array_merge([$first => $result[$first]], $result);
 		}
 		return $result;
+	}
+
+	/**
+	 * Get plugin configuration parameters.
+	 *
+	 * return array plugin parameters
+	 */
+	public static function getParameters(): array
+	{
+		// this method is overriden by every module. NOTE: It cannot be abstract
+		return [];
 	}
 }

@@ -59,8 +59,7 @@ interface IBaculaBackupPlugin extends IBacularisPlugin
 	 * Get plugin command list returned by main fileset plugin command.
 	 * (@see IBaculaBackupPlugin::getPluginCommand);
 	 *
-	 * @param string $action plugin command action
-	 * @param array $params plugin command parameters
+	 * @param array $args plugin command parameters
 	 * @return string plugin command
 	 */
 	public function getPluginCommands(array $args): array;
