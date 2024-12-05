@@ -37,6 +37,7 @@ WEB_SERVERS=(Apache Nginx Lighttpd Other)
 PROT_DIRS=(
 	"${PROTDIR}/vendor/bacularis/bacularis-api/API/"{Logs,Config}
 	"${PROTDIR}/vendor/bacularis/bacularis-web/Web/"{Logs,Config}
+	"${PROTDIR}/vendor/bacularis/bacularis-common/Common/Working"
 	"${PROTDIR}/runtime"
 )
 

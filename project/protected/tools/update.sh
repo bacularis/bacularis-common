@@ -27,6 +27,7 @@ BACKUP_FILE='bacularis-backup.tar'
 PROT_DIRS=(
 	"${VENDIR}/bacularis/bacularis-api/API/"{Logs,Config}
 	"${VENDIR}/bacularis/bacularis-web/Web/"{Logs,Config}
+	"${VENDIR}/bacularis/bacularis-common/Common/Working"
 )
 
 # Do config and log files backup.
