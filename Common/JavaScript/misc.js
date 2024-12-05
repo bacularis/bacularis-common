@@ -320,7 +320,7 @@ const oPluginForm = {
 		}
 		const tip = document.createElement('P');
 		tip.style.marginTop = '0';
-		tip.textContent = '<%[ Use CTRL + left-click to multiple item selection ]%>';
+		tip.textContent = 'Use CTRL + left-click to multiple item selection'; // do translateable
 		container.appendChild(select);
 		container.appendChild(tip);
 		return container;
