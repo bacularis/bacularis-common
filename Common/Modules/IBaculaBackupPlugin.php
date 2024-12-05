@@ -51,7 +51,7 @@ interface IBaculaBackupPlugin extends IBacularisPlugin
 	 *
 	 * @param string $action plugin command action
 	 * @param array $params plugin command parameters
-	 * @return string plugin command
+	 * @return array plugin command
 	 */
 	public function getPluginCommand(string $action, array $params): array;
 
@@ -60,23 +60,7 @@ interface IBaculaBackupPlugin extends IBacularisPlugin
 	 * (@see IBaculaBackupPlugin::getPluginCommand);
 	 *
 	 * @param array $args plugin command parameters
-	 * @return string plugin command
+	 * @return array plugin commands
 	 */
 	public function getPluginCommands(array $args): array;
-
-	/**
-	 * Get plugin backup parameter categories.
-	 * It should return all parameter categories that are used in backup.
-	 *
-	 * @return array plugin parameter categories
-	 */
-	public static function getBackupParameterCategories(): array;
-
-	/**
-	 * Get plugin restore parameter categories.
-	 * It should return all parameter categories that are used in restore.
-	 *
-	 * @return array plugin parameter categories
-	 */
-	public static function getRestoreParameterCategories(): array;
 }
