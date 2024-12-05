@@ -2436,4 +2436,20 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 		}
 		return $path;
 	}
+
+	/**
+	 * Get plugin restore parameter categories.
+	 * It should return all parameter categories that are used in restore.
+	 *
+	 * @return array plugin parameter categories
+	 */
+	public static function getRestoreParameterCategories(): array
+	{
+		return [
+			self::PARAM_CAT_DUMP_RESTORE,
+			self::PARAM_CAT_BINARY_RESTORE,
+			self::PARAM_CAT_FILE_RESTORE,
+			self::PARAM_CAT_BINLOG_RESTORE
+		];
+	}
 }
