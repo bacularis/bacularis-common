@@ -184,7 +184,7 @@ allow httpd_t usr_t:file { write create relabelfrom relabelto rename setattr unl
 allow httpd_t var_t:dir rmdir;
 allow httpd_t var_t:file { open getattr read unlink };
 allow httpd_t var_log_t:dir { create relabelfrom setattr };
-allow httpd_t var_log_t:file { create open };
+allow httpd_t var_log_t:file { create open read rename };
 allow httpd_t var_spool_t:dir { add_name create relabelfrom setattr remove_name read write };
 
 #============= systemd_logind_t ==============
