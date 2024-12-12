@@ -1,4 +1,4 @@
-module bacularis 1.0.5;
+module bacularis 1.0.6;
 
 require {
 	type admin_home_t;
@@ -64,6 +64,7 @@ require {
 	type unreserved_port_t;
 	type user_tmp_t;
 	type usr_t;
+	type var_t;
 	type var_log_t;
 	type var_spool_t;
 	class tcp_socket { name_bind name_connect };
@@ -136,7 +137,7 @@ allow httpd_t postgresql_db_t:dir { create add_name remove_name read write rmdir
 allow httpd_t postgresql_db_t:file { append create getattr setattr open relabelfrom relabelto write unlink rename read link ioctl };
 allow httpd_t postgresql_exec_t:file { getattr setattr unlink relabelto read open rename execute execute_no_trans map };
 allow httpd_t postgresql_log_t:dir relabelto;
-allow httpd_t postgresql_log_t:file { open write };
+allow httpd_t postgresql_log_t:file { open write relabelto };
 allow httpd_t postgresql_port_t:tcp_socket name_connect;
 allow httpd_t postgresql_unit_file_t:file { getattr unlink relabelto rename };
 allow httpd_t postgresql_unit_file_t:service { status start };
@@ -180,6 +181,8 @@ allow httpd_t unreserved_port_t:tcp_socket { name_connect name_bind };
 allow httpd_t user_tmp_t:file { execute execute_no_trans open };
 allow httpd_t usr_t:dir { add_name create relabelfrom relabelto remove_name setattr write rmdir };
 allow httpd_t usr_t:file { write create relabelfrom relabelto rename setattr unlink };
+allow httpd_t var_t:dir rmdir;
+allow httpd_t var_t:file { open getattr read unlink };
 allow httpd_t var_log_t:dir { create relabelfrom setattr };
 allow httpd_t var_log_t:file { create open };
 allow httpd_t var_spool_t:dir { add_name create relabelfrom setattr remove_name read write };
