@@ -154,12 +154,14 @@ class BasicUserConfig extends CommonModule
 	public function getUserCfg($username)
 	{
 		$user = [];
-		$u = $this->getUsers($username);
-		if (count($u) == 1) {
-			$user = [
-				'username' => $username,
-				'pwd_hash' => $u[$username]
-			];
+		if ($username) {
+			$u = $this->getUsers($username);
+			if (count($u) == 1) {
+				$user = [
+					'username' => $username,
+					'pwd_hash' => $u[$username]
+				];
+			}
 		}
 		return $user;
 	}
