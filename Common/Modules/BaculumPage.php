@@ -154,17 +154,15 @@ class BaculumPage extends TPage
 	public function getFullLoginUrl($user, $password)
 	{
 		$protocol = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http';
-		$host = $_SERVER['SERVER_NAME'];
-		$port = $_SERVER['SERVER_PORT'];
+		$host_port = $_SERVER['HTTP_HOST'];
 		$url_prefix = $this->getModule('url_manager')->getUrlPrefix();
 		$url_prefix = str_replace('/index.php', '', $url_prefix);
 		$location = sprintf(
-			'%s://%s:%s@%s:%d%s',
+			'%s://%s:%s@%s%s',
 			$protocol,
 			$user,
 			$password,
-			$host,
-			$port,
+			$host_port,
 			$url_prefix
 		);
 		return $location;
