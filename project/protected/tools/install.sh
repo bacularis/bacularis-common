@@ -201,7 +201,8 @@ function set_dir_perms()
 }
 
 # Set file permissions
-function set_file_perms() {
+function set_file_perms()
+{
 	chmod 600 ${PROT_FILES[@]}
 	if [ $? -ne 0 ]
 	then
@@ -209,12 +210,55 @@ function set_file_perms() {
 	fi
 }
 
+# Prepare PHP connection for web server
+# Params:
+#  string $1 web server type (apache, nginx, lighttpd...)
+#  string $2 PHP-FPM unix socket path
+#  string $3 PHP-FPM listen address and port
+function get_php_con()
+{
+	local web_server="$1"
+	local php_sock="$2"
+	local php_listen="$3"
+
+	if [ -z "$php_sock" -a -z "$php_listen" ]
+	then
+		php_sock="${DEFAULT_PHP_SOCK}"
+	fi
+
+	local php_con='';
+	if [ ! -z "$php_sock" ]
+	then
+		if [ x$web_server == xnginx ]
+		then
+			php_con="unix:${php_sock}"
+		elif [ x$web_server == xlighttpd ]
+		then
+			php_con="\"socket\" => \"$php_sock\""
+		else
+			php_con="$php_sock"
+		fi
+	elif [ ! -z "$php_listen" ]
+	then
+		local php_con_arr=(${php_listen//:/ })
+		if [ x$web_server == xlighttpd ]
+		then
+			php_con="\"host\" => \"${php_con_arr[0]}\", \"port\" => ${php_con_arr[1]}"
+		else
+			php_con="$php_listen"
+		fi
+	fi
+	echo $php_con
+}
+
 # Prepare web server configuration file
 # Params:
 #  string $1 web server type (apache, nginx, lighttpd...)
-#  string $2 web root directory
-#  string $3 web server user
-#  string $4 PHP-FPM unix socket path
+#  string $2 web server config directory
+#  string $3 web root directory
+#  string $4 web server user
+#  string $5 PHP-FPM unix socket path
+#  string $6 PHP-FPM listen address and port
 function prepare_web_server_cfg()
 {
 	local web_server="$1"
@@ -222,8 +266,9 @@ function prepare_web_server_cfg()
 	local web_root="$3"
 	local web_user="$4"
 	local php_sock="$5"
+	local php_listen="$6"
 
-	server_file=''
+	local server_file=''
 	case $web_server in
 		apache) server_file=$WEB_CFG_APACHE_SAMPLE
 		;;
@@ -232,6 +277,8 @@ function prepare_web_server_cfg()
 		lighttpd) server_file=$WEB_CFG_LIGHTTPD_SAMPLE
 		;;
 	esac
+
+	local php_con=`get_php_con "${web_server}" "${php_sock}" "${php_listen}"`
 
 	if [ ! -z "$server_file" ]
 	then
@@ -253,7 +300,7 @@ function prepare_web_server_cfg()
 		cat "$server_file" | sed \
 			-e "s!###WEBUSER###!${web_user}!g" \
 			-e "s!###WEBROOT###!${web_root}!g" \
-			-e "s!###PHPSOCK###!${php_sock}!g" \
+			-e "s!###PHPCON###!${php_con}!g" \
 			> "$ws_cfg_dest"
 		if [ $? -ne 0 ]
 		then
@@ -266,7 +313,7 @@ function prepare_web_server_cfg()
 
 function usage()
 {
-	echo "$0 [-u web_user] [-w web_server] [-c web_server_cfg_dir ] [-n] [-s] [-h]:
+	echo "$0 [-u web_user] [-w web_server] [-c web_server_cfg_dir] [-d web_root_dir] [-n] [-p php_sock_path | -l php_listen_addr]  [-s] [-h]:
 		-u WEB_USER		web server user
 		-w WEB_SERVER		web server type (apache, nginx or lighttpd)
 					parameter possible to use multiple times
@@ -274,6 +321,7 @@ function usage()
 		-d WEB_ROOT_DIR		web server document root directory (web root)
 		-n			don't set directory ownership and permissions
 		-p PHP_SOCK_PATH	PHP-FPM unix socket path
+		-l PHP_LISTEN_ADDR:PORT	PHP-FPM listen address with port
 		-s			silent mode
 					don't ask about anything
 		-h, --help		display this message
@@ -287,7 +335,8 @@ function main()
 	local web_servers=''
 	local web_root=''
 	local web_server_cfg_dir=''
-	local php_sock="${DEFAULT_PHP_SOCK}"
+	local php_sock=''
+	local php_listen=''
 	local no_perm=0
 
 	if [ "$1" == '--help' ]
@@ -295,7 +344,7 @@ function main()
 		usage
 	fi
 
-	while getopts "d:np:su:w:c:h" opt
+	while getopts "d:np:l:su:w:c:h" opt
 	do
 		case $opt in
 			d)
@@ -315,6 +364,9 @@ function main()
 				;;
 			p)
 				php_sock="$OPTARG"
+				;;
+			l)
+				php_listen="$OPTARG"
 				;;
 			s)
 				SILENT_MODE=1
@@ -361,7 +413,7 @@ function main()
 
 	for ws in $web_servers
 	do
-		prepare_web_server_cfg "$ws" "$web_server_cfg_dir" "$web_root" "$web_user" "$php_sock"
+		prepare_web_server_cfg "$ws" "$web_server_cfg_dir" "$web_root" "$web_user" "$php_sock" "$php_listen"
 	done
 }
 
