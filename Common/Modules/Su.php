@@ -221,7 +221,7 @@ puts "\nEXITCODE=$value"
 puts "quit"
 exit\' || echo "
 EXITCODE=1
-=== 
+===
 "';
 	}
 
@@ -235,8 +235,8 @@ EXITCODE=1
 	private function quoteExpectCommand($cmd)
 	{
 		return str_replace(
-			['[', ']'],
-			['\\[', '\\]'],
+			['[', ']', '$'],
+			['\\[', '\\]', '\\\\\\$'],
 			$cmd
 		);
 	}
