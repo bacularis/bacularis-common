@@ -48,6 +48,15 @@ class Miscellaneous extends TModule
 	public const ORDER_ASC = 'asc';
 	public const ORDER_DESC = 'desc';
 
+	/**
+	 * Supported web servers definition.
+	 */
+	public const WEB_SERVERS = [
+		'apache' => ['id' => 'apache', 'name' => 'Apache'],
+		'nginx' => ['id' => 'nginx', 'name' => 'Nginx'],
+		'lighttpd' => ['id' => 'lighttpd', 'name' => 'Lighttpd']
+	];
+
 	public $job_types = [
 		'B' => 'Backup',
 		'M' => 'Migrated',
@@ -545,5 +554,23 @@ class Miscellaneous extends TModule
 			}
 		}
 		return $params;
+	}
+
+	/**
+	 * Detect and get the current web server id.
+	 *
+	 * @return string $id web server identifier or empty string if detection was not possible
+	 */
+	public function detectWebServer(): string
+	{
+		$id = '';
+		if (stripos($_SERVER['SERVER_SOFTWARE'], self::WEB_SERVERS['nginx']['name']) !== false) {
+			$id = self::WEB_SERVERS['nginx']['id'];
+		} elseif (stripos($_SERVER['SERVER_SOFTWARE'], self::WEB_SERVERS['lighttpd']['name']) !== false) {
+			$id = self::WEB_SERVERS['lighttpd']['id'];
+		} elseif (stripos($_SERVER['SERVER_SOFTWARE'], self::WEB_SERVERS['apache']['name']) !== false || stripos($_SERVER['SERVER_SOFTWARE'], 'httpd') !== false) {
+			$id = self::WEB_SERVERS['apache']['id'];
+		}
+		return $id;
 	}
 }
