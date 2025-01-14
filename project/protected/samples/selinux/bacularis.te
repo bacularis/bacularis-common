@@ -1,4 +1,4 @@
-module bacularis 1.0.7;
+module bacularis 1.0.8;
 
 require {
 	attribute can_change_process_identity;
@@ -18,9 +18,11 @@ require {
 	type groupadd_t;
 	type hplip_port_t;
 	type httpd_cache_t;
+	type httpd_config_t;
 	type httpd_log_t;
 	type httpd_sys_rw_content_t;
 	type httpd_t;
+	type httpd_unit_file_t;
 	type httpd_var_lib_t;
 	type httpd_var_run_t;
 	type http_port_t;
@@ -35,6 +37,7 @@ require {
 	type man_t;
 	type mysqld_etc_t;
 	type mysqld_port_t;
+	type pam_var_run_t;
 	type postfix_etc_t;
 	type postgresql_db_t;
 	type postgresql_exec_t;
@@ -56,6 +59,7 @@ require {
 	type session_dbusd_tmp_t;
 	type shadow_t;
 	type ssh_port_t;
+	type sudo_db_t;
 	type sudo_exec_t;
 	type systemd_hostnamed_t;
 	type systemd_logind_inhibit_var_run_t;
@@ -82,9 +86,9 @@ require {
 	class netlink_audit_socket { write nlmsg_relay create read };
 	class netlink_selinux_socket { bind create };
 	class passwd { rootok };
-	class process { setrlimit noatsecure rlimitinh siginh transition setexec signull };
+	class process { setrlimit noatsecure rlimitinh siginh transition setexec execmem signull };
 	class security { compute_create compute_av };
-	class service { start stop status };
+	class service { start stop status reload };
 	class sock_file { getattr };
 	class system { reload };
 	class tcp_socket { name_bind name_connect };
@@ -114,9 +118,12 @@ allow httpd_t fprintd_t:dbus send_msg;
 allow httpd_t hplip_port_t:tcp_socket name_connect;
 allow httpd_t httpd_cache_t:dir { read create };
 allow httpd_t httpd_cache_t:file { read write create };
+allow httpd_t httpd_config_t:dir { write add_name remove_name };
+allow httpd_t httpd_config_t:file { create write setattr rename unlink };
 allow httpd_t httpd_log_t:file { write unlink };
 allow httpd_t httpd_sys_rw_content_t:dir { read write };
 allow httpd_t httpd_sys_rw_content_t:file { create append };
+allow httpd_t httpd_unit_file_t:service { reload status };
 allow httpd_t httpd_var_lib_t:dir relabelfrom;
 allow httpd_t httpd_var_run_t:dir relabelfrom;
 allow httpd_t http_port_t:tcp_socket name_connect;
@@ -138,6 +145,8 @@ allow httpd_t man_t:file { create relabelfrom relabelto rename setattr write unl
 allow httpd_t mysqld_etc_t:dir { add_name remove_name relabelto write relabelfrom rmdir setattr };
 allow httpd_t mysqld_etc_t:file { create write relabelfrom relabelto rename setattr unlink };
 allow httpd_t mysqld_port_t:tcp_socket name_connect;
+allow httpd_t pam_var_run_t:dir { add_name write };
+allow httpd_t pam_var_run_t:file { create open read write getattr lock };
 allow httpd_t postfix_etc_t:file read;
 allow httpd_t postgresql_db_t:dir { create add_name remove_name read write rmdir relabelfrom relabelto setattr };
 allow httpd_t postgresql_db_t:file { append create getattr setattr open relabelfrom relabelto write unlink rename read link ioctl };
@@ -166,12 +175,14 @@ allow httpd_t self:capability { audit_write sys_resource net_admin sys_admin set
 allow httpd_t self:netlink_audit_socket { write nlmsg_relay create read };
 allow httpd_t self:netlink_selinux_socket { bind create };
 allow httpd_t self:passwd rootok;
-allow httpd_t self:process { setrlimit setexec};
+allow httpd_t self:process { setrlimit setexec execmem };
 allow httpd_t self:process setexec;
 allow httpd_t selinux_config_t:file { read open getattr };
 allow httpd_t session_dbusd_tmp_t:sock_file getattr;
 allow httpd_t shadow_t:file { open read getattr };
 allow httpd_t ssh_port_t:tcp_socket name_connect;
+allow httpd_t sudo_db_t:dir { add_name write };
+allow httpd_t sudo_db_t:file { create getattr open write };
 allow httpd_t sudo_exec_t:file { read execute open };
 allow httpd_t systemd_hostnamed_t:dbus send_msg;
 allow httpd_t systemd_logind_inhibit_var_run_t:fifo_file write;
