@@ -573,4 +573,41 @@ class Miscellaneous extends TModule
 		}
 		return $id;
 	}
+
+	/**
+	 * Encode base64url string.
+	 *
+	 * @param string $str string to encode in base64url
+	 * @param bool $b64 if true, it assumes that $str is already b64 encoded and it enables to covert b64 => b64url
+	 */
+	public static function encodeBase64URL(string $str, bool $b64 = false): string
+	{
+		if (!$b64) {
+			$str = base64_encode($str);
+		}
+		$b64url = preg_replace(
+			['/\+/', '/\//', '/=/'],
+			['-', '_', ''],
+			$str
+		);
+		return $b64url;
+	}
+
+	/**
+	 * Convert hexadecimal value into base64 encoded value.
+	 *
+	 * @param string $hex hexadecimal value
+	 * @return string base64-encoded value
+	 */
+	public static function hexToBase64(string $hex): string
+	{
+		if ((strlen($hex) % 2) == 1) {
+			$hex = '0' . $hex;
+		}
+		$ret = '';
+		foreach (str_split($hex, 2) as $pair) {
+			$ret .= chr(hexdec($pair));
+		}
+		return base64_encode($ret);
+	}
 }
