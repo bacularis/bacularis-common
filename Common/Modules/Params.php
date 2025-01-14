@@ -37,7 +37,7 @@ namespace Bacularis\Common\Modules;
  */
 class Params extends CommonModule
 {
-	public const BACULARIS_VERSION = '4.5.1';
+	public const BACULARIS_VERSION = '4.6.0';
 
 	public static $months = [
 		'jan' => 'January',
