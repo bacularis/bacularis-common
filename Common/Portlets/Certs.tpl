@@ -1,7 +1,12 @@
 <div id="certs_container" class="w3-container w3-padding">
 	<com:Bacularis.Common.Portlets.AdminAccess
 		ID="CertsAdminAccessCreateCert"
-		OnSave="saveCert"
+		OnSave="createCert"
+		PostExecuteAction="oCerts.set_cert_ready"
+	/>
+	<com:Bacularis.Common.Portlets.AdminAccess
+		ID="CertsAdminAccessRenewCert"
+		OnSave="renewCert"
 		PostExecuteAction="oCerts.set_cert_ready"
 	/>
 	<com:Bacularis.Common.Portlets.AdminAccess
@@ -30,7 +35,7 @@
 			</button>
 		</p>
 	</div>
-	<com:TActivePanel ID="CertsInstallCert">
+	<com:TActivePanel ID="CertsInstallCert" CssClass="w3-container">
 		<h4><%[ Install SSL certificate ]%></h4>
 		<div class="w3-container w3-row w3-padding">
 			<div class="w3-quarter w3-col"><%[ Certificate type ]%>:</div>
@@ -43,9 +48,8 @@
 					Attributes.onchange="oCerts.show_cert_options(this.value);"
 				>
 					<com:TListItem Value="" Text="" />
-					<com:TListItem Value="<%=Certs::CERT_TYPE_LETS_ENCRYPT%>" Text="<%[ Let's Encrypt certificate ]%>" />
-					<com:TListItem Value="<%=Certs::CERT_TYPE_SELF_SIGNED%>" Text="<%[ Self-signed certificate ]%>" />
-					<com:TListItem Value="<%=Certs::CERT_TYPE_EXISTING%>" Text="<%[ Uploaded own certificate ]%>" />
+					<com:TListItem Value="<%=LetsEncryptCert::CERT_TYPE%>" Text="<%[ Let's Encrypt certificate ]%>" />
+					<com:TListItem Value="<%=SelfSignedCert::CERT_TYPE%>" Text="<%[ Self-signed certificate ]%>" />
 				</com:TActiveDropDownList>
 				<com:TRequiredFieldValidator
 					ValidationGroup="CertsGroup"
@@ -53,11 +57,64 @@
 					ErrorMessage="<%[ Field required. ]%>"
 					ControlCssClass="field_invalid"
 					Display="Dynamic"
-				/>
+				>
+					<prop:ClientSide.OnValidate>
+						sender.enabled = (oCerts.is_cert_available() == false);
+					</prop:ClientSide.OnValidate>
+				</com:TRequiredFieldValidator>
 			</div> &nbsp;<i class="fa fa-asterisk w3-text-red w3-margin-left opt_req"></i>
 		</div>
 		<div id="install_lets_encrypt_cert" rel="cert_opts" style="display: none">
-			let's encrypt
+			<div id="install_lets_encrypt_cert_port_info" class="w3-panel w3-blue w3-padding w3-twothird" style="display: none; float: none;">
+				<h3 style="margin: 3px auto;"><%[ Information ]%></h3>
+				<p style="margin: 5px auto;"><%[ This certificate type can be useful if you are going to share Bacularis outside your local network. ]%></p>
+				<p style="margin: 5px auto;"><%[ To prepare this certificate type, there is required to have Bacularis available on publicly open TCP port 80. This is necessary to perform by the certificate provider a validation that proves your control over the domain name. This it called the HTTP-01 challenge. ]%></p>
+				<p style="margin: 5px auto;"><%[ After performing validation and issuing the certificate, Bacularis will be switched to HTTPS port 443 automatically. At the end port can be changed to any other port. ]%></p>
+			</div>
+			<h4><%[ Certificate parameters ]%></h4>
+			<div class="w3-container w3-row w3-padding">
+				<div class="w3-quarter w3-col"><%[ Email address ]%>:</div>
+				<div class="w3-quarter w3-col">
+					<com:TActiveTextBox
+						ID="CertsLetsEncryptEmail"
+						CssClass="w3-input w3-border"
+						Width="400px"
+					/>
+					<com:TRequiredFieldValidator
+						ValidationGroup="CertsGroup"
+						ControlToValidate="CertsLetsEncryptEmail"
+						ErrorMessage="<%[ Field required. ]%>"
+						ControlCssClass="field_invalid"
+						Display="Dynamic"
+					>
+						<prop:ClientSide.OnValidate>
+							const cont = document.getElementById('install_lets_encrypt_cert');
+							sender.enabled = (cont.style.display != 'none');
+						</prop:ClientSide.OnValidate>
+					</com:TRequiredFieldValidator>
+				</div> &nbsp;<i class="fa fa-asterisk w3-text-red w3-margin-left opt_req"></i>
+			</div>
+			<div class="w3-container w3-row w3-padding">
+				<div class="w3-quarter w3-col"><%[ Common name (address, e.g. myhost.xyz) ]%>:</div>
+				<div class="w3-quarter w3-col">
+					<com:TActiveTextBox
+						ID="CertsLetsEncryptCommonName"
+						CssClass="w3-input w3-border"
+						Width="400px"
+						Text="<%=preg_replace('/(:*\d*)?$/', '', $_SERVER['HTTP_HOST'])%>"
+					/>
+					<com:TRequiredFieldValidator
+						ValidationGroup="CertsGroup"
+						ControlToValidate="CertsLetsEncryptCommonName"
+						ErrorMessage="<%[ Field required. ]%>"
+						ControlCssClass="field_invalid"
+						Display="Dynamic"
+					/>
+				</div> &nbsp;<i class="fa fa-asterisk w3-text-red w3-margin-left opt_req"></i>
+			</div>
+			<div class="w3-container w3-row w3-padding">
+				<div class="w3-col"><%[ By clicking the create SSL certificate button, you agree with ]%> <a href="https://letsencrypt.org/repository/" target="_blank">Let's Encrypt Subscriber Agreement</a>.</div>
+			</div>
 		</div>
 		<div id="install_self_signed_cert" rel="cert_opts" style="display: none">
 			<h4><%[ Certificate parameters ]%></h4>
@@ -85,7 +142,7 @@
 					<com:TActiveTextBox
 						ID="CertsSelfSignedValidityDays"
 						CssClass="w3-input w3-border"
-						Width="150px"
+						Width="70px"
 						Text="3650"
 					/>
 					<com:TRequiredFieldValidator
@@ -117,7 +174,7 @@
 							ID="CertsSelfSignedCountryCode"
 							CssClass="w3-input w3-border"
 							MaxLength="2"
-							Width="150px"
+							Width="70px"
 						/>
 					</div>
 				</div>
@@ -264,49 +321,51 @@
 			</div>
 		</div>
 	</com:TActivePanel>
-	<h4><%[ OS environment ]%></h4>
-	<div>
-		<div class="w3-container w3-row w3-padding">
-			<div class="w3-quarter w3-col"><%[ Operating system ]%>:</div>
-			<div class="w3-quarter w3-col">
-				<com:TActiveDropDownList
-					ID="CertsOSProfile"
-					AutoPostBack="false"
-					CssClass="w3-select w3-border"
-					Width="400px"
-				/>
-				<com:TRequiredFieldValidator
-					ValidationGroup="CertsGroup"
-					ControlToValidate="CertsOSProfile"
-					ErrorMessage="<%[ Field required. ]%>"
-					ControlCssClass="field_invalid"
-					Display="Dynamic"
-				/>
-			</div> &nbsp;<i class="fa fa-asterisk w3-text-red w3-margin-left opt_req"></i>
-		</div>
-		<div class="w3-container w3-row w3-padding">
-			<div class="w3-quarter w3-col"><%[ Web server name ]%>:</div>
-			<div class="w3-col" style="width: 160px">
-				<com:TActiveDropDownList
-					ID="CertsWebServer"
-					AutoPostBack="false"
-					CssClass="w3-select w3-border"
-					Width="150px"
-					Attributes.onchange="oCerts.set_web_server(this.value);"
-				>
-					<com:TListItem Value="" Text="" />
-					<com:TListItem Value="<%=Miscellaneous::WEB_SERVERS['apache']['id']%>" Text="<%=Miscellaneous::WEB_SERVERS['apache']['name']%>" />
-					<com:TListItem Value="<%=Miscellaneous::WEB_SERVERS['nginx']['id']%>" Text="<%=Miscellaneous::WEB_SERVERS['nginx']['name']%>" />
-					<com:TListItem Value="<%=Miscellaneous::WEB_SERVERS['lighttpd']['id']%>" Text="<%=Miscellaneous::WEB_SERVERS['lighttpd']['name']%>" />
-				</com:TActiveDropDownList>
-				<com:TRequiredFieldValidator
-					ValidationGroup="CertsGroup"
-					ControlToValidate="CertsWebServer"
-					ErrorMessage="<%[ Field required. ]%>"
-					ControlCssClass="field_invalid"
-					Display="Dynamic"
-				/>
-			</div> &nbsp;<i class="fa fa-asterisk w3-text-red opt_req"></i><span id="install_cert_ws_autodetected" class="w3-margin-left w3-small">(auto-detected)</span>
+	<div class="w3-container w3-padding">
+		<h4><%[ OS environment ]%></h4>
+		<div>
+			<div class="w3-container w3-row w3-padding">
+				<div class="w3-quarter w3-col"><%[ Operating system ]%>:</div>
+				<div class="w3-quarter w3-col">
+					<com:TActiveDropDownList
+						ID="CertsOSProfile"
+						AutoPostBack="false"
+						CssClass="w3-select w3-border"
+						Width="400px"
+					/>
+					<com:TRequiredFieldValidator
+						ValidationGroup="CertsGroup"
+						ControlToValidate="CertsOSProfile"
+						ErrorMessage="<%[ Field required. ]%>"
+						ControlCssClass="field_invalid"
+						Display="Dynamic"
+					/>
+				</div> &nbsp;<i class="fa fa-asterisk w3-text-red w3-margin-left opt_req"></i>
+			</div>
+			<div class="w3-container w3-row w3-padding">
+				<div class="w3-quarter w3-col"><%[ Web server name ]%>:</div>
+				<div class="w3-col" style="width: 160px">
+					<com:TActiveDropDownList
+						ID="CertsWebServer"
+						AutoPostBack="false"
+						CssClass="w3-select w3-border"
+						Width="150px"
+						Attributes.onchange="oCerts.set_web_server(this.value);"
+					>
+						<com:TListItem Value="" Text="" />
+						<com:TListItem Value="<%=Miscellaneous::WEB_SERVERS['apache']['id']%>" Text="<%=Miscellaneous::WEB_SERVERS['apache']['name']%>" />
+						<com:TListItem Value="<%=Miscellaneous::WEB_SERVERS['nginx']['id']%>" Text="<%=Miscellaneous::WEB_SERVERS['nginx']['name']%>" />
+						<com:TListItem Value="<%=Miscellaneous::WEB_SERVERS['lighttpd']['id']%>" Text="<%=Miscellaneous::WEB_SERVERS['lighttpd']['name']%>" />
+					</com:TActiveDropDownList>
+					<com:TRequiredFieldValidator
+						ValidationGroup="CertsGroup"
+						ControlToValidate="CertsWebServer"
+						ErrorMessage="<%[ Field required. ]%>"
+						ControlCssClass="field_invalid"
+						Display="Dynamic"
+					/>
+				</div> &nbsp;<i class="fa fa-asterisk w3-text-red opt_req"></i><span id="install_cert_ws_autodetected" class="w3-margin-left w3-small">(auto-detected)</span>
+			</div>
 		</div>
 	</div>
 	<div class="w3-container w3-row w3-padding w3-center">
@@ -316,7 +375,7 @@
 		<button type="button" id="install_cert_uninstall_btn" class="w3-button w3-red" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && <%=$this->CertsAdminAccessUninstallCert->ClientID%>_AdminAccess.show_window(true));" style="display: none;">
 			<i class="fa-solid fa-trash-alt"></i> &nbsp;<%[ Uninstall SSL certificate ]%>
 		</button>
-		<button type="button" id="install_cert_renew_btn" class="w3-button w3-green" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && <%=$this->CertsAdminAccessCreateCert->ClientID%>_AdminAccess.show_window(true));" style="display: none;">
+		<button type="button" id="install_cert_renew_btn" class="w3-button w3-green" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && <%=$this->CertsAdminAccessRenewCert->ClientID%>_AdminAccess.show_window(true));" style="display: none;">
 			<i class="fa-solid fa-redo"></i> &nbsp;<%[ Renew SSL certificate ]%>
 		</button>
 	</div>
@@ -333,6 +392,7 @@ const oCerts = {
 		renew_btn: 'install_cert_renew_btn',
 		uninstall_btn: 'install_cert_uninstall_btn',
 		cert_info: 'install_cert_info',
+		le_port_info: 'install_lets_encrypt_cert_port_info',
 		validity_not_before: 'installed_cert_validity_not_before',
 		validity_not_after: 'installed_cert_validity_not_after',
 		validity_state: 'installed_cert_validity_state',
@@ -342,9 +402,8 @@ const oCerts = {
 		cert_opts: 'cert_opts'
 	},
 	cert_types: {
-		lets_encrypt: '<%=Certs::CERT_TYPE_LETS_ENCRYPT%>',
-		self_signed: '<%=Certs::CERT_TYPE_SELF_SIGNED%>',
-		existing: '<%=Certs::CERT_TYPE_EXISTING%>'
+		lets_encrypt: '<%=LetsEncryptCert::CERT_TYPE%>',
+		self_signed: '<%=SelfSignedCert::CERT_TYPE%>'
 	},
 	cert_prop_types: [
 		'issuer',
@@ -467,6 +526,8 @@ const oCerts = {
 		} else if (val == this.cert_types.existing) {
 			cont_id = this.ids.existing_opts;
 		}
+		const let_port_info = document.getElementById(this.ids.le_port_info);
+		let_port_info.style.display = 'block';
 		const cont = document.getElementById(cont_id);
 		if (cont) {
 			cont.style.display = 'block';
@@ -481,10 +542,15 @@ const oCerts = {
 			renew_btn.style.display = 'none';
 		}
 	},
-	go_to_new_page: function(protocol) {
-		const cn = document.getElementById(this.ids.common_name);
-		let url = protocol + '://%address:9097'.replace('%address', cn.value);
-		url += window.location.pathname;
+	go_to_new_page: function(prot) {
+		const addr = document.getElementById(this.ids.common_name).value;
+		const port = window.location.port;
+		const path = window.location.pathname;
+		let url = '%prot://%addr:%port%path';
+		url = url.replace('%prot', prot)
+		url = url.replace('%addr', addr)
+		url = url.replace('%port', port);
+		url = url.replace('%path', path);
 		window.location.href = url;
 	}
 };

@@ -18,10 +18,11 @@ namespace Bacularis\Common\Portlets;
 use DateTime;
 use Bacularis\Common\Modules\AuditLog;
 use Bacularis\Common\Modules\ExecuteCommand;
+use Bacularis\Common\Modules\LetsEncryptCert;
 use Bacularis\Common\Modules\Logging;
 use Bacularis\Common\Modules\Miscellaneous;
+use Bacularis\Common\Modules\SelfSignedCert;
 use Bacularis\Common\Modules\SSLCertificate;
-use Bacularis\Common\Modules\WebServerConfig;
 use Bacularis\Common\Portlets\AdminAccess;
 use Bacularis\Common\Portlets\PortletTemplate;
 use Prado\TPropertyValue;
@@ -36,13 +37,6 @@ use Prado\TPropertyValue;
 class Certs extends PortletTemplate
 {
 	private const UPDATE_HOST_CONFIG = 'UpdateHostConfig';
-
-	/**
-	 * Supported certificate types.
-	 */
-	public const CERT_TYPE_LETS_ENCRYPT = 'lets-encrypt';
-	public const CERT_TYPE_SELF_SIGNED = 'self-signed';
-	public const CERT_TYPE_EXISTING = 'existing';
 
 	/**
 	 * Stores installed certificate properties.
@@ -83,11 +77,11 @@ class Certs extends PortletTemplate
 		$props = [];
 		if (SSLCertificate::certExists()) {
 			// Get certificate info
-			$cmd = SSLCertificate::getCertDetailsCommand();
-			$ret = ExecuteCommand::execCommand($cmd);
-			if ($ret['error'] === 0) {
-				$this->cert_raw_output = $ret['output'];
-				$props = SSLCertificate::parseOpenSSLCert($ret['output']);
+			$result = SSLCertificate::getCertInfo();
+			$state = ($result['error'] == 0);
+			if ($state) {
+				$this->cert_raw_output = $result['raw'];
+				$props = $result['output'];
 				$this->CertsInstallCert->Display = 'None';
 				$this->CertsCertInstalled->Display = 'Dynamic';
 			} else {
@@ -112,26 +106,26 @@ class Certs extends PortletTemplate
 	{
 		$days_no = 365; // default 1 year
 		if (isset($props['validity']['not_before']) && isset($props['validity']['not_after'])) {
-			$not_before = new DateTime(
-				$props['validity']['not_before']
-			);
-			$not_after = new DateTime(
+			$days_no = SSLCertificate::getDaysInTimeScope(
+				$props['validity']['not_before'],
 				$props['validity']['not_after']
 			);
-			$ddiff = $not_after->getTimestamp() - $not_before->getTimestamp();
-			$days_no = (int) ($ddiff / 60 / 60 / 24);
 		}
 		$this->CertsSelfSignedValidityDays->Text = $days_no;
 		$this->CertsSelfSignedCommonName->Text = $props['subject']['common_name'] ?? 'localhost';
 		$this->CertsSelfSignedEmail->Text = $props['subject']['email'] ?? '';
-		$this->CertsSelfSignedCountryCode->Text = $props['subject']['country_code'] ?? 'ZZ';
+		$this->CertsSelfSignedCountryCode->Text = $props['subject']['country_code'] ?? '';
 		$this->CertsSelfSignedState->Text = $props['subject']['state'] ?? '';
 		$this->CertsSelfSignedLocality->Text = $props['subject']['locality'] ?? '';
 		$this->CertsSelfSignedOrganization->Text = $props['subject']['organization'] ?? '';
 		$this->CertsSelfSignedOrganizationUnit->Text = $props['subject']['organization_unit'] ?? '';
 		$this->CertsAction->SelectedValue = '';
 		if (isset($props['issuer']['common_name']) && isset($props['subject']['common_name']) && $props['issuer']['common_name'] == $props['subject']['common_name']) {
-			$this->CertsAction->SelectedValue = self::CERT_TYPE_SELF_SIGNED;
+			$this->CertsAction->SelectedValue = SelfSignedCert::CERT_TYPE;
+		} elseif (isset($props['issuer']['organization']) && preg_match('/(Let\'s Encrypt)/i', $props['issuer']['organization']) === 1) {
+			$this->CertsAction->SelectedValue = LetsEncryptCert::CERT_TYPE;
+		} elseif (isset($props['issuer']['common_name']) && preg_match('/(Pebble)/i', $props['issuer']['common_name']) === 1) {
+			$this->CertsAction->SelectedValue = LetsEncryptCert::CERT_TYPE;
 		}
 		$this->cert_props = $props;
 	}
@@ -166,46 +160,35 @@ class Certs extends PortletTemplate
 	}
 
 	/**
-	 * Save certificate.
+	 * Create certificate.
 	 *
 	 * @param TCallback $sender sender object
 	 * @param TCallbackEventParameter $param event parameters
+	 * @param bool true on success, false otherwise
 	 */
-	public function saveCert($sender, $param): void
+	public function createCert($sender, $param): bool
 	{
+		$state = false;
+
+		// Hide previous error message (if any)
+		$eid = 'certificate_action_error';
+		$cb = $this->getPage()->getCallbackClient();
+		$cb->hide($eid);
+
+		$common_name = '';
 		$action = $this->CertsAction->getSelectedValue();
 		switch ($action) {
-			case self::CERT_TYPE_LETS_ENCRYPT: {
-				$this->saveLetsEncryptCert();
+			case LetsEncryptCert::CERT_TYPE: {
+				$common_name = $this->CertsLetsEncryptCommonName->Text;
+				$state = $this->createLetsEncryptCert();
 				break;
 			}
-			case self::CERT_TYPE_SELF_SIGNED: {
-				$this->saveSelfSignedCert();
-				break;
-			}
-			case self::CERT_TYPE_EXISTING: {
-				$this->saveExistingCert();
+			case SelfSignedCert::CERT_TYPE: {
+				$common_name = $this->CertsSelfSignedCommonName->Text;
+				$state = $this->createSelfSignedCert();
 				break;
 			}
 		}
-	}
-
-	/**
-	 * Save Let's Encrypt certificate.
-	 */
-	private function saveLetsEncryptCert(): bool
-	{
-		//@TODO
-		return true;
-	}
-
-	/**
-	 * Save self-signed certificate.
-	 */
-	private function saveSelfSignedCert(): bool
-	{
-		// Create certificate
-		$state = $this->createSelfSignedCertificate();
 		if (!$state) {
 			return $state;
 		}
@@ -216,6 +199,18 @@ class Certs extends PortletTemplate
 			return $state;
 		}
 
+		// Check if there is a need to create PEM file
+		$web_server = $this->CertsWebServer->getSelectedValue();
+		if ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
+			$state = $this->createCertKeyPemFile();
+		}
+		if (!$state) {
+			return $state;
+		}
+
+		// Post install action
+		$this->postSaveActions($common_name);
+
 		// Reload web server
 		$state = $this->reloadWebServerConfig(
 			$this->CertsAdminAccessCreateCert
@@ -224,36 +219,238 @@ class Certs extends PortletTemplate
 			return $state;
 		}
 
-		// Everything fine - certificate created correctly
-		$common_name = $this->CertsSelfSignedCommonName->Text;
-		$this->getModule('audit')->audit(
-			AuditLog::TYPE_INFO,
-			AuditLog::CATEGORY_APPLICATION,
-			"New self-signed certificate has been created and configured for host: {$common_name}"
+		return $state;
+	}
+
+	/**
+	 * Renew certificate.
+	 *
+	 * @param TCallback $sender sender object
+	 * @param TCallbackEventParameter $param event parameters
+	 * @param bool true on success, false otherwise
+	 */
+	public function renewCert($sender, $param): bool
+	{
+		$state = false;
+
+		// Hide previous error message (if any)
+		$eid = 'certificate_action_error';
+		$cb = $this->getPage()->getCallbackClient();
+		$cb->hide($eid);
+
+		$action = $this->CertsAction->getSelectedValue();
+		switch ($action) {
+			case LetsEncryptCert::CERT_TYPE: {
+				$state = $this->renewLetsEncryptCert();
+				break;
+			}
+			case SelfSignedCert::CERT_TYPE: {
+				$state = $this->renewSelfSignedCert();
+				break;
+			}
+		}
+		if (!$state) {
+			return $state;
+		}
+
+		// Check if there is a need to create PEM file
+		$web_server = $this->CertsWebServer->getSelectedValue();
+		if ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
+			$state = $this->createCertKeyPemFile();
+		}
+		if (!$state) {
+			return $state;
+		}
+
+		// Reload web server
+		$state = $this->reloadWebServerConfig(
+			$this->CertsAdminAccessRenewCert
 		);
+		if (!$state) {
+			return $state;
+		}
+		return $state;
+	}
+
+	/**
+	 * Create Let's Encrypt account.
+	 *
+	 * @return array account information
+	 */
+	private function createLetsEncryptAccount(): array
+	{
+		$email = $this->CertsLetsEncryptEmail->Text;
+
+		$user = $this->CertsAdminAccessCreateCert->getAdminUser();
+		$password = $this->CertsAdminAccessCreateCert->getAdminPassword();
+		$use_sudo = $this->CertsAdminAccessCreateCert->getAdminUseSudo();
+
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
+			'use_sudo' => $use_sudo
+		];
+		$ssl_le_cert = $this->getModule('ssl_le_cert');
+		$result = $ssl_le_cert->createAccount($email, $cmd_params);
+		$state = ($result['error'] == 0);
+		$emsg = '';
+		if (!$state) {
+			// Error
+			$emsg = 'Error while creating account on ACME server.';
+			$this->reportError($result, $emsg);
+		}
+		return $result;
+	}
+
+	/**
+	 * Get existing Lets Encrypt account.
+	 *
+	 * @param AdminAccess $adm_access admin access control
+	 * @return array account information
+	 */
+	private function getLetsEncryptAccount(AdminAccess $adm_access): array
+	{
+		$user = $adm_access->getAdminUser();
+		$password = $adm_access->getAdminPassword();
+		$use_sudo = $adm_access->getAdminUseSudo();
+
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
+			'use_sudo' => $use_sudo
+		];
+		$ssl_le_cert = $this->getModule('ssl_le_cert');
+		$result = $ssl_le_cert->getExistingAccount($cmd_params);
+		$state = ($result['error'] == 0);
+		if (!$state) {
+			// Error
+			$emsg = 'Error while getting existing account from ACME server.';
+			$this->reportError($result, $emsg);
+		}
+		return $result;
+	}
+
+	/**
+	 * Create Let's Encrypt certificate.
+	 *
+	 * @return bool creation status
+	 */
+	private function createLetsEncryptCert(): bool
+	{
+		// create let's encrypt account first
+		$result = $this->createLetsEncryptAccount();
+		$state = $result['error'] == 0;
+		if (!$state) {
+			return $state;
+		}
+		$params = $result;
+
+		$email = $this->CertsLetsEncryptEmail->Text;
+		$common_name = $this->CertsLetsEncryptCommonName->Text;
+
+		$user = $this->CertsAdminAccessCreateCert->getAdminUser();
+		$password = $this->CertsAdminAccessCreateCert->getAdminPassword();
+		$use_sudo = $this->CertsAdminAccessCreateCert->getAdminUseSudo();
+
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
+			'use_sudo' => $use_sudo
+		];
+		$ssl_le_cert = $this->getModule('ssl_le_cert');
+		$result = $ssl_le_cert->createOrder(
+			$common_name,
+			$email,
+			$params,
+			$cmd_params
+		);
+		$state = ($result['error'] == 0);
+		if (!$state) {
+			// Error
+			$emsg = 'Error while preparing certificate.';
+			$this->reportError($result, $emsg);
+		}
+		return $state;
+	}
+
+	/**
+	 * Renew Let's Encrypt certificate.
+	 *
+	 * @return bool creation status
+	 */
+	private function renewLetsEncryptCert(): bool
+	{
+		$user = $this->CertsAdminAccessRenewCert->getAdminUser();
+		$password = $this->CertsAdminAccessRenewCert->getAdminPassword();
+		$use_sudo = $this->CertsAdminAccessRenewCert->getAdminUseSudo();
+
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
+			'use_sudo' => $use_sudo
+		];
+		$ssl_le_cert = $this->getModule('ssl_le_cert');
+		$result = $ssl_le_cert->renewCert($cmd_params);
+		$state = ($result['error'] == 0);
+		if (!$state) {
+			// Error
+			$emsg = 'Error while renewing certificate.';
+			$this->reportError($result, $emsg);
+		}
+		return $state;
+	}
+
+	/**
+	 * Actions after successful installing certificate.
+	 *
+	 * @param string $common_name common name address
+	 */
+	private function postSaveActions(string $common_name): void
+	{
+		$audit = $this->getModule('audit');
+		if (is_object($audit)) {
+			$audit->audit(
+				AuditLog::TYPE_INFO,
+				AuditLog::CATEGORY_APPLICATION,
+				"New certificate has been created and configured for host: {$common_name}"
+			);
+		}
 
 		$eid = 'certificate_action_error';
 		$cb = $this->getPage()->getCallbackClient();
 		$cb->hide($eid);
 
 		// Update API host protocol
-		$update_hcfg = $this->getUpdateHostProtocol();
+		$update_hcfg = $this->getUpdateHostProps();
 		if ($update_hcfg) {
-			$this->updateAPIHostProtocol('https');
+			$host_config = $this->getModule('host_config');
+			$api_host = $this->User->getDefaultAPIHost();
+			$hcfg = $host_config->getHostConfig($api_host);
+			if (key_exists('address', $hcfg) && $hcfg['address'] == 'localhost') {
+				$props = [
+					'protocol' => 'https'
+				];
+				if ($_SERVER['SERVER_PORT'] == 80) {
+					$props['port'] = 443;
+				}
+				$host_config->updateHostConfig(
+					$api_host,
+					$props
+				);
+			}
 		}
 
 		$iid = 'install_cert_info';
 		$cb->show($iid);
-		// END
-		return true;
 	}
 
 	/**
 	 * Create self-signed certificate.
 	 *
+	 * @param AdminAccess $adm_access admin access control
 	 * @return bool state true on success, false otherwise
 	 */
-	private function createSelfSignedCertificate(): bool
+	private function createSelfSignedCert(): bool
 	{
 		$days_no = $this->CertsSelfSignedValidityDays->Text;
 		$common_name = $this->CertsSelfSignedCommonName->Text;
@@ -268,6 +465,12 @@ class Certs extends PortletTemplate
 		$password = $this->CertsAdminAccessCreateCert->getAdminPassword();
 		$use_sudo = $this->CertsAdminAccessCreateCert->getAdminUseSudo();
 
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
+			'use_sudo' => $use_sudo
+		];
+
 		$cert_params = [
 			'days_no' => $days_no,
 			'common_name' => $common_name,
@@ -281,43 +484,40 @@ class Certs extends PortletTemplate
 		];
 
 		// Create self-signed certificate
-		$cmd = SSLCertificate::getPrepareHTTPSCertCommand($cert_params);
-		$su = $this->getModule('su');
-		$params = [
-			'command' => implode(' ', $cmd),
-			'use_sudo' => $use_sudo
-		];
-		$ret = $su->execCommand(
-			$user,
-			$password,
-			$params
-		);
-		$state = ($ret['exitcode'] == 0);
+		$ssl_ss_cert = $this->getModule('ssl_ss_cert');
+		$result = $ssl_ss_cert->createCert($cert_params, $cmd_params);
+		$state = ($result['error'] == 0);
 		if (!$state) {
 			// Error while creating key and certificate
 			$emsg = "Error while creating self-signed certificate for host: {$common_name}.";
-			$this->getModule('audit')->audit(
-				AuditLog::TYPE_ERROR,
-				AuditLog::CATEGORY_APPLICATION,
-				$emsg
-			);
-			$output = implode(PHP_EOL, $ret['output']);
-			$lmsg = $emsg . " ExitCode: {$ret['exitcode']}, Error: {$output}.";
-			Logging::log(
-				Logging::CATEGORY_APPLICATION,
-				$lmsg
-			);
-			$eid = 'certificate_action_error';
-			$eid_msg = 'certificate_action_error_msg';
-			$cb = $this->getPage()->getCallbackClient();
-			$cb->update($eid_msg, htmlentities($lmsg));
-			$cb->show($eid);
+			$this->reportError($result, $emsg);
 		}
+		return $state;
+	}
 
-		// Check if there is a need to create PEM file
-		$web_server = $this->CertsWebServer->getSelectedValue();
-		if ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
-			$state = $this->createCertKeyPemFile();
+	/**
+	 * Renew self-signed certificate.
+	 *
+	 * @return bool state true on success, false otherwise
+	 */
+	private function renewSelfSignedCert(): bool
+	{
+		$user = $this->CertsAdminAccessRenewCert->getAdminUser();
+		$password = $this->CertsAdminAccessRenewCert->getAdminPassword();
+		$use_sudo = $this->CertsAdminAccessRenewCert->getAdminUseSudo();
+
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
+			'use_sudo' => $use_sudo
+		];
+		$ssl_ss_cert = $this->getModule('ssl_ss_cert');
+		$result = $ssl_ss_cert->renewCert($cmd_params);
+		$state = ($result['error'] == 0);
+		if (!$state) {
+			// Error while creating key and certificate
+			$emsg = "Error while renewing self-signed certificate.";
+			$this->reportError($result, $emsg);
 		}
 		return $state;
 	}
@@ -334,42 +534,20 @@ class Certs extends PortletTemplate
 		$password = $this->CertsAdminAccessCreateCert->getAdminPassword();
 		$use_sudo = $this->CertsAdminAccessCreateCert->getAdminUseSudo();
 
-		$params = [
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
 			'use_sudo' => $use_sudo
 		];
 
 		// Get create PEM file command
-		$cmd = SSLCertificate::getPrepareHTTPSPemCommand($params);
-		$params = [
-			'command' => implode(' ', $cmd),
-			'use_sudo' => $use_sudo
-		];
-		$su = $this->getModule('su');
-		$ret = $su->execCommand(
-			$user,
-			$password,
-			$params
-		);
-		$state = ($ret['exitcode'] == 0);
+		$ssl_cert = $this->getModule('ssl_cert');
+		$result = $ssl_cert->createCertKeyPemFile($cmd_params);
+		$state = ($result['error'] == 0);
 		if (!$state) {
-			// Error while creating PEM file with cert and key
+			// Error
 			$emsg = "Error while creating PEM file with certificate and key.";
-			$this->getModule('audit')->audit(
-				AuditLog::TYPE_ERROR,
-				AuditLog::CATEGORY_APPLICATION,
-				$emsg
-			);
-			$output = implode(PHP_EOL, $ret['output']);
-			$lmsg = $emsg . " ExitCode: {$ret['exitcode']}, Error: {$output}.";
-			Logging::log(
-				Logging::CATEGORY_APPLICATION,
-				$lmsg
-			);
-			$eid = 'certificate_action_error';
-			$eid_msg = 'certificate_action_error_msg';
-			$cb = $this->getPage()->getCallbackClient();
-			$cb->update($eid_msg, htmlentities($lmsg));
-			$cb->show($eid);
+			$this->reportError($result, $emsg);
 		}
 		return $state;
 	}
@@ -386,42 +564,20 @@ class Certs extends PortletTemplate
 		$password = $this->CertsAdminAccessUninstallCert->getAdminPassword();
 		$use_sudo = $this->CertsAdminAccessUninstallCert->getAdminUseSudo();
 
-		$params = [
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
 			'use_sudo' => $use_sudo
 		];
 
 		// Get create PEM file command
-		$cmd = SSLCertificate::getRemoveHTTPSPemCommand($params);
-		$params = [
-			'command' => implode(' ', $cmd),
-			'use_sudo' => $use_sudo
-		];
-		$su = $this->getModule('su');
-		$ret = $su->execCommand(
-			$user,
-			$password,
-			$params
-		);
-		$state = ($ret['exitcode'] == 0);
+		$ssl_cert = $this->getModule('ssl_cert');
+		$result = $ssl_cert->removeCertKeyPemFile($cmd_params);
+		$state = ($result['error'] == 0);
 		if (!$state) {
-			// Error while creating PEM file with cert and key
+			// Error
 			$emsg = "Error while removing PEM file with certificate and key.";
-			$this->getModule('audit')->audit(
-				AuditLog::TYPE_ERROR,
-				AuditLog::CATEGORY_APPLICATION,
-				$emsg
-			);
-			$output = implode(PHP_EOL, $ret['output']);
-			$lmsg = $emsg . " ExitCode: {$ret['exitcode']}, Error: {$output}.";
-			Logging::log(
-				Logging::CATEGORY_APPLICATION,
-				$lmsg
-			);
-			$eid = 'certificate_action_error';
-			$eid_msg = 'certificate_action_error_msg';
-			$cb = $this->getPage()->getCallbackClient();
-			$cb->update($eid_msg, htmlentities($lmsg));
-			$cb->show($eid);
+			$this->reportError($result, $emsg);
 		}
 		return $state;
 	}
@@ -448,56 +604,31 @@ class Certs extends PortletTemplate
 		$password = $this->CertsAdminAccessCreateCert->getAdminPassword();
 		$use_sudo = $this->CertsAdminAccessCreateCert->getAdminUseSudo();
 
-		$params = [
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
 			'use_sudo' => $use_sudo
 		];
 
-		$cmd = '';
-		if ($web_server == Miscellaneous::WEB_SERVERS['nginx']['id']) {
-			$cmd = WebServerConfig::getEnableHTTPSNginxCommand(
-				$osprofile['repository_type'],
-				$params
-			);
-		} elseif ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
-			$cmd = WebServerConfig::getEnableHTTPSLighttpdCommand(
-				$params
-			);
-		} elseif ($web_server == Miscellaneous::WEB_SERVERS['apache']['id']) {
-			$cmd = WebServerConfig::getEnableHTTPSApacheCommand(
-				$osprofile['repository_type'],
-				$params
-			);
-		}
-		$params = [
-			'command' => implode(' ', $cmd),
-			'use_sudo' => $use_sudo
-		];
-		$su = $this->getModule('su');
-		$ret = $su->execCommand(
-			$user,
-			$password,
-			$params
+		$ws_config = $this->getModule('ws_config');
+		$result = $ws_config->enableHTTPS(
+			$osprofile['repository_type'],
+			$web_server,
+			$cmd_params
 		);
-		$state = ($ret['exitcode'] == 0);
+		$state = ($result['error'] == 0);
 		if (!$state) {
-			// Error while modifying web server configuration
+			// Error
 			$emsg = "Error while configuring self-signed certificate for host: {$common_name}.";
-			$this->getModule('audit')->audit(
-				AuditLog::TYPE_ERROR,
-				AuditLog::CATEGORY_APPLICATION,
-				$emsg
+			$this->reportError($result, $emsg);
+		}
+
+		// Switch port if needed
+		if ($state && $_SERVER['SERVER_PORT'] == 80) {
+			$state = $this->setWebServerPort(
+				443,
+				$this->CertsAdminAccessCreateCert
 			);
-			$output = implode(PHP_EOL, $ret['output']);
-			$lmsg = $emsg . " ExitCode: {$ret['exitcode']}, Error: {$output}.";
-			Logging::log(
-				Logging::CATEGORY_APPLICATION,
-				$lmsg
-			);
-			$eid = 'certificate_action_error';
-			$eid_msg = 'certificate_action_error_msg';
-			$cb = $this->getPage()->getCallbackClient();
-			$cb->update($eid_msg, htmlentities($lmsg));
-			$cb->show($eid);
 		}
 		return $state;
 	}
@@ -525,75 +656,25 @@ class Certs extends PortletTemplate
 		$password = $adm_access->getAdminPassword();
 		$use_sudo = $adm_access->getAdminUseSudo();
 
-		$params = [
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
 			'use_sudo' => $use_sudo
 		];
 
-		$cmd = '';
-		if ($web_server == Miscellaneous::WEB_SERVERS['nginx']['id']) {
-			$cmd = WebServerConfig::getNginxReloadCommand(
-				$params
-			);
-		} elseif ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
-			$cmd = WebServerConfig::getLighttpdRestartCommand(
-				$params
-			);
-		} elseif ($web_server == Miscellaneous::WEB_SERVERS['apache']['id']) {
-			$cmd = WebServerConfig::getApacheReloadCommand(
-				$osprofile['repository_type'],
-				$params
-			);
-		}
-		$params = [
-			'command' => implode(' ', $cmd),
-			'use_sudo' => $use_sudo
-		];
-		$su = $this->getModule('su');
-		$ret = $su->execCommand(
-			$user,
-			$password,
-			$params
+		$ws_config = $this->getModule('ws_config');
+		$result = $ws_config->reloadConfig(
+			$osprofile['repository_type'],
+			$web_server,
+			$cmd_params
 		);
-		$state = ($ret['exitcode'] == 0);
+		$state = ($result['error'] == 0);
 		if (!$state) {
 			// Web server reload/restart error
 			$emsg = "Error while reloading web server configuration.";
-			$this->getModule('audit')->audit(
-				AuditLog::TYPE_ERROR,
-				AuditLog::CATEGORY_APPLICATION,
-				$emsg
-			);
-			$output = implode(PHP_EOL, $ret['output']);
-			$lmsg = $emsg . " ExitCode: {$ret['exitcode']}, Error: {$output}.";
-			Logging::log(
-				Logging::CATEGORY_APPLICATION,
-				$lmsg
-			);
-			$eid = 'certificate_action_error';
-			$eid_msg = 'certificate_action_error_msg';
-			$cb = $this->getPage()->getCallbackClient();
-			$cb->update($eid_msg, htmlentities($lmsg));
-			$cb->show($eid);
+			$this->reportError($result, $emsg);
 		}
 		return $state;
-	}
-
-	/**
-	 * Update protocol in current API host config.
-	 * NOTE: The protocol is updated only in the default local API host connection.
-	 * For all other API connections that use local API, user has to switch to
-	 * the new protocol manually.
-	 *
-	 * @param string $protocol protocol (http|https) to set in default API host
-	 * @return bool true on success, false otherwise
-	 */
-	private function updateAPIHostProtocol(string $protocol = 'https'): bool
-	{
-		$api_host = $this->User->getDefaultAPIHost();
-		$host_config = $this->getModule('host_config');
-		$config = $host_config->getHostConfig($api_host);
-		$config['protocol'] = $protocol;
-		return $host_config->setHostConfig($api_host, $config);
 	}
 
 	/**
@@ -613,6 +694,11 @@ class Certs extends PortletTemplate
 	 */
 	public function uninstallCert($sender, $param): bool
 	{
+		// Hide previous error message (if any)
+		$eid = 'certificate_action_error';
+		$cb = $this->getPage()->getCallbackClient();
+		$cb->hide($eid);
+
 		// Disable SSL certificate in web server config
 		$state = $this->disableHTTPSInWebServer();
 		if (!$state) {
@@ -634,20 +720,33 @@ class Certs extends PortletTemplate
 		}
 
 		// Everything fine - certificate uninstalled correctly
-		$this->getModule('audit')->audit(
-			AuditLog::TYPE_INFO,
-			AuditLog::CATEGORY_APPLICATION,
-			"SSL certificate has been uninstalled."
-		);
-
-		$eid = 'certificate_action_error';
-		$cb = $this->getPage()->getCallbackClient();
-		$cb->hide($eid);
+		$audit = $this->getModule('audit');
+		if (is_object($audit)) {
+			$audit->audit(
+				AuditLog::TYPE_INFO,
+				AuditLog::CATEGORY_APPLICATION,
+				"SSL certificate has been uninstalled."
+			);
+		}
 
 		// Update API host protocol
-		$update_hcfg = $this->getUpdateHostProtocol();
+		$update_hcfg = $this->getUpdateHostProps();
 		if ($update_hcfg) {
-			$this->updateAPIHostProtocol('http');
+			$host_config = $this->getModule('host_config');
+			$api_host = $this->User->getDefaultAPIHost();
+			$hcfg = $host_config->getHostConfig($api_host);
+			if (key_exists('address', $hcfg) && $hcfg['address'] == 'localhost') {
+				$props = [
+					'protocol' => 'http'
+				];
+				if ($_SERVER['SERVER_PORT'] == 443) {
+					$props['port'] = 80;
+				}
+				$host_config->updateHostConfig(
+					$api_host,
+					$props
+				);
+			}
 		}
 
 		$iid = 'remove_cert_info';
@@ -677,56 +776,31 @@ class Certs extends PortletTemplate
 		$password = $this->CertsAdminAccessUninstallCert->getAdminPassword();
 		$use_sudo = $this->CertsAdminAccessUninstallCert->getAdminUseSudo();
 
-		$params = [
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
 			'use_sudo' => $use_sudo
 		];
 
-		$cmd = '';
-		if ($web_server == Miscellaneous::WEB_SERVERS['nginx']['id']) {
-			$cmd = WebServerConfig::getDisableHTTPSNginxCommand(
-				$osprofile['repository_type'],
-				$params
-			);
-		} elseif ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
-			$cmd = WebServerConfig::getDisableHTTPSLighttpdCommand(
-				$params
-			);
-		} elseif ($web_server == Miscellaneous::WEB_SERVERS['apache']['id']) {
-			$cmd = WebServerConfig::getDisableHTTPSApacheCommand(
-				$osprofile['repository_type'],
-				$params
-			);
-		}
-		$params = [
-			'command' => implode(' ', $cmd),
-			'use_sudo' => $use_sudo
-		];
-		$su = $this->getModule('su');
-		$ret = $su->execCommand(
-			$user,
-			$password,
-			$params
+		$ws_config = $this->getModule('ws_config');
+		$result = $ws_config->disableHTTPS(
+			$osprofile['repository_type'],
+			$web_server,
+			$cmd_params
 		);
-		$state = ($ret['exitcode'] == 0);
+		$state = ($result['error'] == 0);
 		if (!$state) {
-			// Web server reload/restart error
+			// Error
 			$emsg = "Error while disabling HTTPS in web server configuration.";
-			$this->getModule('audit')->audit(
-				AuditLog::TYPE_ERROR,
-				AuditLog::CATEGORY_APPLICATION,
-				$emsg
+			$this->reportError($result, $emsg);
+		}
+
+		// Switch port if needed
+		if ($state && $_SERVER['SERVER_PORT'] == 443) {
+			$state = $this->setWebServerPort(
+				80,
+				$this->CertsAdminAccessUninstallCert
 			);
-			$output = implode(PHP_EOL, $ret['output']);
-			$lmsg = $emsg . " ExitCode: {$ret['exitcode']}, Error: {$output}.";
-			Logging::log(
-				Logging::CATEGORY_APPLICATION,
-				$lmsg
-			);
-			$eid = 'certificate_action_error';
-			$eid_msg = 'certificate_action_error_msg';
-			$cb = $this->getPage()->getCallbackClient();
-			$cb->update($eid_msg, htmlentities($lmsg));
-			$cb->show($eid);
 		}
 		return $state;
 	}
@@ -743,41 +817,19 @@ class Certs extends PortletTemplate
 		$password = $this->CertsAdminAccessUninstallCert->getAdminPassword();
 		$use_sudo = $this->CertsAdminAccessUninstallCert->getAdminUseSudo();
 
-		$params = [
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
 			'use_sudo' => $use_sudo
 		];
 
-		$cmd = SSLCertificate::getRemoveHTTPSCertCommand($params);
-		$params = [
-			'command' => implode(' ', $cmd),
-			'use_sudo' => $use_sudo
-		];
-		$su = $this->getModule('su');
-		$ret = $su->execCommand(
-			$user,
-			$password,
-			$params
-		);
-		$state = ($ret['exitcode'] == 0);
+		$ssl_cert = $this->getModule('ssl_cert');
+		$result = $ssl_cert->removeCertAndKeyFiles($cmd_params);
+		$state = ($result['error'] == 0);
 		if (!$state) {
 			// Remove cert and key error
 			$emsg = "Error while removing SSL certificate and key.";
-			$this->getModule('audit')->audit(
-				AuditLog::TYPE_ERROR,
-				AuditLog::CATEGORY_APPLICATION,
-				$emsg
-			);
-			$output = implode(PHP_EOL, $ret['output']);
-			$lmsg = $emsg . " ExitCode: {$ret['exitcode']}, Error: {$output}.";
-			Logging::log(
-				Logging::CATEGORY_APPLICATION,
-				$lmsg
-			);
-			$eid = 'certificate_action_error';
-			$eid_msg = 'certificate_action_error_msg';
-			$cb = $this->getPage()->getCallbackClient();
-			$cb->update($eid_msg, htmlentities($lmsg));
-			$cb->show($eid);
+			$this->reportError($result, $emsg);
 		}
 
 		// Check if there is a need to remove PEM file
@@ -789,23 +841,103 @@ class Certs extends PortletTemplate
 	}
 
 	/**
-	 * Update host protocol option setter.
+	 * Set port in web server configuration.
+	 *
+	 * @param int $port port to set
+	 * @return bool true on success, false otherwise
+	 */
+	public function setWebServerPort(int $port, AdminAccess $admin_access): bool
+	{
+		$osprofile_name = $this->CertsOSProfile->getSelectedValue();
+		if (empty($osprofile_name)) {
+			// for renew certificate the OS profile can be missing
+			return true;
+		}
+		$osprofile_config = $this->getModule('osprofile_config');
+		$osprofile = $osprofile_config->getOSProfileConfig($osprofile_name);
+
+		$web_server = $this->CertsWebServer->getSelectedValue();
+
+		$user = $admin_access->getAdminUser();
+		$password = $admin_access->getAdminPassword();
+		$use_sudo = $admin_access->getAdminUseSudo();
+
+		$cmd_params = [
+			'user' => $user,
+			'password' => $password,
+			'use_sudo' => $use_sudo
+		];
+		$ws_config = $this->getModule('ws_config');
+		$result = $ws_config->setPort(
+			$osprofile['repository_type'],
+			$web_server,
+			$port,
+			$cmd_params
+		);
+		$state = ($result['error'] == 0);
+		if (!$state) {
+			// Error
+			$emsg = "Error while setting port in web server configuration.";
+			$this->reportError($result, $emsg);
+		}
+		return $state;
+	}
+
+	/**
+	 * Report errors.
+	 *
+	 * @param array $result result from command
+	 * @param string $emsg error message to display
+	 */
+	private function reportError(array $result, string $emsg): void
+	{
+		$output = '';
+		if (key_exists('raw', $result)) {
+			// responses from ACME server
+			$output = $result['raw'];
+		} elseif (key_exists('output', $result)) {
+			// all other errors
+			$output = implode(PHP_EOL, $result['output']);
+		}
+		$emsg .= " Error: {$result['error']}, Output: {$output}.";
+		$audit = $this->getModule('audit');
+		if (is_object($audit)) {
+			$audit->audit(
+				AuditLog::TYPE_ERROR,
+				AuditLog::CATEGORY_APPLICATION,
+				$emsg
+			);
+		}
+		Logging::log(
+			Logging::CATEGORY_APPLICATION,
+			$emsg
+		);
+		$eid = 'certificate_action_error';
+		$eid_msg = 'certificate_action_error_msg';
+		$cb = $this->getPage()->getCallbackClient();
+		$cb->update($eid_msg, htmlentities($emsg));
+		$cb->show($eid);
+	}
+
+
+	/**
+	 * Update host properties option setter.
 	 * On the certificate save, the API host config needs to be switched to 'https'.
 	 *
 	 * @param string $state decides if host protocol will be updated
 	 */
-	public function setUpdateHostProtocol($state): void
+	public function setUpdateHostProps($state): void
 	{
 		$st = TPropertyValue::ensureBoolean($state);
 		$this->setViewState(self::UPDATE_HOST_CONFIG, $st);
 	}
 
 	/**
-	 * Update host protocol option getter.
+	 * Update host properties option getter.
 	 *
 	 * @return bool update host protocol option value
 	 */
-	public function getUpdateHostProtocol(): bool
+	public function getUpdateHostProps(): bool
 	{
 		return $this->getViewState(self::UPDATE_HOST_CONFIG, false);
 	}
