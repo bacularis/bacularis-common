@@ -33,7 +33,7 @@
 					ControlCssClass="field_invalid"
 					Display="Dynamic"
 				/>
-				&nbsp;<i class="fa fa-asterisk w3-text-red w3-margin-left opt_req"></i>
+				&nbsp;<i class="fa fa-asterisk w3-text-red opt_req"></i>
 			</div>
 		</div>
 	</div>
@@ -56,7 +56,7 @@
 						ControlCssClass="field_invalid"
 						Display="Dynamic"
 					/>
-				</div> &nbsp;<i class="fa fa-asterisk w3-text-red w3-margin-left opt_req"></i>
+				</div> &nbsp;<i class="fa fa-asterisk w3-text-red opt_req" style="margin-left: 22px;"></i>
 			</div>
 			<div class="w3-container w3-row w3-padding">
 				<div class="w3-quarter w3-col"><%[ Web server name ]%>:</div>
