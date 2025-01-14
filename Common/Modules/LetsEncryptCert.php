@@ -43,7 +43,8 @@ class LetsEncryptCert extends CommonModule
 	 *
 	 * @var string
 	 */
-	private const DIRECTORY_URL = 'https://acme-staging-v02.api.letsencrypt.org/directory';
+	private const DIRECTORY_URL = 'https://acme-v02.api.letsencrypt.org/directory';
+	// private const DIRECTORY_URL = 'https://acme-staging-v02.api.letsencrypt.org/directory';
 
 	/**
 	 * Create new Let's Encrypt account.
