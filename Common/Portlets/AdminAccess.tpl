@@ -69,11 +69,13 @@
 		<%=$this->ClientID%>_AdminAccess.post_execute_action();
 	</prop:ClientSide.OnSuccess>
 	<prop:ClientSide.OnFailure>
-		let emsg = 'Error. Please check logs.';
 		if (sender.data) {
+			let emsg = 'Error. Please check logs.';
 			emsg += sender.data;
+			<%=$this->ClientID%>_AdminAccess.show_error(emsg);
+		} else {
+			<%=$this->ClientID%>_AdminAccess.show_window(false);
 		}
-		<%=$this->ClientID%>_AdminAccess.show_error(emsg);
 	</prop:ClientSide.OnFailure>
 	<prop:ClientSide.OnComplete>
 		<%=$this->ClientID%>_AdminAccess.show_command_loader(false);
