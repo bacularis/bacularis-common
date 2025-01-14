@@ -31,6 +31,22 @@
 		<module id="ssha1" class="Bacularis\Common\Modules\Ssha1" />
 		<module id="sha256" class="Bacularis\Common\Modules\Sha256" />
 		<module id="sha512" class="Bacularis\Common\Modules\Sha512" />
+		<module id="jwt" class="Bacularis\Common\Modules\JWT" />
+		<module id="crypto_keys" class="Bacularis\Common\Modules\CryptoKeys" />
+		<!-- SSL certificate modules -->
+		<module id="acme_account" class="Bacularis\Common\Modules\Protocol\ACME\Account" />
+		<module id="acme_nonce" class="Bacularis\Common\Modules\Protocol\ACME\Nonce" />
+		<module id="acme_order" class="Bacularis\Common\Modules\Protocol\ACME\Order" />
+		<module id="acme_authz" class="Bacularis\Common\Modules\Protocol\ACME\Authz" />
+		<module id="acme_challenge_http01" class="Bacularis\Common\Modules\Protocol\ACME\ChallengeHTTP01" />
+		<module id="acme_shell_commands" class="Bacularis\Common\Modules\Protocol\ACME\ShellCommands" />
+		<module id="acme_finalize" class="Bacularis\Common\Modules\Protocol\ACME\Finalize" />
+		<module id="acme_download" class="Bacularis\Common\Modules\Protocol\ACME\Download" />
+		<module id="ssl_cert" class="Bacularis\Common\Modules\SSLCertificate" />
+		<module id="ssl_le_cert" class="Bacularis\Common\Modules\LetsEncryptCert" />
+		<module id="ssl_ss_cert" class="Bacularis\Common\Modules\SelfSignedCert" />
+		<!-- Web server modules -->
+		<module id="ws_config" class="Bacularis\Common\Modules\WebServerConfig" />
 		<!-- communication modules -->
 		<module id="request" class="THttpRequest" UrlManager="url_manager" UrlFormat="HiddenPath" />
 		<module id="url_manager" class="Bacularis\Common\Modules\BaculumUrlMapping" EnableCustomUrl="true" />
