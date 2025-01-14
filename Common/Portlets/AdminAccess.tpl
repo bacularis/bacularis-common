@@ -59,14 +59,24 @@
 				<button class="w3-button w3-green" type="button" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, '<%=$this->ClientID%>AdminAccessGroup') && <%=$this->ClientID%>_AdminAccess.execute());"><i class="fa fa-gears"></i> &nbsp;<%[ Run ]%></button>
 				<i id="<%=$this->ClientID%>_admin_access_command_loader" class="fa-solid fa-sync w3-spin w3-margin-left" style="visibility: hidden;"></i>
 			</div>
+			<p id="<%=$this->ClientID%>_admin_access_command_error" class="w3-text-red w3-center" style="display: none;"></p>
 		</footer>
 	</div>
 </div>
 <com:TCallback ID="AdminAccessAction" OnCallback="execute">
-	<prop:ClientSide.OnComplete>
+	<prop:ClientSide.OnSuccess>
 		<%=$this->ClientID%>_AdminAccess.show_window(false);
-		<%=$this->ClientID%>_AdminAccess.show_command_loader(false);
 		<%=$this->ClientID%>_AdminAccess.post_execute_action();
+	</prop:ClientSide.OnSuccess>
+	<prop:ClientSide.OnFailure>
+		let emsg = 'Error. Please check logs.';
+		if (sender.data) {
+			emsg += sender.data;
+		}
+		<%=$this->ClientID%>_AdminAccess.show_error(emsg);
+	</prop:ClientSide.OnFailure>
+	<prop:ClientSide.OnComplete>
+		<%=$this->ClientID%>_AdminAccess.show_command_loader(false);
 	</prop:ClientSide.OnComplete>
 </com:TCallback>
 <script>
@@ -75,7 +85,8 @@ const <%=$this->ClientID%>_AdminAccess = {
 		modal: '<%=$this->ClientID%>_admin_access_modal',
 		username: '<%=$this->AdminAccessName->ClientID%>',
 		password: '<%=$this->AdminAccessPassword->ClientID%>',
-		loader: '<%=$this->ClientID%>_admin_access_command_loader'
+		loader: '<%=$this->ClientID%>_admin_access_command_loader',
+		error: '<%=$this->ClientID%>_admin_access_command_error'
 	},
 	show_window: function(show) {
 		const password = document.getElementById(this.ids.password);
@@ -91,9 +102,21 @@ const <%=$this->ClientID%>_AdminAccess = {
 		const loader = document.getElementById(this.ids.loader);
 		loader.style.visibility = show ? 'visible' : 'hidden';
 	},
+	show_error: function(errmsg) {
+		const error = document.getElementById(this.ids.error);
+		if (errmsg) {
+			error.textContent = errmsg;
+			error.style.display = 'block';
+		} else {
+			error.textContent = '';
+			error.style.display = 'none';
+		}
+	},
 	execute: function() {
 		const cb = <%=$this->AdminAccessAction->ActiveControl->Javascript%>;
+		cb.setRequestTimeOut(120000);
 		cb.dispatch();
+		this.show_error(false);
 		this.show_command_loader(true);
 	},
 	post_execute_action: function() {
