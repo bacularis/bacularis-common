@@ -15,6 +15,8 @@
 
 namespace Bacularis\Common\Modules;
 
+use Bacularis\Common\Modules\Errors\GenericError;
+
 /**
  * SU command module.
  *
@@ -36,7 +38,7 @@ class Su extends CommonModule
 	/**
 	 * SU command patterns.
 	 */
-	private const SU_COMMAND_PATTERN = "%s - \"%s\" %s";
+	private const SU_COMMAND_PATTERN = "%s %s %s";
 
 	/**
 	 * SU command timeout in seconds.
@@ -78,17 +80,20 @@ class Su extends CommonModule
 		$out = implode('', $out);
 		$output = explode(PHP_EOL, $out);
 		$exitcode = self::getExitCode($output);
+		$error = 0;
 		if ($exitcode != 0) {
 			$emsg = "Error while running su command User: '{$user}', Command: '{$cmd['cmd']}', Output: '{$out}'";
 			Logging::log(
 				Logging::CATEGORY_EXECUTE,
 				$emsg
 			);
+			$error = GenericError::ERROR_WRONG_EXITCODE;
 		}
 		return [
 			'output' => $output,
 			'output_id' => $cmd['output_id'],
-			'exitcode' => $exitcode
+			'exitcode' => $exitcode,
+			'error' => $error
 		];
 	}
 
@@ -112,10 +117,16 @@ class Su extends CommonModule
 		// Main SU command
 		$cp_cmd = $this->getCmdPattern($ptype);
 
+		// User parameter
+		$cuser = $user;
+		if (!empty($user)) {
+			$user = " -l \"{$user}\"";
+		}
+
 		$cmd = sprintf(
 			$cp_cmd,
 			self::CMD,
-			$user,
+			$cuser,
 			$options
 		);
 		return [
@@ -198,12 +209,16 @@ expect {
 		expect_user -re "(.*)\n"
 		set pwd $expect_out(1,string)
 		send "$pwd\r"
+		puts "\r\n\r"
+		sleep 0.3
 		exp_continue
 	}
 	-re ".sudo. password for.*:" {
 		expect_user -re "(.*)\n"
 		set pwd $expect_out(1,string)
 		send "$pwd\r"
+		puts "\r\n\r"
+		sleep 0.3
 		exp_continue
 	}
 	-re "$prompt" {
