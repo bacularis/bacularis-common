@@ -15,6 +15,7 @@
 
 namespace Bacularis\Common\Modules\Protocol\ACME;
 
+use DateTime;
 use Bacularis\Common\Modules\CommonModule;
 use Bacularis\Common\Modules\Errors\ConnectionError;
 use Bacularis\Common\Modules\Protocol\HTTP\Headers;
@@ -207,6 +208,7 @@ class Request extends CommonModule
 			$output
 		);
 		$nonce = $headers['replay-nonce'] ?? '';
+		$retry_after = $headers['retry-after'] ?? '';
 		$kid = $headers['location'] ?? '';
 		$out = ($errno == 0 ? json_decode($output, true) : []);
 		$type = '';
@@ -225,6 +227,17 @@ class Request extends CommonModule
 				// other problems than badNonce are reported as errors
 				$errno = $out['status'];
 			}
+		}
+		if (!empty($retry_after)) {
+			$secs = 0;
+			if (is_numeric($retry_after)) {
+				$secs = (int) $retry_after;
+			} else {
+				$f = date_create($retry_after)->getTimestamp();
+				$t = date_create()->getTimestamp();
+				$secs = $f - $t;
+			}
+			sleep($secs);
 		}
 
 		return [
