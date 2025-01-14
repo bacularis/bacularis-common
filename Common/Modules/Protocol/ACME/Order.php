@@ -52,17 +52,10 @@ class Order extends CommonModule
 			];
 		}
 
-		$now = time();
-		$after = $now + (90 * 24 * 60 * 60); // valid for 90 days
-		$not_before = date_format(date_create('@' . $now), 'c');
-		$not_after = date_format(date_create('@' . $after), 'c');
-
 		$data = [
 			'identifiers' => [
 				['type' => 'dns', 'value' => $props['common_name']]
-			],
-			'notBefore' => $not_before,
-			'notAfter' => $not_after
+			]
 		];
 
 		$privkey_file = $props['privkey_file'] ?? '';
