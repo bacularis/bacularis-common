@@ -101,7 +101,7 @@
 						ID="CertsLetsEncryptCommonName"
 						CssClass="w3-input w3-border"
 						Width="400px"
-						Text="<%=preg_replace('/(:*\d*)?$/', '', $_SERVER['HTTP_HOST'])%>"
+						Text="<%=preg_replace('/(:\d+)?$/', '', $_SERVER['HTTP_HOST'])%>"
 					/>
 					<com:TRequiredFieldValidator
 						ValidationGroup="CertsGroup"
@@ -125,7 +125,7 @@
 						ID="CertsSelfSignedCommonName"
 						CssClass="w3-input w3-border"
 						Width="400px"
-						Text="<%=preg_replace('/(:*\d*)?$/', '', $_SERVER['HTTP_HOST'])%>"
+						Text="<%=preg_replace('/(:\d+)?$/', '', $_SERVER['HTTP_HOST'])%>"
 					/>
 					<com:TRequiredFieldValidator
 						ValidationGroup="CertsGroup"
