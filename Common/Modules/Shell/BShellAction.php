@@ -50,4 +50,15 @@ class BShellAction extends TShellAction
 	{
 		$this->output_writer = $writer;
 	}
+
+	/**
+	 * Get module.
+	 *
+	 * @param string $id module identifier.
+	 * @return object module instance
+	 */
+	protected function getModule($id)
+	{
+		return $this->getApplication()->getModule($id);
+	}
 }
