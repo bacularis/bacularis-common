@@ -40,6 +40,11 @@ use Prado\Util\TLogger;
  */
 class Logging extends CommonModule
 {
+	/**
+	 * Direct common log file name.
+	 */
+	private const COMMON_DIRECT_LOG = 'bacularis-common.log';
+
 	public static $debug_enabled = false;
 
 	public const CATEGORY_EXECUTE = 'Execute';
@@ -61,7 +66,7 @@ class Logging extends CommonModule
 
 	public static function log($category, $message)
 	{
-		if (self::$debug_enabled !== true) {
+		if (self::$debug_enabled !== true && php_sapi_name() != 'cli') {
 			return;
 		}
 		$current_mode = Prado::getApplication()->getMode();
@@ -75,7 +80,12 @@ class Logging extends CommonModule
 
 		self::prepareLog($message);
 
-		Prado::log($message, TLogger::INFO, $category);
+		if (php_sapi_name() == 'cli') {
+			// All cli executions go to direct log
+			self::directLog($message);
+		} else {
+			Prado::log($message, TLogger::INFO, $category);
+		}
 
 		// switch back application to original mode
 		Prado::getApplication()->setMode($current_mode);
@@ -124,5 +134,18 @@ class Logging extends CommonModule
 			$command,
 			$output
 		);
+	}
+
+	/**
+	 * Direct logging to common file.
+	 * This log is used for logging executions from command line.
+	 *
+	 * @param string $message message to write in log
+	 */
+	public static function directLog(string $message): void
+	{
+		$dir = Prado::getPathOfNamespace('Bacularis.Common.Working');
+		$file = implode(DIRECTORY_SEPARATOR, [$dir, self::COMMON_DIRECT_LOG]);
+		file_put_contents($file, $message, LOCK_EX | FILE_APPEND);
 	}
 }

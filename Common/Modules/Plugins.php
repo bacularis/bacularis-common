@@ -42,12 +42,6 @@ class Plugins extends CommonModule
 	public const LOG_DEST_FILE = 2;
 
 	/**
-	 * Plugin debug file name.
-	 */
-	private const DEBUG_FILENAME = 'plugin-debug.out';
-
-
-	/**
 	 * Get plugin by name.
 	 *
 	 * @param string $name plugin name
@@ -110,9 +104,7 @@ class Plugins extends CommonModule
 		if ($dest === self::LOG_DEST_STDOUT) {
 			fwrite(STDERR, $message);
 		} elseif ($dest === self::LOG_DEST_FILE) {
-			$dir = Prado::getPathOfNamespace('Bacularis.Common.Working');
-			$file = implode(DIRECTORY_SEPARATOR, [$dir, self::DEBUG_FILENAME]);
-			file_put_contents($file, $message, LOCK_EX | FILE_APPEND);
+			Logging::directLog($message);
 		}
 	}
 
