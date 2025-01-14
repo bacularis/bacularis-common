@@ -45,7 +45,7 @@ class ECDSAKey extends ShellCommandModule
 	 * This command uses the OpenSSL binary.
 	 *
 	 * @param string $privkey_file private key file path
-	 * @param null|integer $key_size key size in bits
+	 * @param null|int $key_size key size in bits
 	 * @param string $cmd_params key command parameters
 	 * @return array command to prepare ECDSA key
 	 */
@@ -96,7 +96,7 @@ class ECDSAKey extends ShellCommandModule
 			'-pubout',
 			...$dest
 		];
-		static::setCommandParameters($ret, $params);
+		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
 	}
 

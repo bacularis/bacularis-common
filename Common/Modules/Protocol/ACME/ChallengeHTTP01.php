@@ -62,7 +62,7 @@ class ChallengeHTTP01 extends ShellCommandModule
 		];
 
 		$jwt = $this->getModule('jwt');
-		$data = new StdClass;
+		$data = new StdClass();
 		$parts = $jwt->getTokenParts($jwt_props, $data, $cmd_params);
 		$body = Request::prepareBody(
 			$parts['header'],

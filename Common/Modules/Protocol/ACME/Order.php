@@ -54,8 +54,8 @@ class Order extends CommonModule
 
 		$now = time();
 		$after = $now + (90 * 24 * 60 * 60); // valid for 90 days
-		$not_before = date_format(date_create('@'. $now), 'c');
-		$not_after = date_format(date_create('@'. $after), 'c');
+		$not_before = date_format(date_create('@' . $now), 'c');
+		$not_after = date_format(date_create('@' . $after), 'c');
 
 		$data = [
 			'identifiers' => [

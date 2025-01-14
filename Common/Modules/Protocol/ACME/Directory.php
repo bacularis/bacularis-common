@@ -31,9 +31,9 @@ class Directory extends CommonModule
 	/**
 	 * Stores directory object properties.
 	 *
-	 * @var null|array
+	 * @var array
 	 */
-	private static $directory = null;
+	private static $directory;
 
 	/**
 	 * Get directory properties.

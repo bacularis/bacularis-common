@@ -116,6 +116,8 @@ class ShellCommands extends ShellCommandModule
 	/**
 	 * Create file for the http-01 challenge.
 	 *
+	 * @param string $token token that is the file name
+	 * @param string $content the challenge file content
 	 * @param array $cmd_params command properties (use_sudo, user, password ...)
 	 * @return array command result
 	 */

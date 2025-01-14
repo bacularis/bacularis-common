@@ -844,6 +844,7 @@ class Certs extends PortletTemplate
 	 * Set port in web server configuration.
 	 *
 	 * @param int $port port to set
+	 * @param AdminAccess $admin_access administrator access control instance
 	 * @return bool true on success, false otherwise
 	 */
 	public function setWebServerPort(int $port, AdminAccess $admin_access): bool

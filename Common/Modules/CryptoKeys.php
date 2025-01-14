@@ -215,6 +215,8 @@ class CryptoKeys extends ShellCommandModule
 	 *     4b:cd
 	 * Exponent: 65537 (0x10001)
 	 *
+	 * @param array $out openssl certificate command output
+	 * @return array parsed modulus and exponent
 	 */
 	private static function parseModulusExponent(array $out): array
 	{
@@ -265,7 +267,8 @@ class CryptoKeys extends ShellCommandModule
 		return $mod;
 	}
 
-	private static function getOutput(array $out): string {
+	private static function getOutput(array $out): string
+	{
 		$output = [];
 		for ($i = 0; $i < count($out); $i++) {
 			$line = trim($out[$i]);

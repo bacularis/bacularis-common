@@ -437,7 +437,7 @@ class SSLCertificate extends ShellCommandModule
 			if (stripos($subsection, 'x509v3') === 0 && stripos($value, 'x509v3') !== 0) {
 				$ret[$section][$subsection][] = $value;
 				continue;
-			// properties (for section 1 and 2)
+				// properties (for section 1 and 2)
 			} elseif (preg_match('/\s*(?P<prop>[\w\s]+)\s*' . $sep . '\s*(?P<value>.*)$/i', $output[$i], $match) === 1 && $section) {
 				$prop = self::getCertProp($match['prop']);
 				if (in_array($section, $multival_sections)) {
@@ -517,7 +517,7 @@ class SSLCertificate extends ShellCommandModule
 	private static function parseCSROutput(array $output): string
 	{
 		$out = '';
-		for ($i = 0; $i < count($output); $i++)	{
+		for ($i = 0; $i < count($output); $i++) {
 			if (preg_match('/^(spawn\s|password:|\[sudo\]\s)/i', $output[$i]) === 1) {
 				continue;
 			}
@@ -737,7 +737,7 @@ class SSLCertificate extends ShellCommandModule
 	/**
 	 * Get days left to expiry certificate.
 	 *
-	 * @return integer days left to expiry (0 means expired certificate)
+	 * @return int days left to expiry (0 means expired certificate)
 	 */
 	public static function getCertValidityDaysLeft()
 	{
@@ -762,7 +762,7 @@ class SSLCertificate extends ShellCommandModule
 	 *
 	 * @param string $start start date (in certificate - not_before)
 	 * @param string $end end date (in certificate - not_after)
-	 * @return integer days in time scope
+	 * @return int days in time scope
 	 */
 	public static function getDaysInTimeScope(string $start, string $end): int
 	{

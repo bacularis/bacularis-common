@@ -45,7 +45,7 @@ class RSAKey extends ShellCommandModule
 	 * This command uses the OpenSSL binary.
 	 *
 	 * @param string $privkey_file private key file path
-	 * @param integer $key_size key size in bits
+	 * @param int $key_size key size in bits
 	 * @param string $cmd_params key command parameters
 	 * @return array command to prepare RSA key
 	 */

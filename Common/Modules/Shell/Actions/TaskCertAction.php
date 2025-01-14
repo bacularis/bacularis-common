@@ -15,7 +15,6 @@
 
 namespace Bacularis\Common\Modules\Shell\Actions;
 
-
 use Bacularis\Common\Modules\LetsEncryptCert;
 use Bacularis\Common\Modules\SSLCertificate;
 use Bacularis\Common\Modules\SelfSignedCert;

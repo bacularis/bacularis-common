@@ -25,7 +25,6 @@ use Bacularis\Common\Modules\CommonModule;
  */
 class JWT extends CommonModule
 {
-
 	/**
 	 * Supported signature algorithm types.
 	 */
@@ -36,6 +35,7 @@ class JWT extends CommonModule
 	 * Create data signature (sign data).
 	 *
 	 * @param array $props sign data command properties (key_path, use_sudo ...etc.)
+	 * @param string $data data to sign
 	 * @param array $cmd_params command paramters
 	 * @return string signature string or empty signature on error
 	 */
@@ -89,7 +89,8 @@ class JWT extends CommonModule
 		return $ret;
 	}
 
-	private static function getOutput(array $out): string {
+	private static function getOutput(array $out): string
+	{
 		$output = '';
 		for ($i = 0; $i < count($out); $i++) {
 			if (preg_match('/^(spawn\s|password:|\[sudo\]\s)/i', $out[$i]) === 1) {

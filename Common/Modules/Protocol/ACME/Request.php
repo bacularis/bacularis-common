@@ -264,9 +264,10 @@ class Request extends CommonModule
 	 * @param array $prev_ret previous request response
 	 * @return array new repeated request response
 	 */
-	public static function resend($obj, string $method, array $params, array $prev_ret) {
+	public static function resend($obj, string $method, array $params, array $prev_ret): array
+	{
 		[$props, $cmd_params] = $params;
-		$props['resend'] = !key_exists('resend' , $props) ? 1 : ++$props['resend'];
+		$props['resend'] = !key_exists('resend', $props) ? 1 : ++$props['resend'];
 		if ($props['resend'] <= Request::MAX_RETRY_REQUEST) {
 			// Request has to be resend with a new nonce
 			$props['nonce'] = $prev_ret['nonce'];

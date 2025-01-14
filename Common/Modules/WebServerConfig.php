@@ -87,7 +87,7 @@ class WebServerConfig extends ShellCommandModule
 	 * NOTE: The sed first string occurence substitution works only with GNU sed version.
 	 *
 	 * @param string $package_type OS package type: rpm or deb
-	 * @param integer $port port to set
+	 * @param int $port port to set
 	 * @param array $cmd_params command optionsa
 	 * @return array command to set listening port in Nginx config
 	 */
@@ -164,7 +164,7 @@ ssl.pemfile = "' . $pem_file . '"
 	/**
 	 * Get command to set listening port in the Lighttpd web server configuration file.
 	 *
-	 * @param integer $port port to set
+	 * @param int $port port to set
 	 * @param array $cmd_params command optionsa
 	 * @return array command to set listening port in Lighttpd config
 	 */
@@ -249,7 +249,7 @@ ssl.pemfile = "' . $pem_file . '"
 	 * NOTE: The sed first string occurence substitution works only with GNU sed version.
 	 *
 	 * @param string $package_type OS package type: rpm or deb
-	 * @param integer $port port to set
+	 * @param int $port port to set
 	 * @param array $cmd_params command optionsa
 	 * @return array command to set listening port in Apache config
 	 */
@@ -492,7 +492,7 @@ ssl.pemfile = "' . $pem_file . '"
 	 *
 	 * @param string $repository_type system repository type (rpm, deb)
 	 * @param string $web_server web server name (apache, nginx, lighttpd)
-	 * @param integer $port port to set
+	 * @param int $port port to set
 	 * @param array $cmd_params command parameters
 	 * @return array command result details
 	 */
