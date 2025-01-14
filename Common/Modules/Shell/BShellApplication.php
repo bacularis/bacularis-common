@@ -100,16 +100,17 @@ abstract class BShellApplication extends TApplication
 				if (method_exists($action, $method)) {
 					$success = $action->{$method}();
 					if (!$success) {
-						$this->output_writer->write("Action '{$method}' finished with error.");
+						$this->output_writer->write("Action '{$method}' finished with error.\n");
 					}
 					break;
 				} else {
-					$this->output_writer->write("Action '{$method}' is not valid action.");
+					$this->output_writer->write("Action '{$method}' is not valid action.\n");
 				}
 			}
 		}
 		if (!$success) {
 			//$this->printHelp();
+			$this->onEndRequest();
 			exit(1);
 		}
 		return $success;

@@ -1,0 +1,35 @@
+#!/usr/bin/env php
+<?php
+/*
+ * Bacularis - Bacula web interface
+ *
+ * Copyright (C) 2021-2025 Marcin Haba
+ *
+ * The main author of Bacularis is Marcin Haba, with contributors, whose
+ * full list can be found in the AUTHORS file.
+ *
+ * You may use this file and others of this release according to the
+ * license defined in the LICENSE file, which includes the Affero General
+ * Public License, v3.0 ("AGPLv3") and some additional permissions and
+ * terms pursuant to its AGPLv3 Section 7.
+ */
+define('APPLICATION_PROTECTED', realpath(__DIR__ . '/../../../../../'));
+define('APPLICATION_DIRECTORY', dirname(APPLICATION_PROTECTED));
+define('APPLICATION_WEBROOT', APPLICATION_DIRECTORY . '/htdocs');
+define('PRADO_VENDORDIR', APPLICATION_PROTECTED . '/vendor');
+
+$autoload = implode(DIRECTORY_SEPARATOR, [
+	APPLICATION_PROTECTED,
+	'autoload.php'
+]);
+require($autoload);
+
+use Bacularis\Common\Modules\Shell\BShellTaskApplication;
+
+$_SERVER['SCRIPT_FILENAME'] = implode(DIRECTORY_SEPARATOR, [
+	APPLICATION_WEBROOT,
+	'index.php'
+]);
+chdir(APPLICATION_WEBROOT);
+$application = new BShellTaskApplication(APPLICATION_PROTECTED);
+$application->run($argv);
