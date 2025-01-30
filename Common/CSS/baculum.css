@@ -1117,6 +1117,30 @@ a.remove_selected_item {
 	font-weight: bold;
 }
 
+.btag, .btag_table {
+	border: 1px solid #ccc;
+	margin: 3px 2px;
+	padding: 4px 5px;
+	border-radius: 6px;
+	font-size: 10px;
+	position: relative;
+	z-index: 2;
+}
+
+.btag_table i {
+	font-size: 12px;
+	vertical-align: middle;
+	margin-right: 4px;
+	position: relative;
+	z-index: 20;
+}
+
+.btag {
+	height: 26px;
+	padding: 4px 12px;
+	font-size: 11px;
+}
+
 /* Overwrite jQuery-UI draggable class to solve problem with
  * scrolling file list on mobile devices
  */
