@@ -1117,6 +1117,16 @@ a.remove_selected_item {
 	font-weight: bold;
 }
 
+/* Overwrite jQuery-UI draggable class to solve problem with
+ * scrolling file list on mobile devices
+ */
+.ui-draggable-handle {
+    touch-action: auto !important;
+}
+
+/** END Wizards **/
+
+/** START Tags **/
 .btag, .btag_table {
 	border: 1px solid #ccc;
 	margin: 3px 2px;
@@ -1140,12 +1150,36 @@ a.remove_selected_item {
 	padding: 4px 12px;
 	font-size: 11px;
 }
+/** END Tags **/
 
-/* Overwrite jQuery-UI draggable class to solve problem with
- * scrolling file list on mobile devices
- */
-.ui-draggable-handle {
-    touch-action: auto !important;
+/** START custom search field **/
+span.search_clear {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+}
+span.search_clear span {
+	position: absolute;
+	display: block;
+	right: 3px;
+	width: 15px;
+	height: 15px;
+	border-radius: 50%;
+	color: #fff;
+	background-color: #ccc;
+	font: 13px monospace;
+	text-align: center;
+	line-height: 1em;
+	cursor: pointer;
+}
+span.search_clear input {
+	padding-right: 18px;
+	box-sizing: border-box;
 }
 
-/** END Wizards **/
+/** disable default chrome clear button **/
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none !important;
+}
+
+/** END custom search field **/
