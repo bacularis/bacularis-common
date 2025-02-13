@@ -16,7 +16,7 @@
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceDirector->ClientID%>_resources_list', 'rw');" class="raw"><i class="fa-solid fa-exchange-alt fa-rotate-90 fa-fw"></i> &nbsp;<%[ All read-write ]%></a>&nbsp;
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceDirector->ClientID%>_resources_list', 'no');" class="raw"><i class="fa-solid fa-ban fa-fw"></i> &nbsp;<%[ All no access ]%></a>
 		</div>
-		<table id="<%=$this->ResourceDirector->ClientID%>_resources_list" class="w3-table w3-striped w3-margin-bottom" style="width: 100%">
+		<table id="<%=$this->ResourceDirector->ClientID%>_resources_list" class="display w3-table w3-striped w3-margin-bottom" style="width: 100%">
 			<thead>
 				<tr>
 					<th><%[ Resource ]%></th>
@@ -202,7 +202,7 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 	set_table() {
 		this.table = $('#' + this.ids.table).DataTable({
 			data: this.data,
-			dom: 'lrt',
+			layout: {topEnd: null,bottomEnd: null},
 			stateSave: true,
 			pageLength: 25,
 			lengthChange: false,
@@ -305,8 +305,8 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 			order: [0, 'asc']
 		});
 
-		// force re-render for proper displaying 'preview' column
-		this.table.rows().invalidate().draw();
+		// re-render preview column for proper value displaying
+		this.table.column(1).render('display');
 	}
 	get_settings() {
 		const settings = []
