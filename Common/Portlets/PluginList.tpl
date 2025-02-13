@@ -14,7 +14,7 @@
 			</button>
 		</div>
 		<div>
-			<table id="plugin_list_settings_list" class="w3-table w3-striped w3-hoverable w3-margin-bottom" style="width: 100%">
+			<table id="plugin_list_settings_list" class="display w3-table w3-striped w3-hoverable w3-margin-bottom" style="width: 100%">
 				<thead>
 					<tr>
 						<th></th>
@@ -40,7 +40,7 @@
 	</div>
 	<div id="plugin_plugins_list" class="subtab_item" style="display: none">
 		<div>
-			<table id="plugin_list_plugins_list" class="w3-table w3-striped w3-hoverable w3-margin-bottom" style="width: 100%">
+			<table id="plugin_list_plugins_list" class="display w3-table w3-striped w3-hoverable w3-margin-bottom" style="width: 100%">
 				<thead>
 					<tr>
 						<th></th>
@@ -99,7 +99,10 @@ var oPluginListSettings = {
 	set_events: function() {
 		document.getElementById(this.ids.table).addEventListener('click', function(e) {
 			$(function() {
-				this.table_toolbar.style.display = this.table.rows({selected: true}).data().length > 0 ? '' : 'none';
+				const wa = (this.table.rows({selected: true}).data().length > 0) ? 'show' : 'hide';
+				$(this.table_toolbar).animate({
+					width: wa
+				}, 'fast');
 			}.bind(this));
 		}.bind(this));
 	},
@@ -107,15 +110,34 @@ var oPluginListSettings = {
 		this.table = $('#' + this.ids.table).DataTable({
 			data: data,
 			deferRender: true,
-			dom: 'lB<"table_toolbar">frtip',
+			layout: {
+				topStart: [
+					{
+						pageLength: {}
+					},
+					{
+						buttons: ['copy', 'csv', 'colvis']
+					},
+					{
+						div: {
+							className: 'table_toolbar'
+						}
+					}
+				],
+				topEnd: [
+					'search'
+				],
+				bottomStart: [
+					'info'
+				],
+				bottomEnd: [
+					'paging'
+				]
+			},
 			stateSave: true,
 			stateDuration: (typeof(KEEP_TABLE_SETTINGS) == 'undefined' ? 7200 : KEEP_TABLE_SETTINGS),
-			buttons: [
-				'copy', 'csv', 'colvis'
-			],
 			columns: [
 				{
-					className: 'details-control',
 					orderable: false,
 					data: null,
 					defaultContent: '<button type="button" class="w3-button w3-blue"><i class="fa fa-angle-down"></i></button>'
@@ -171,11 +193,12 @@ var oPluginListSettings = {
 			],
 			responsive: {
 				details: {
-					type: 'column'
+					type: 'column',
+					display: DataTable.Responsive.display.childRow
 				}
 			},
 			columnDefs: [{
-				className: 'control',
+				className: 'dtr-control',
 				orderable: false,
 				targets: 0
 			},
@@ -192,7 +215,7 @@ var oPluginListSettings = {
 			drawCallback: function () {
 				this.api().columns([2, 3]).every(function () {
 					var column = this;
-					var select = $('<select><option value=""></option></select>')
+					var select = $('<select class="dt-select"><option value=""></option></select>')
 					.appendTo($(column.footer()).empty())
 					.on('change', function () {
 						var val = dtEscapeRegex(
@@ -248,7 +271,7 @@ var oPluginListSettings = {
 	},
 	set_bulk_actions: function() {
 		this.table_toolbar = get_table_toolbar(this.table, this.actions, {
-			actions: '<%[ Actions ]%>',
+			actions: '<%[ Select action ]%>',
 			ok: '<%[ OK ]%>'
 		});
 	}
@@ -280,15 +303,29 @@ var oPluginListPlugins = {
 		this.table = $('#' + this.ids.table).DataTable({
 			data: data,
 			deferRender: true,
-			dom: 'lBfrtip',
+			layout: {
+				topStart: [
+					{
+						pageLength: {}
+					},
+					{
+						buttons: ['copy', 'csv', 'colvis']
+					}
+				],
+				topEnd: [
+					'search'
+				],
+				bottomStart: [
+					'info'
+				],
+				bottomEnd: [
+					'paging'
+				]
+			},
 			stateSave: true,
 			stateDuration: (typeof(KEEP_TABLE_SETTINGS) == 'undefined' ? 7200 : KEEP_TABLE_SETTINGS),
-			buttons: [
-				'copy', 'csv', 'colvis'
-			],
 			columns: [
 				{
-					className: 'details-control',
 					orderable: false,
 					data: null,
 					defaultContent: '<button type="button" class="w3-button w3-blue"><i class="fa fa-angle-down"></i></button>'
@@ -305,11 +342,12 @@ var oPluginListPlugins = {
 			],
 			responsive: {
 				details: {
-					type: 'column'
+					type: 'column',
+					display: DataTable.Responsive.display.childRow
 				}
 			},
 			columnDefs: [{
-				className: 'control',
+				className: 'dtr-control',
 				orderable: false,
 				targets: 0
 			},
@@ -322,7 +360,7 @@ var oPluginListPlugins = {
 				$('#' + oPluginListPlugins.ids.table + ' tbody tr td').css('padding', '10px');
 				this.api().columns([2, 3]).every(function () {
 					var column = this;
-					var select = $('<select><option value=""></option></select>')
+					var select = $('<select class="dt-select"><option value=""></option></select>')
 					.appendTo($(column.footer()).empty())
 					.on('change', function () {
 						var val = dtEscapeRegex(
