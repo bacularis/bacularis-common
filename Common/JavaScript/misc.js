@@ -535,6 +535,19 @@ function set_global_listeners() {
 			}
 		});
 	};
+
+	window.addEventListener('resize', function() {
+		$('table.dataTable').each(function () {
+			/**
+			 * Check if DataTable object is initialized.
+			 * Otherwise tables not initialized yet could be unintentionally become initialized.
+			 */
+			if (DataTable.isDataTable(this)) {
+				const table = $(this).DataTable();
+				table.columns.adjust().responsive.recalc();
+			}
+		});
+	});
 }
 
 
@@ -688,11 +701,12 @@ function base64tohex(btext) {
 
 function get_table_toolbar(table, actions, txt) {
 	var table_toolbar = document.querySelector('#' + table.table().node().id + '_wrapper div.table_toolbar');
-	table_toolbar.className += ' dt-buttons';
+	table_toolbar.classList.add('dt-buttons');
 	table_toolbar.style.display = 'none';
-	var title = document.createTextNode(txt.actions);
 	var select = document.createElement('SELECT');
+	select.classList.add('dt-select');
 	var option = document.createElement('OPTION');
+	option.textContent = txt.actions;
 	option.value = '';
 	select.appendChild(option);
 	var acts = {};
@@ -748,7 +762,6 @@ function get_table_toolbar(table, actions, txt) {
 			acts[select.value].callback.dispatch();
 		}
 	});
-	table_toolbar.appendChild(title);
 	table_toolbar.appendChild(select);
 	table_toolbar.appendChild(btn);
 	return table_toolbar;
