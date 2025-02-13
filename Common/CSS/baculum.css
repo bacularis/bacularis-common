@@ -67,6 +67,10 @@ a {
 	background-color: 'black' !important;
 }
 
+:root {
+	--dt-row-stripe-alpha: 0 !important;
+}
+
 #page_main > header {
 	display: inline-block;
 	margin-top: 8px;
@@ -126,12 +130,12 @@ table.dataTable {
 }
 
 
-table.dataTable tr.odd,  .w3-striped tbody tr:nth-child(odd) {
-	background-color: var(--bkg-color-table-row-odd) !important;
+table.dataTable tbody tr:nth-child(odd),  .w3-striped tbody tr:nth-child(odd) {
+	background-color: var(--bkg-color-table-row-odd);
 }
 
-table.dataTable tbody tr, table.dataTable tr.even, .w3-striped tbody tr:nth-child(even) {
-	background-color: var(--bkg-color-table-row-even) !important;
+table.dataTable tbody tr:nth-child(even), table.dataTable tr:nth-child(even), .w3-striped tbody tr:nth-child(even) {
+	background-color: var(--bkg-color-table-row-even);
 }
 
 table.dataTable button.w3-button, table.dataTable a.w3-button {
@@ -155,35 +159,43 @@ th, table.dataTable thead td {
 	border-bottom: none !important;
 }
 
+table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
+	padding: 10px 18px;
+}
+
+table.dataTable.row-border > tbody > tr > *, table.dataTable.display > tbody > tr > * {
+	border: none !important;
+}
+
 table.dataTable tbody td {
 	vertical-align: middle;
+}
+
+table.dataTable tbody td.dtr-control:before {
+	border: 0 !important;
 }
 
 table.dataTable.no-footer {
 	border-bottom: 1px solid #c1c1c1;
 }
 
-.dataTables_wrapper .dataTables_filter {
-	color: var(--text-color) !important;
-}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button {
+.dt-paging .dt-paging-button {
 	color: black !important;
 }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+.dt-paging .dt-paging-button:hover {
 	border: 1px solid #4CAF50 !important;
 	background: var(--color-main) !important;
 	border: 1px solid var(--color-main) !important;
 	border-radius: unset !important;
 }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+.dt-paging .dt-paging-button.current, .dt-paging .dt-paging-button.current:hover {
 	background: none !important;
 	border: 1px solid var(--color-main) !important;
 	border-radius: unset !important;
 }
-.dataTables_wrapper .dataTables_paginate .paginate_button:active, .dataTables_wrapper .dataTables_paginate .paginate_button.current:active {
+.dt-paging .dt-paging-button:active, .dt-paging .dt-paging-button.current:active {
 	border: 1px solid var(--color-main) !important;
 	box-shadow: none !important;
 }
@@ -192,17 +204,33 @@ table.dataTable.no-footer {
 	margin-right: 5px !important;
 }
 
-.dataTables_wrapper select, div.dt-buttons .dt-button {
-	padding: .57em .5em !important;
+.dt-container select.dt-select, .dt-container select.dt-input, div.dt-buttons .dt-button {
+	height: 36px;
+	font-size: 0.95em;
+	padding: 0.1em 0.6em 0 0.6em !important;
 	border: 1px solid #999 !important;
 	border-radius: 2px !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	margin-bottom: 0.3em !important;
 	color: var(--text-color-dt-button) !important;
 	background: var(--bkg-color-dt-button) var(--bkg-image-dt-button) !important;
+}
+
+.dt-container button.dt-button {
+	vertical-align: middle;
 }
 
 div.dt-buttons .dt-button.active {
 	color: var(--text-color) !important;
 	background: var(--bkg-color) !important;
+}
+div.dt-buttons {
+	margin-right: 0.3em !important;
+}
+
+div.dt-container div.dt-layout-row {
+	margin: 0 !important;
 }
 
 div.dt-button-info, div.dt-button-info h2 {
@@ -214,15 +242,11 @@ div.dt-button-collection {
 	background: var(--bkg-color-dt-button) !important;
 }
 
-div.dt-buttons .dt-button:nth-of-type(1), div.dt-buttons .dt-button:nth-of-type(2) {
-	padding: .6em .8em !important;
+.dt-input {
+	background-color: field !important;
 }
 
-div.dt-buttons .dt-button:nth-of-type(3) {
-	padding: .6em .5em .46em .5em !important;
-}
-
-table.dataTable tbody th, table.dataTable tbody td {
+table.dataTable > tbody > tr > th, table.dataTable > tbody > tr > td {
 	padding: 5px 7px;
 }
 
@@ -252,27 +276,11 @@ div.dt-button-collection button[data-cv-idx="0"] {
 	display: none !important;
 }
 
-table.dataTable thead .sorting {
-	background-image: url("/themes/Baculum-v2/sort_both.png") !important;
-}
-table.dataTable thead .sorting_asc {
-	background-image: url("/themes/Baculum-v2/sort_asc.png") !important;
-}
-table.dataTable thead .sorting_desc {
-	background-image: url("/themes/Baculum-v2/sort_desc.png") !important;
-}
-table.dataTable thead .sorting_asc_disabled {
-	background-image: url("/themes/Baculum-v2/sort_asc_disabled.png") !important;
-}
-table.dataTable thead .sorting_desc_disabled {
-	background-image: url("/themes/Baculum-v2/sort_desc_disabled.png") !important;
-}
-
-.dataTables_info, .dataTables_paginate, .dataTables_length, .dataTables_wrapper .dataTables_paginate .paginate_button, .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+.dt-info, .dt-paging, .dt-length, .dt-container .dt-paging .dt-paging-button, .dt-container .dt-paging .dt-paging-button.current, .dt-container .dt-paging .dt-paging-button.current:hover {
 	color: var(--text-color) !important;
 }
 
-.dataTables_info span.select-info {
+div.dt-info span.select-info {
 	margin-left: 10px;
 }
 
@@ -290,6 +298,7 @@ img.btn_loader {
 div.table_toolbar {
 	display: inline-block;
 	margin-left: 10px;
+	height: 40px;
 }
 
 @media screen and (max-width: 640px) {
@@ -297,13 +306,6 @@ div.table_toolbar {
 		display: block !important;
 		text-align: center;
 	}
-}
-
-div.table_toolbar select {
-	font-weight: bold;
-	padding: .57em .5em !important;
-	margin-left: 0.333em;
-	margin-right: 2px;
 }
 
 #table_filters {
@@ -333,12 +335,21 @@ table.dataTable tbody > tr.selected, table.dataTable tbody > tr > .selected {
 	background-color: var(--bkg-color-table-row-selected) !important;
 }
 
+table.dataTable > tbody > tr.selected > * {
+	box-shadow: inherit !important;
+	color: inherit !important;
+}
+
+table.dataTable.hover>tbody>tr.selected:hover>*, table.dataTable.display>tbody>tr.selected:hover>* {
+	box-shadow: inherit !important;
+}
+
 .w3-hoverable tbody tr:hover,.w3-ul.w3-hoverable li:hover {
 	background-color: var(--bkg-color-table-row-hover) !important;
 }
 
 th.action_col, td.action_col, th.action_col_long, td.action_col_long {
-	width: 120px !important;
+	width: 160px !important;
 	text-align: center !important;
 }
 
@@ -973,6 +984,10 @@ input:checked + .slider:before {
 	background-color: var(--color-function) !important;
 }
 
+.w3-select {
+	padding: 9px !important;
+}
+
 .subtab_btn:hover {
 	background-color: var(--bkg-color-tab-hover) !important;
 }
@@ -1175,6 +1190,9 @@ span.search_clear span {
 span.search_clear input {
 	padding-right: 18px;
 	box-sizing: border-box;
+	width: 250px;
+	height: 33px;
+	outline: none;
 }
 
 /** disable default chrome clear button **/
