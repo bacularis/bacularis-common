@@ -241,6 +241,7 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 							read_only.id = this.ids.table + row.resource + 'ro';
 							read_only.name = this.component + row.resource;
 							read_only.classList.add('w3-check');
+							read_only.style.verticalAlign = 'super';
 							read_only.setAttribute('data-ro', 'true');
 							if (data === true) {
 								read_only.setAttribute('checked', 'checked');
@@ -262,6 +263,7 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 							read_write.id = this.ids.table + row.resource + 'rw';
 							read_write.name = this.component + row.resource;
 							read_write.classList.add('w3-check');
+							read_write.style.verticalAlign = 'super';
 							read_write.setAttribute('data-rw', 'true');
 							if (data === true) {
 								read_write.setAttribute('checked', 'checked');
@@ -283,6 +285,7 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 							no_access.id = this.ids.table + row.resource + 'no';
 							no_access.name = this.component + row.resource;
 							no_access.classList.add('w3-check');
+							no_access.style.verticalAlign = 'super';
 							no_access.setAttribute('data-no', 'true');
 							if (data === true) {
 								no_access.setAttribute('checked', 'checked');
