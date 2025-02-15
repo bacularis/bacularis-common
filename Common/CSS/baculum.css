@@ -92,6 +92,10 @@ a {
 	height: 250px;
 }
 
+html, body {
+	font-family: "Liberation Sans", Arial, Helvetica, sans-serif !important;
+}
+
 .monospace {
 	font-family: "Courier New", Courier, monospace !important;
 }
