@@ -768,6 +768,24 @@ function get_table_toolbar(table, actions, txt) {
 }
 
 /**
+ * Generic function to set table actions.
+ * It is useful if on page is more tables than one.
+ */
+function set_page_tables(objs) {
+	let cont, vis;
+	for (const obj of objs) {
+		if (!obj.table) {
+			continue;
+		}
+		cont = obj.table.table().container();
+		vis = $(cont).is(':visible');
+
+		// enable/disable fixed header table function
+		obj.table.fixedHeader.enable(vis);
+	}
+}
+
+/**
  * Used to escape values before putting them into regular expression.
  * Dedicated to use in table values.
  */
