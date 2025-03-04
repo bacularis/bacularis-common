@@ -110,6 +110,10 @@ var oPluginListSettings = {
 		this.table = $('#' + this.ids.table).DataTable({
 			data: data,
 			deferRender: true,
+			fixedHeader: {
+				header: true,
+				headerOffset: $('#main_top_bar').height()
+			},
 			layout: {
 				topStart: [
 					{
