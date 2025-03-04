@@ -955,6 +955,10 @@ input:checked + .slider:before {
 	}
 }
 
+.w3-modal {
+	z-index: 4 !important;
+}
+
 .w3-modal-content {
 	background-color: var(--bkg-color-modal) !important;
 }
