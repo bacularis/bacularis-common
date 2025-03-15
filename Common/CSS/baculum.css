@@ -108,6 +108,16 @@ pre {
 	word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
+fieldset {
+	padding: 0 32px 16px 32px;
+}
+
+legend {
+	margin-left: 15px;
+	padding: 0 7px;
+	font-weight: bold;
+}
+
 .bold {
 	font-weight: bold;
 }
@@ -1003,6 +1013,7 @@ input:checked + .slider:before {
 /** START Progress bar **/
 .ui-widget-header {
 	background: var(--color-main) !important;
+	color: var(--bkg-color) !important;
 }
 
 .ui-progressbar .ui-progressbar-value {
