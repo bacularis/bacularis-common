@@ -471,6 +471,28 @@ const ThemeMode = {
 };
 ThemeMode.pre_init();
 
+var oFIDOU2F = {
+	authenticate: async function(credential, cb) {
+		credential.challenge = new Uint8Array(credential.challenge);
+		credential.user.id = new Uint8Array(credential.user.id);
+		credential.allowCredentials.map(
+			(item) => {
+				item.id = new Uint8Array(item.id);
+				return item;
+			},
+			credential.allowCredentials
+		);
+		const assertion = await navigator.credentials.get({
+			publicKey: credential
+		});
+		cb.setCallbackParameter(assertion);
+		cb.dispatch();
+	},
+	error: function(msg) {
+		show_error(msg);
+	}
+};
+
 var touch_start_x = null;
 var touch_start_y = null;
 
