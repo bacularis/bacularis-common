@@ -45,6 +45,9 @@
 		<module id="ssl_cert" class="Bacularis\Common\Modules\SSLCertificate" />
 		<module id="ssl_le_cert" class="Bacularis\Common\Modules\LetsEncryptCert" />
 		<module id="ssl_ss_cert" class="Bacularis\Common\Modules\SelfSignedCert" />
+		<!-- 2FA modules -->
+		<module id="u2f_register" class="Bacularis\Common\Modules\Protocol\WebAuthn\Register" />
+		<module id="u2f_authenticate" class="Bacularis\Common\Modules\Protocol\WebAuthn\Authenticate" />
 		<!-- Web server modules -->
 		<module id="ws_config" class="Bacularis\Common\Modules\WebServerConfig" />
 		<!-- communication modules -->
