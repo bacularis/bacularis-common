@@ -482,9 +482,15 @@ var oFIDOU2F = {
 			},
 			credential.allowCredentials
 		);
-		const assertion = await navigator.credentials.get({
-			publicKey: credential
-		});
+		let assertion = [];
+		try {
+			assertion = await navigator.credentials.get({
+				publicKey: credential
+			});
+		} catch(e) {
+			this.error(e);
+			return;
+		}
 		cb.setCallbackParameter(assertion);
 		cb.dispatch();
 	},
