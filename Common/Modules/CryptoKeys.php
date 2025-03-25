@@ -24,6 +24,21 @@ namespace Bacularis\Common\Modules;
 class CryptoKeys extends ShellCommandModule
 {
 	/**
+	 * File prefix for temporary file with signature.
+	 */
+	private const SIGNATURE_FILE_PREFIX = 'sign_';
+
+	/**
+	 * File prefix for temporary file with key.
+	 */
+	private const PUBKEY_FILE_PREFIX = 'pubkey_';
+
+	/**
+	 * File prefix for temporary file with data.
+	 */
+	private const DATA_FILE_PREFIX = 'ckdata_';
+
+	/**
 	 * Create private key.
 	 *
 	 * @param string $key_type key type (rsa, ecdsa...)
@@ -77,6 +92,93 @@ class CryptoKeys extends ShellCommandModule
 			$ret['output'] = self::getOutput($ret['output']);
 		}
 		return $ret;
+	}
+
+	/**
+	 * Verify data signature.
+	 *
+	 * @param string $pubkey_file public key file path
+	 * @param string $signature_file data signature file path to verify
+	 * @param string $data_file data to verify signature
+	 * @param array $cmd_params signature command paramters
+	 * @return true if signature is verified successfully, false otherwise
+	 */
+	public function verifySignature(string $pubkey_file, string $signature_file, string $data_file, array $cmd_params = []): bool
+	{
+		$command = self::getVerifySignatureCommand($pubkey_file, $signature_file, $data_file, $cmd_params);
+		$cmd = implode(' ', $command);
+		exec($cmd, $output, $error);
+		$state = ($error == 0);
+		if (!$state) {
+			// Error while creating key
+			$emsg = "Signature verification error.";
+			$out = implode(PHP_EOL, $output);
+			$lmsg = $emsg . " ExitCode: {$error}, Error: {$out}.";
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				$lmsg
+			);
+		}
+		return $state;
+	}
+
+	/**
+	 * Verify data signature string.
+	 *
+	 * @param string $pubkey public key string
+	 * @param string $signature data signature to verify
+	 * @param string $data data to verify signature
+	 * @param string $tmpdir temporary directory for storing files
+	 * @param array $cmd_params signature command paramters
+	 * @return true if signature is verified successfully, false otherwise
+	 */
+	public function verifySignatureString(string $pubkey, string $signature, string $data, string $tmpdir, array $cmd_params = []): bool
+	{
+		$pubkey_file = tempnam($tmpdir, self::PUBKEY_FILE_PREFIX);
+		if (file_put_contents($pubkey_file, $pubkey, LOCK_EX) === false) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while writing public key file {$pubkey_file}"
+			);
+		}
+
+		$signature_file = tempnam($tmpdir, self::SIGNATURE_FILE_PREFIX);
+		if (file_put_contents($signature_file, $signature, LOCK_EX) === false) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while writing signature file {$signature_file}"
+			);
+		}
+
+		$data_file = tempnam($tmpdir, self::PUBKEY_FILE_PREFIX);
+		if (file_put_contents($data_file, $data, LOCK_EX) === false) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while writing data file {$data_file}"
+			);
+		}
+
+		$state = $this->verifySignature($pubkey_file, $signature_file, $data_file, $cmd_params);
+
+		if (!unlink($pubkey_file)) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while removing public key file {$pubkey_file}"
+			);
+		}
+		if (!unlink($signature_file)) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while removing signature file {$signature_file}"
+			);
+		}
+		if (!unlink($data_file)) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while removing data file {$data_file}"
+			);
+		}
+		return $state;
 	}
 
 	/**
@@ -281,5 +383,50 @@ class CryptoKeys extends ShellCommandModule
 			$output[] = $line;
 		}
 		return implode(PHP_EOL, $output);
+	}
+
+	/**
+	 * Verify signature command using public key.
+	 *
+	 * @param string $pubkey_file public key file path
+	 * @param string $signature_file data signature file to verify
+	 * @param string $data_file data file to verify signature
+	 * @param array $cmd_params signature command paramters
+	 * @return array signature command
+	 */
+	public static function getVerifySignatureCommand(string $pubkey_file, string $signature_file, string $data_file, array $cmd_params = []): array
+	{
+		$ret = [
+			'openssl',
+			'dgst',
+			'-sha256',
+			'-verify',
+			$pubkey_file,
+			'-signature',
+			$signature_file,
+			$data_file
+		];
+		static::setCommandParameters($ret, $cmd_params);
+		return $ret;
+	}
+
+	/**
+	 * Convert DER key format to PEM format.
+	 *
+	 * @param string $der_data DER binary string data
+	 * @param string $type key type to set begin and end markers
+	 * @return string key in PEM format
+	 */
+	public function derToPem(string $der_data, string $type = 'PUBLIC KEY'): string
+	{
+		$key_b64 = base64_encode($der_data);
+		$pem = chunk_split($key_b64, 64, "\n");
+		$pem = sprintf(
+			"-----BEGIN %s-----\n%s\n-----END %s-----",
+			$type,
+			trim($pem),
+			$type
+		);
+		return $pem;
 	}
 }
