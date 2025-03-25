@@ -585,10 +585,52 @@ class Miscellaneous extends TModule
 		if (!$b64) {
 			$str = base64_encode($str);
 		}
+		return self::base64ToBase64Url($str);
+	}
+
+	/**
+	 * Decode base64url string.
+	 *
+	 * @param string $b64url base64url encoded string
+	 * @param string decoded string
+	 */
+	public static function decodeBase64URL(string $b64url): string
+	{
+		$b64 = self::base64UrlToBase64($b64url);
+		return base64_decode($b64);
+	}
+
+	/**
+	 * Convert base64url string into base64.
+	 *
+	 * @param string $b64url base64url encoded string
+	 * @return string base64 encoded string
+	 */
+	public static function base64URLToBase64(string $b64url): string
+	{
+		$b64 = preg_replace(
+			['/\-/', '/_/'],
+			['+', '/'],
+			$b64url
+		);
+		while (strlen($b64) % 4 != 0) {
+			$b64 .= '=';
+		}
+		return $b64;
+	}
+
+	/**
+	 * Convert base64 string into base64url.
+	 *
+	 * @param string $b64 base64 encoded string
+	 * @return string base64url encoded string
+	 */
+	public static function base64ToBase64URL(string $b64): string
+	{
 		$b64url = preg_replace(
 			['/\+/', '/\//', '/=/'],
 			['-', '_', ''],
-			$str
+			$b64
 		);
 		return $b64url;
 	}
