@@ -16,7 +16,7 @@
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceDirector->ClientID%>_resources_list', 'rw');" class="raw"><i class="fa-solid fa-exchange-alt fa-rotate-90 fa-fw"></i> &nbsp;<%[ All read-write ]%></a>&nbsp;
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceDirector->ClientID%>_resources_list', 'no');" class="raw"><i class="fa-solid fa-ban fa-fw"></i> &nbsp;<%[ All no access ]%></a>
 		</div>
-		<table id="<%=$this->ResourceDirector->ClientID%>_resources_list" class="display w3-table w3-striped w3-margin-bottom" style="width: 100%">
+		<table id="<%=$this->ResourceDirector->ClientID%>_resources_list" class="display w3-table w3-striped w3-margin-bottom w3-hoverable" style="width: 100%">
 			<thead>
 				<tr>
 					<th><%[ Resource ]%></th>
@@ -57,7 +57,7 @@
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceStorage->ClientID%>_resources_list', 'rw');" class="raw"><i class="fa-solid fa-exchange-alt fa-rotate-90 fa-fw"></i> &nbsp;<%[ All read-write ]%></a>&nbsp;
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceStorage->ClientID%>_resources_list', 'no');" class="raw"><i class="fa-solid fa-ban fa-fw"></i> &nbsp;<%[ All no access ]%></a>
 		</div>
-		<table id="<%=$this->ResourceStorage->ClientID%>_resources_list" class="w3-table w3-striped w3-margin-bottom" style="width: 100%">
+		<table id="<%=$this->ResourceStorage->ClientID%>_resources_list" class="w3-table w3-striped w3-margin-bottom w3-hoverable" style="width: 100%">
 			<thead>
 				<tr>
 					<th><%[ Resource ]%></th>
@@ -98,7 +98,7 @@
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceClient->ClientID%>_resources_list', 'rw');" class="raw"><i class="fa-solid fa-exchange-alt fa-rotate-90 fa-fw"></i> &nbsp;<%[ All read-write ]%></a>&nbsp;
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceClient->ClientID%>_resources_list', 'no');" class="raw"><i class="fa-solid fa-ban fa-fw"></i> &nbsp;<%[ All no access ]%></a>
 		</div>
-		<table id="<%=$this->ResourceClient->ClientID%>_resources_list" class="w3-table w3-striped w3-margin-bottom" style="width: 100%">
+		<table id="<%=$this->ResourceClient->ClientID%>_resources_list" class="w3-table w3-striped w3-margin-bottom w3-hoverable" style="width: 100%">
 			<thead>
 				<tr>
 					<th><%[ Resource ]%></th>
@@ -139,7 +139,7 @@
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceBconsole->ClientID%>_resources_list', 'rw');" class="raw"><i class="fa-solid fa-exchange-alt fa-rotate-90 fa-fw"></i> &nbsp;<%[ All read-write ]%></a>&nbsp;
 			<a href="javascript:void(0)" onclick="<%=$this->ClientID%>set_mode_all('<%=$this->ResourceBconsole->ClientID%>_resources_list', 'no');" class="raw"><i class="fa-solid fa-ban fa-fw"></i> &nbsp;<%[ All no access ]%></a>
 		</div>
-		<table id="<%=$this->ResourceBconsole->ClientID%>_resources_list" class="w3-table w3-striped w3-margin-bottom" style="width: 100%">
+		<table id="<%=$this->ResourceBconsole->ClientID%>_resources_list" class="w3-table w3-striped w3-margin-bottom w3-hoverable" style="width: 100%">
 			<thead>
 				<tr>
 					<th><%[ Resource ]%></th>
