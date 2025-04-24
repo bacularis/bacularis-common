@@ -526,6 +526,10 @@ div.config_loader {
 	cursor: pointer;
 }
 
+.helper {
+	cursor: help;
+}
+
 .fileset_browser_file_container, .fileset_browser_include_container, .fileset_browser_exclude_container {
 	width: 50%;
 	overflow-y: auto;
