@@ -130,7 +130,17 @@ class NewHost extends PortletTemplate
 			$this->APITestResultErr->Text .= $console->output . '<br />';
 		}
 		if (!$is_config) {
-			$this->APITestResultErr->Text .= $config->output . '<br />';
+			$config_output = '';
+			if (!is_string($config->output)) {
+				/**
+				 * For special error codes that do not provide
+				 * string in output like BaculaConfigError::ERROR_CONFIG_NO_JSONTOOL_READY
+				 */
+				$config_output = var_export($config->output, true);
+			} else {
+				$config_output = $config->output;
+			}
+			$this->APITestResultErr->Text .= $config_output . '<br />';
 		}
 
 		$this->APITestResultOk->Display = ($status_ok === true) ? 'Dynamic' : 'None';
