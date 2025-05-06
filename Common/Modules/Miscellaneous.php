@@ -652,4 +652,15 @@ class Miscellaneous extends TModule
 		}
 		return base64_encode($ret);
 	}
+
+	/**
+	 * String slashes from quotes.
+	 *
+	 * @param string $value string value to strip
+	 * @return string stripped string value
+	 */
+	public static function stripQuotes(string $value): string
+	{
+		return str_replace('\\"', '"', $value);
+	}
 }

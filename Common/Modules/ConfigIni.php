@@ -64,7 +64,7 @@ class ConfigIni extends CommonModule implements IConfigFormat
 	 */
 	public function read($source)
 	{
-		$content = parse_ini_file($source, true);
+		$content = parse_ini_file($source, true, INI_SCANNER_RAW);
 		if (!is_array($content)) {
 			$content = [];
 		}
