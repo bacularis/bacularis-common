@@ -1224,3 +1224,15 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 /** END custom search field **/
+
+/** START item picker **/
+div.item_picker {
+	 position: fixed;
+	 width: 400px;
+	 z-index: 10;
+}
+
+div.item_picker div[rel="list"] div.w3-row:hover {
+	background-color: #d3d3d3;
+}
+/** END item picker **/
