@@ -1,22 +1,27 @@
 
-This is new function and bug fix release. We added a new function to save Bacula
-component configuration to pattern and configs. This enables new capabilities
-such as:
+We are happy to announce a new version 5.2.0. This is new function and bugfix release.
+We have prepared quite a lot of new changes in various web interface areas. 
 
- * creating configs and pattern from an existing Bacula component configuration,
- * coping the same configuration parts to multiple hosts
- * creating backup of the current Bacula component configuration
- * saving a "snapshot" of the Bacula configuration so that can be restored at any time
+We would especially like to share with you that we introduced user-defined variables and
+constants. Variables work with Bacula configuration patterns, constants work in whole web
+interface, not only in configuration. Variables can be particularly useful for creating
+customizable Bacula configuration templates that are dynamically filled by user in time
+of use. Constants are some kind of user-created dictionary with most commonly used words
+and they can be accessed in every text field of the web interface. More details about this
+functions you can find in the new variable and constant documentation chapters.
 
-In Bacularis 5.1.0 we also added new functions to the Bacula messages log window.
-They are filters (info/warning/error) and search field to quick search in all message
-logs.
+We have also added new functions on the client list page. Since now users can see jobs
+running on every client, can filter them by working/not working and can cancel all jobs
+currently running on selected clients. On this page we added a new graphs tab with client
+pie charts (systems, versions, plugins ...etc.).
 
-On the bug fixes side, we made enabling the TOTP 2FA feature working back and we fixed
-bugs that we found during various manual tests.
+Besides new functions, we fixed bugs that we found in the patterns and configs features
+and in few other places.
 
 **Bacularis Common changes**
 
- * Improve Bacula resource permission settings table view
- * Remove old user manager interface
+ * Add helper cursor style
+ * Add styles for variable and constant pickers
+ * Improve get config values
+ * Fix PHP error in web install wizard if Bacula component configuration is disabled
 
