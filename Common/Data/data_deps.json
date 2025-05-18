@@ -16,7 +16,7 @@
 		},
 		"Job": {
 			"Job": ["Base", "JobToVerify", "VerifyJob"],
-			"JobBase": ["Base", "JobToVerify", "VerifyJob"]
+			"JobDefs": ["Base", "JobToVerify", "VerifyJob"]
 		},
 		"JobDefs": {
 			"Job": ["JobDefs"]
