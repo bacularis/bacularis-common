@@ -30,14 +30,6 @@ abstract class BacularisCommonPluginBase extends CommonModule
 	private $config = [];
 
 	/**
-	 * Extra parameters.
-	 * They are Bacularis specific parameters.
-	 */
-	private const EXTRA_PARAMS_GENERAL = ['plugin-name', 'plugin-config', 'job-starttime', 'job-id', 'job-level'];
-	private const EXTRA_PARAMS_BACKUP = ['job-name'];
-	private const EXTRA_PARAMS_RESTORE = ['restore-item', 'restore-action'];
-
-	/**
 	 * Encode/decode charaters.
 	 * Some plugin parameters need to be encoded into entities.
 	 */
