@@ -42,6 +42,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 	 */
 	public const PLUGIN_TYPE_BACULA_CONFIGURATION = 'bacula-configuration';
 	public const PLUGIN_TYPE_NOTIFICATION = 'notification';
+	public const PLUGIN_TYPE_BACKUP = 'backup';
 
 	/**
 	 * Plugin script file pattern.
