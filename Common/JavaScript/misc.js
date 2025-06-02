@@ -161,6 +161,7 @@ const oPluginForm = {
 	types: {
 		arr: 'array',
 		arr_multi: 'array_multiple',
+		arr_multi_ord: 'array_multiple_ordered',
 		str: 'string',
 		str_long: 'string_long',
 		bool: 'boolean',
@@ -192,11 +193,11 @@ const oPluginForm = {
 			if (!el) {
 				continue;
 			}
-			if (type == this.types.str || type == this.types.pwd || type == this.types.str_long || type == this.types.int || type == this.types.arr) {
+			if ([this.types.str, this.types.pwd, this.types.str_long, this.types.int, this.types.arr].indexOf(type) != -1) {
 				el.value = value || def_value;
 			} else if (type == this.types.bool) {
 				el.checked = (value && value != def_value) ? (value == 1) : def_value;
-			} else if (type == this.types.arr_multi) {
+			} else if ([this.types.arr_multi, this.types.arr_multi_ord].indexOf(type) != -1) {
 				const vals = value.length > 0 ? value : def_value;
 				el.value = '';
 				OUTER:
@@ -208,6 +209,14 @@ const oPluginForm = {
 							continue OUTER;
 						}
 					}
+				}
+				if ([this.types.arr_multi_ord].indexOf(type) != -1) {
+					const vals = value.length > 0 ? value : def_value;
+					const el_hidden = document.getElementById(this.name_prefix + name + '_hidden');
+					if (Array.isArray(vals) && vals.length > 0) {
+						el_hidden.value = vals.join('!');
+					}
+					oDirectiveOrderedListBox.init_items(el.id, el_hidden.id);
 				}
 			}
 		}
@@ -255,6 +264,8 @@ const oPluginForm = {
 			field = this.get_list_field(prop);
 		} else if (prop.type == this.types.arr_multi) {
 			field = this.get_list_multi_field(prop);
+		} else if (prop.type == this.types.arr_multi_ord) {
+			field = this.get_list_multi_ordered_field(prop);
 		}
 		if (field) {
 			this.add_row(prop, field);
@@ -293,11 +304,12 @@ const oPluginForm = {
 		select.id = this.name_prefix + prop.name;
 		select.name = this.name_prefix + prop.name;
 		select.classList.add('w3-select', 'w3-border');
+		const is_array = Array.isArray(prop.data);
 		let opt, txt;
-		for (let i = 0; i < prop.data.length; i++) {
+		for (const key in prop.data) {
 			opt = document.createElement('OPTION');
-			opt.value = prop.data[i];
-			txt = document.createTextNode(prop.data[i]);
+			opt.value = (is_array ? prop.data[key] : key);
+			txt = document.createTextNode(prop.data[key]);
 			opt.appendChild(txt);
 			select.appendChild(opt);
 		}
@@ -310,11 +322,13 @@ const oPluginForm = {
 		select.name = this.name_prefix + prop.name;
 		select.classList.add('w3-select', 'w3-border');
 		select.setAttribute('multiple', 'multiple');
+		select.size = 6;
+		const is_array = Array.isArray(prop.data);
 		let opt, txt;
-		for (let i = 0; i < prop.data.length; i++) {
+		for (const key in prop.data) {
 			opt = document.createElement('OPTION');
-			opt.value = prop.data[i];
-			txt = document.createTextNode(prop.data[i]);
+			opt.value = (is_array ? prop.data[key] : key);
+			txt = document.createTextNode(prop.data[key]);
 			opt.appendChild(txt);
 			select.appendChild(opt);
 		}
@@ -324,6 +338,27 @@ const oPluginForm = {
 		container.appendChild(select);
 		container.appendChild(tip);
 		return container;
+	},
+	get_list_multi_ordered_field: function(prop) {
+		const multi_field = this.get_list_multi_field(prop);
+		const input = document.createElement('INPUT');
+		input.type = 'hidden';
+		const name_suffix = '_hidden';
+		input.id = this.name_prefix + prop.name + name_suffix;
+		input.name = this.name_prefix + prop.name + name_suffix;
+		multi_field.appendChild(input);
+
+		const select = multi_field.querySelector('select');
+		select.addEventListener('click', (e) => {
+			oDirectiveOrderedListBox.set_items(e, select);
+			oDirectiveOrderedListBox.set_options(select.id, input.id);
+		});
+		select.querySelectorAll('option').forEach((el) => {
+			$(el).on('mousemove', (e) => {
+				return false;
+			});
+		});
+		return multi_field;
 	},
 	clear_plugin_settings_form: function() {
 		const form = document.getElementById(this.opts.ids.plugin_form);
@@ -354,7 +389,7 @@ const oPluginForm = {
 		for (let i = 0; i < this.form_props.parameters.length; i++) {
 			prop = this.form_props.parameters[i];
 			el = document.getElementById(this.name_prefix + prop.name);
-			if (prop.type == this.types.str || prop.type == this.types.pwd || prop.type == this.types.int || prop.type == this.types.str_long) {
+			if ([this.types.str, this.types.pwd, this.types.int, this.types.str_long].indexOf(prop.type) != -1) {
 				fields[prop.name] = el.value;
 			} else if (prop.type == this.types.bool) {
 				fields[prop.name] = el.checked ? '1' : '0';
@@ -368,6 +403,9 @@ const oPluginForm = {
 					}
 				}
 				fields[prop.name] = values;
+			} else if (prop.type == this.types.arr_multi_ord) {
+				const el_hidden = document.getElementById(this.name_prefix + prop.name + '_hidden');
+				fields[prop.name] = el_hidden.value ? el_hidden.value.split('!') : [];
 			}
 		}
 		if (this.opts.save_cb) {

@@ -30,7 +30,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 	/**
 	 * Settings name pattern.
 	 */
-	public const SETTINGS_NAME_PATTERN = '(?!^\d+$)[\p{L}\p{N}\p{Z}\-\'\\/\\(\\)\\{\\}:.#~_,+!$]{1,100}';
+	public const SETTINGS_NAME_PATTERN = '(?!^\d+$)[\p{L}\p{N}\p{Z}\-\'\\/\\(\\)\\{\\}:.#~_+!$]{1,100}';
 
 	/**
 	 * Plugin directory path.
@@ -43,6 +43,8 @@ abstract class PluginConfigBase extends ConfigFileModule
 	public const PLUGIN_TYPE_BACULA_CONFIGURATION = 'bacula-configuration';
 	public const PLUGIN_TYPE_NOTIFICATION = 'notification';
 	public const PLUGIN_TYPE_BACKUP = 'backup';
+	public const PLUGIN_TYPE_ACTION = 'action';
+	public const PLUGIN_TYPE_RUN_ACTION = 'run-action';
 
 	/**
 	 * Plugin script file pattern.
@@ -137,7 +139,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 					if ($pprops['name'] != $sparam) {
 						continue;
 					}
-					if ($pprops['type'] == 'boolean') {
+					if ($pprops['type'] == PluginConfigParameter::TYPE_BOOLEAN) {
 						$svalue = (bool) $svalue;
 					}
 					if ($skip_default && $svalue == $pprops['default']) {
@@ -145,9 +147,9 @@ abstract class PluginConfigBase extends ConfigFileModule
 						continue;
 					}
 					// Prepare data for specific field types
-					if ($pprops['type'] == 'array_multiple') {
+					if (in_array($pprops['type'], [PluginConfigParameter::TYPE_ARRAY_MULTIPLE, PluginConfigParameter::TYPE_ARRAY_MULTIPLE_ORDERED])) {
 						$svalue = !empty($svalue) ? explode(',', $svalue) : [];
-					} elseif ($pprops['type'] == 'string_long') {
+					} elseif ($pprops['type'] == PluginConfigParameter::TYPE_STRING_LONG) {
 						$svalue = str_replace(['\\n', '\\r'], ["\n", "\r"], $svalue);
 					}
 				}
@@ -174,9 +176,9 @@ abstract class PluginConfigBase extends ConfigFileModule
 						continue;
 					}
 					// Prepare data for specific field types
-					if ($pprops['type'] == 'array_multiple') {
+					if (in_array($pprops['type'], [PluginConfigParameter::TYPE_ARRAY_MULTIPLE, PluginConfigParameter::TYPE_ARRAY_MULTIPLE_ORDERED])) {
 						$svalue = implode(',', $svalue);
-					} elseif ($pprops['type'] == 'string_long') {
+					} elseif ($pprops['type'] == PluginConfigParameter::TYPE_STRING_LONG) {
 						$svalue = str_replace(["\n", "\r"], ['\\n', '\\r'], $svalue);
 					}
 				}
@@ -250,7 +252,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 				$plugin = $iterator->current()->getFilename();
 				$ppath = $iterator->current()->getPathname();
 				require_once($ppath);
-				$cls = preg_replace('/\.php$/', '', $plugin);
+				$cls = self::getPluginClassByFilename($plugin);
 				$name = $cls::getName();
 				$version = $cls::getVersion();
 				$type = $cls::getType();
@@ -277,6 +279,60 @@ abstract class PluginConfigBase extends ConfigFileModule
 			}
 		}
 		return $plugins;
+	}
+
+	/**
+	 * Small helper method to get plugin class from file name.
+	 *
+	 * @param string $filename plugin file name without path
+	 * @return string plugin class name
+	 */
+	public static function getPluginClassByFilename(string $filename): string
+	{
+		$cls = preg_replace('/\.php$/', '', $filename);
+		return $cls;
+	}
+
+	/**
+	 * Get plugins by type.
+	 *
+	 * @param string $ftype plugin type
+	 * @return array given type plugin list
+	 */
+	public function getPluginByType(string $ftype): array
+	{
+		$plugins = [];
+		if (is_null($this->plugins)) {
+			return $plugins;
+		}
+		foreach ($this->plugins as $cls => $props) {
+			if ($props['type'] != $ftype) {
+				continue;
+			}
+			$plugins[$cls] = $this->plugins[$cls];
+		}
+		return $plugins;
+	}
+
+	/**
+	 * Get plugin settings by plugin type.
+	 *
+	 * @param string $ftype plugin type
+	 * @return array settings from given type plugin list
+	 */
+	public function getPluginSettingsByType(string $ftype): array
+	{
+		$settings = [];
+		$plugin_props = $this->getPluginByType($ftype);
+		$plugins = array_keys($plugin_props);
+		$config = $this->getConfig();
+		foreach ($config as $name => $pconf) {
+			if (!in_array($pconf['plugin'], $plugins)) {
+				continue;
+			}
+			$settings[$name] = $config[$name];
+		}
+		return $settings;
 	}
 
 	/**
