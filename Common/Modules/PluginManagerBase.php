@@ -31,7 +31,7 @@ class PluginManagerBase extends CommonModule
 	private static $plugins = [];
 
 	/**
-	 * Initialize API plugins.
+	 * Initialize plugins.
 	 *
 	 * @param null|string $ftype plugin type or null (all plugins)
 	 */
@@ -56,13 +56,13 @@ class PluginManagerBase extends CommonModule
 	}
 
 	/**
-	 * Run plugin actions on config event.
+	 * Run plugin actions by plugin type on config event.
 	 *
 	 * @param string $ftype plugin type
 	 * @param string $method method to call
 	 * @param array $args method parameters
 	 */
-	public function callPluginAction(string $ftype, string $method, ...$args): void
+	public function callPluginActionByType(string $ftype, string $method, ...$args): void
 	{
 		for ($i = 0; $i < count(self::$plugins); $i++) {
 			if (self::$plugins[$i]->getType() != $ftype) {
@@ -73,5 +73,56 @@ class PluginManagerBase extends CommonModule
 			}
 			call_user_func_array([self::$plugins[$i], $method], $args);
 		}
+	}
+
+	/**
+	 * Run plugin actions by plugin name on config event.
+	 *
+	 * @param string $name plugin name
+	 * @param string $method method to call
+	 * @param array $args method parameters
+	 * @return mixed callback result or null if plugin not found or if callback returned it
+	 */
+	public function callPluginActionByName(string $name, string $method, ...$args)
+	{
+		$result = null;
+		for ($i = 0; $i < count(self::$plugins); $i++) {
+			if (get_class(self::$plugins[$i]) != $name) {
+				continue;
+			}
+			if (!method_exists(self::$plugins[$i], $method)) {
+				continue;
+			}
+			$result = call_user_func_array([self::$plugins[$i], $method], $args);
+		}
+		return $result;
+	}
+
+	/**
+	 * Run plugin actions by plugin setting name on config event.
+	 *
+	 * @param string $name plugin setting name
+	 * @param string $method method to call
+	 * @param array $args method parameters
+	 * @return mixed callback result or null if plugin not found or if callback returned it
+	 */
+	public function callPluginActionBySettingName(string $name, string $method, ...$args)
+	{
+		$result = null;
+		$plugin_config = $this->getModule('plugin_config');
+		$setting = $plugin_config->getConfig($name);
+		if (count($setting) == 0) {
+			return $result;
+		}
+		for ($i = 0; $i < count(self::$plugins); $i++) {
+			if (get_class(self::$plugins[$i]) != $setting['plugin']) {
+				continue;
+			}
+			if (!method_exists(self::$plugins[$i], $method)) {
+				continue;
+			}
+			$result = call_user_func_array([self::$plugins[$i], $method], $args);
+		}
+		return $result;
 	}
 }
