@@ -17,7 +17,9 @@ namespace Bacularis\Common\Portlets;
 
 use Prado\Prado;
 use Bacularis\Common\Modules\AuditLog;
+use Bacularis\Common\Modules\IBacularisActionPlugin;
 use Bacularis\Common\Modules\PluginConfigBase;
+use Bacularis\Common\Modules\PluginConfigParameter;
 use Bacularis\Common\Portlets\PortletTemplate;
 
 /**
@@ -73,29 +75,136 @@ class PluginList extends PortletTemplate
 	}
 
 	/**
+	 * Load plugin parameters.
+	 *
+	 * @param TCallback $sender sender object
+	 * @param TCallbackEventParameter $param callback parameter object
+	 */
+	public function loadPluginParameterList($sender, $param)
+	{
+		$setting = $param->getCallbackParameter();
+		if (!isset($setting->name) || !isset($setting->plugin)) {
+			return;
+		}
+		$plugin_config = $this->getModule('plugin_config');
+		$plugins = $plugin_config->getPlugins(null, $setting->plugin);
+		$this->addPluginSettingsResources($plugins);
+		$cb = $this->getPage()->getCallbackClient();
+		$cb->callClientFunction(
+			'oPlugins.load_plugin_settings_form_cb',
+			[$setting->name, $setting->plugin, $plugins]
+		);
+	}
+
+	/**
+	 * Add to plugin settings available resources.
+	 * Resources mean both Bacula resources (such as 'Job') and Bacularis resources (such as 'api_host').
+	 * They are values that can be used in the list type elements.
+	 */
+	private function addPluginSettingsResources(&$plugins)
+	{
+		foreach ($plugins as $plugin_name => &$setting) {
+			if (!isset($setting['parameters']) || !is_array($setting['parameters'])) {
+				continue;
+			}
+			for ($i = 0; $i < count($setting['parameters']); $i++) {
+				if (in_array($setting['parameters'][$i]['type'], [PluginConfigParameter::TYPE_ARRAY_MULTIPLE, PluginConfigParameter::TYPE_ARRAY_MULTIPLE_ORDERED])) {
+					if (!key_exists('resource', $setting['parameters'][$i])) {
+						continue;
+					}
+					switch ($setting['parameters'][$i]['resource']) {
+						case 'api_host': {
+							$setting['parameters'][$i]['data'] = $this->getAPIHostData();
+							break;
+						}
+						case 'user': {
+							$setting['parameters'][$i]['data'] = $this->getWebUserData();
+							break;
+						}
+						case 'job_action': {
+							$setting['parameters'][$i]['data'] = $this->getPluginActionSettingsData('Job');
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Get web user list.
+	 *
+	 * @return array web user list
+	 */
+	private function getWebUserData(): array
+	{
+		$web_user = $this->getModule('user_config');
+		$users = $web_user->getConfig();
+		return array_keys($users);
+	}
+
+	/**
+	 * Get API host list.
+	 *
+	 * @return array API host list
+	 */
+	private function getAPIHostData(): array
+	{
+		$host_config = $this->getModule('host_config');
+		$hosts = $host_config->getConfig();
+		$api_hosts = array_keys($hosts);
+		$api_hosts = array_filter(
+			$api_hosts,
+			fn ($host) => $host !== $host_config::MAIN_CATALOG_HOST
+		);
+		return array_values($api_hosts);
+	}
+
+	/**
+	 * Get action settings list by plugin resource.
+	 *
+	 * @param string $resource type
+	 * @return array plugin action setting names
+	 */
+	private function getPluginActionSettingsData(string $resource): array
+	{
+		$plugin_config = $this->getModule('plugin_config');
+		$settings = $plugin_config->getPluginSettingsByType(
+			$plugin_config::PLUGIN_TYPE_ACTION
+		);
+		$action_settings = [];
+		$plugin_manager = $this->getModule('plugin_manager');
+		foreach ($settings as $name => $props) {
+			$res = $plugin_manager->callPluginActionByName(
+				$props['plugin'],
+				'getResource'
+			);
+			if ($res != $resource) {
+				continue;
+			}
+			$action_settings[$name] = sprintf(
+				'(%s) %s',
+				$props['plugin'],
+				$name
+			);
+		}
+		return $action_settings;
+	}
+
+	/**
 	 * Set plugin names in the plugin combobox.
 	 */
 	public function setPluginNames()
 	{
 		$data = ['none' => Prado::localize('Select plugin')];
-		$plugins = $this->getPlugins();
+		$plugin_config = $this->getModule('plugin_config');
+		$plugins = $plugin_config->getPlugins();
+		uasort($plugins, fn ($a, $b) => strnatcmp($a['type'], $b['type']));
 		foreach ($plugins as $cls => $prop) {
-			$data[$cls] = $prop['name'];
+			$data[$cls] = sprintf('[%s] %s', $prop['type'], $prop['name']);
 		}
 		$this->PluginSettingsPluginName->DataSource = $data;
 		$this->PluginSettingsPluginName->dataBind();
-	}
-
-	/**
-	 * Get plugin list with all properties.
-	 *
-	 * @return array plugin list.
-	 */
-	public function getPlugins()
-	{
-		$plugin_config = $this->getModule('plugin_config');
-		$plugins = $plugin_config->getPlugins();
-		return $plugins;
 	}
 
 	/**

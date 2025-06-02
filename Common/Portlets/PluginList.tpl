@@ -20,6 +20,7 @@
 						<th></th>
 						<th><%[ Name ]%></th>
 						<th><%[ Plugin name ]%></th>
+						<th><%[ Type ]%></th>
 						<th><%[ Enabled ]%></th>
 						<th><%[ Actions ]%></th>
 					</tr>
@@ -30,6 +31,7 @@
 						<th></th>
 						<th><%[ Name ]%></th>
 						<th><%[ Plugin name ]%></th>
+						<th><%[ Type ]%></th>
 						<th><%[ Enabled ]%></th>
 						<th><%[ Actions ]%></th>
 					</tr>
@@ -65,6 +67,7 @@
 <com:TCallback ID="LoadPluginSettingsList" OnCallback="loadPluginSettingsList" />
 <com:TCallback ID="SavePluginSettingsForm" OnCallback="savePluginSettingsForm" />
 <com:TCallback ID="LoadPluginPluginsList" OnCallback="loadPluginPluginsList" />
+<com:TCallback ID="LoadPluginParameterList" OnCallback="loadPluginParameterList" />
 <com:TCallback ID="RemovePluginSettingsAction" OnCallback="removePluginSettings">
 	<prop:ClientSide.OnComplete>
 		oPluginListSettings.table_toolbar.style.display = 'none';
@@ -160,6 +163,16 @@ var oPluginListSettings = {
 					}
 				},
 				{
+					data: 'plugin',
+					render: function(data, type, row) {
+						let ptype = data;
+						if (oPlugins.plugins.hasOwnProperty(data)) {
+							ptype = oPlugins.plugins[data].type;
+						}
+						return ptype;
+					}
+				},
+				{
 					data: 'enabled',
 					render: function(data, type, row) {
 						var ret;
@@ -217,7 +230,7 @@ var oPluginListSettings = {
 			},
 			order: [1, 'asc'],
 			drawCallback: function () {
-				this.api().columns([2, 3]).every(function () {
+				this.api().columns([2, 3, 4]).every(function () {
 					var column = this;
 					var select = $('<select class="dt-select"><option value=""></option></select>')
 					.appendTo($(column.footer()).empty())
@@ -229,8 +242,8 @@ var oPluginListSettings = {
 						.search(val ? '^' + val + '$' : '', true, false)
 						.draw();
 					});
-					if ([2, 3].indexOf(column[0][0]) > -1) { // Enabled column
-						let items = [];
+					let items = [];
+					if ([2, 4].indexOf(column[0][0]) > -1) {
 						column.data().unique().sort().each(function (d, j) {
 							if (Array.isArray(d)) {
 								d = d.toString();
@@ -240,34 +253,36 @@ var oPluginListSettings = {
 							}
 							items.push(d);
 						});
-						for (let item of items) {
-							let ds = '';
-							if (column[0][0] == 3) { // enabled flag
-								if (item === '1') {
-									ds = '<%[ Enabled ]%>';
-								} else if (item === '0') {
-									ds = '<%[ Disabled ]%>';
-								}
-							} else if (column[0][0] == 2) { // plugin name
-								ds = oPlugins.plugins.hasOwnProperty(item) ? oPlugins.plugins[item].name : '-';
-								item = ds;
-							} else {
-								ds = item;
+					} else if ([3].indexOf(column[0][0]) > -1) {
+						column.cells('', column[0]).render('display').unique().sort().each(function(d, j) {
+							if (Array.isArray(d)) {
+								d = d.toString();
 							}
-							if (column.search() == '^' + dtEscapeRegex(item) + '$') {
-								select.append('<option value="' + item + '" title="' + ds + '" selected>' + ds + '</option>');
-							} else {
-								select.append('<option value="' + item + '" title="' + ds + '">' + ds + '</option>');
+							if (d === '' || items.indexOf(d) > -1) {
+								return;
 							}
-						}
-					} else {
-						column.data().sort().unique().each(function(d, j) {
-							if (column.search() == '^' + dtEscapeRegex(d) + '$') {
-								select.append('<option value="' + d + '" selected>' + d + '</option>');
-							} else {
-								select.append('<option value="' + d + '">' + d + '</option>');
-							}
+							items.push(d);
 						});
+					}
+					for (let item of items) {
+						let ds = '';
+						if (column[0][0] == 4) { // enabled flag
+							if (item === '1') {
+								ds = '<%[ Enabled ]%>';
+							} else if (item === '0') {
+								ds = '<%[ Disabled ]%>';
+							}
+						} else if (column[0][0] == 2) { // plugin name
+							ds = oPlugins.plugins.hasOwnProperty(item) ? oPlugins.plugins[item].name : '-';
+							item = ds;
+						} else {
+							ds = item;
+						}
+						if (column.search() == '^' + dtEscapeRegex(item) + '$') {
+							select.append('<option value="' + item + '" title="' + ds + '" selected>' + ds + '</option>');
+						} else {
+							select.append('<option value="' + item + '" title="' + ds + '">' + ds + '</option>');
+						}
 					}
 				});
 			}
@@ -400,8 +415,8 @@ var oPlugins = {
 		error_settings_exist: 'plugin_list_plugin_settings_exists',
 		error_settings_error: 'plugin_list_plugin_settings_error'
 	},
-	plugins: [],
-	settings: [],
+	plugins: {},
+	settings: {},
 	init: function() {
 		this.load_plugin_plugins_list();
 	},
@@ -443,8 +458,7 @@ var oPlugins = {
 			enabled.checked = (props.enabled == 1);
 			const plugin_name = document.getElementById(this.ids.settings_plugin_name);
 			plugin_name.value = props.plugin;
-			this.load_plugin_settings_form(props.plugin);
-			oPluginForm.set_form_fields(this.settings[props.name].parameters, this.plugins[props.plugin].parameters);
+			this.load_plugin_settings_form(props.name, props.plugin);
 		} else {
 			window_mode.value = 'add';
 			name.removeAttribute('readonly');
@@ -470,13 +484,21 @@ var oPlugins = {
 		const settings_plugin_name = document.getElementById(self.ids.settings_plugin_name);
 		settings_plugin_name.selectedIndex = 0;
 	},
-	load_plugin_settings_form: function(name) {
+	load_plugin_settings_form: function(name, plugin) {
 		oPluginForm.clear_plugin_settings_form();
 		if (name != 'none') {
-			const data = oPlugins.plugins[name];
-			oPluginForm.build_form(data);
-			oPluginForm.set_form_fields('', data.parameters);
+			const cb = <%=$this->LoadPluginParameterList->ActiveControl->Javascript%>;
+			cb.setCallbackParameter({
+				name: name,
+				plugin: plugin
+			});
+			cb.dispatch();
 		}
+	},
+	load_plugin_settings_form_cb: function(name, plugin, data) {
+		const settings = oPlugins.settings.hasOwnProperty(name) ? oPlugins.settings[name].parameters : '';
+		oPluginForm.build_form(data[plugin]);
+		oPluginForm.set_form_fields(settings, data[plugin].parameters);
 	}
 };
 $(function() {
@@ -521,7 +543,7 @@ $(function() {
 						ID="PluginSettingsPluginName"
 						CssClass="w3-select w3-border"
 						AutoPostBack="false"
-						Attributes.onchange="oPlugins.load_plugin_settings_form(this.value);"
+						Attributes.onchange="oPlugins.load_plugin_settings_form('', this.value);"
 					/>
 				</div>
 			</div>
