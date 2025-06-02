@@ -146,6 +146,6 @@ class Logging extends CommonModule
 	{
 		$dir = Prado::getPathOfNamespace('Bacularis.Common.Working');
 		$file = implode(DIRECTORY_SEPARATOR, [$dir, self::COMMON_DIRECT_LOG]);
-		file_put_contents($file, $message, LOCK_EX | FILE_APPEND);
+		file_put_contents($file, $message . PHP_EOL, LOCK_EX | FILE_APPEND);
 	}
 }
