@@ -100,6 +100,8 @@ class PluginList extends PortletTemplate
 	 * Add to plugin settings available resources.
 	 * Resources mean both Bacula resources (such as 'Job') and Bacularis resources (such as 'api_host').
 	 * They are values that can be used in the list type elements.
+	 *
+	 * @param array $plugins plugin array reference
 	 */
 	private function addPluginSettingsResources(&$plugins)
 	{

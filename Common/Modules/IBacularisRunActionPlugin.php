@@ -27,8 +27,8 @@ interface IBacularisRunActionPlugin extends IBacularisPlugin
 	 * Main run action command.
 	 *
 	 * @param string $action_type action name
-	 * @param string|null $type resource type
-	 * @param string|null $name resource name
+	 * @param null|string $type resource type
+	 * @param null|string $name resource name
 	 */
 	public function run(string $action_type, ?string $type = null, ?string $name = null);
 }
