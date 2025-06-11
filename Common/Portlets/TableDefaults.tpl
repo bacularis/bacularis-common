@@ -1,6 +1,6 @@
 <script>
 var TABLE_TRANSLATIONS = {
-	lengthMenu: '<%[ Show _MENU_ entries ]%>',
+	lengthMenu: '_MENU_',
 	search: '<%[ Search: ]%>',
 	info: "<%[ Showing _START_ to _END_ of _TOTAL_ entries ]%>",
 	zeroRecords: '<%[ No matching records found ]%>',
