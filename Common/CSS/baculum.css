@@ -15,6 +15,10 @@ body {
 	--bkg-color-table-row-hover: #ffcf9e;
 	--bkg-color-table-row-selected: #f5a55b;
 	--text-color-table-row-selected: black;
+	--text-color-button-selected: black;
+	--bkg-color-button-selected: #9e9e9e;
+	--text-color-button-hover: black;
+	--bkg-color-button-hover: #cccccc;
 	--bkg-color-dt-button: #e9e9e9;
 	--bkg-image-dt-button: linear-gradient(to bottom, white 0%, #e9e9e9 100%);
 	--text-color-dt-button: black;
@@ -40,6 +44,10 @@ body.dark-theme {
 	--bkg-color-table-row-hover: #606060;
 	--bkg-color-table-row-selected: #e5e5e5;
 	--text-color-table-row-selected: #181717;
+	--text-color-button-selected: black;
+	--bkg-color-button-selected: #9e9e9e;
+	--text-color-button-hover: black;
+	--bkg-color-button-hover: #cccccc;
 	--bkg-color-dt-button: #181717;
 	--bkg-image-dt-button: none;
 	--text-color-dt-button: white;
@@ -78,7 +86,7 @@ a {
 
 #sidebar, #quick_resource_edit, #quick_volume_edit {
 	color: var(--text-color);
-	background-color: var(--color-strong);
+	background-color: var(--bkg-color-modal);
 }
 
 #jobs_summary_graph, #jobs_bytes_files_graph {
@@ -135,6 +143,16 @@ a.w3-button:not(.w3-bar-item), button.w3-button:not(.w3-bar-item) {
 
 a.w3-button:active, button.w3-button:active {
 	opacity: 0.5;
+}
+
+.w3-button:hover {
+	color: var(--text-color-button-hover) !important;
+	background-color: var(--bkg-color-button-hover) !important;
+}
+
+.w3-grey, .w3-hover-grey:hover, .w3-gray, .w3-hover-gray:hover {
+	color: var(--text-color-button-selected) !important;
+	background-color: var(--bkg-color-button-selected) !important;
 }
 
 table.dataTable {
@@ -373,7 +391,7 @@ td.action_col button, td.action_col_long button {
 }
 
 td.action_col_long {
-	width: 200px !important;
+	width: 250px !important;
 }
 
 .hide {
@@ -1002,12 +1020,23 @@ input:checked + .slider:before {
 	color: var(--color-error) !important;
 }
 
-.w3-light-gray {
-	background-color: var(--color-function) !important;
-}
-
 .w3-select {
 	padding: 9px !important;
+}
+
+.tabs-window {
+	background-color: var(--bkg-color-modal) !important;
+	color: var(--text-color) !important;
+}
+
+.tabs-normal {
+	background-color: var(--bkg-color) !important;
+	color: var(--text-color) !important;
+}
+
+.w3-white {
+	background-color: var(--color-strong) !important;
+	color: var(--text-color) !important;
 }
 
 .subtab_btn:hover {
@@ -1135,7 +1164,7 @@ li.file-browser-element > div:hover, div.file-browser-element:hover {
 	transform: translate(-50%, -50%);
 	text-align: center;
 	font-size: 21px;
-	color: rgb(185, 184, 184);
+	color: var(--text-color);
 }
 
 a.remove_selected_item {
@@ -1233,6 +1262,7 @@ div.item_picker {
 }
 
 div.item_picker div[rel="list"] div.w3-row:hover {
-	background-color: #d3d3d3;
+	background-color: var(--bkg-color) !important;
+	color: var(--text-color) !important;
 }
 /** END item picker **/
