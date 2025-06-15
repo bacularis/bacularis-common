@@ -3,10 +3,10 @@ body {
 	--bkg-color: #f1f1f1;
 	--color-strong: white;
 	--color-main: #4caf50;
+	--anchor-color: black;
 	--color-error: #f44336;
 	--color-warning: #ffffcc;
-	--color-function: #f1f1f1;
-	--anchor-color: black;
+	--bkg-color-menu: white;
 	--bkg-color-modal: white;
 	--text-color-table-head: white;
 	--bkg-color-table-head: #4c4b4b;
@@ -15,6 +15,8 @@ body {
 	--bkg-color-table-row-hover: #ffcf9e;
 	--bkg-color-table-row-selected: #f5a55b;
 	--text-color-table-row-selected: black;
+	--text-color-button-main: white;
+	--bkg-color-button-main: #4caf50;
 	--text-color-button-selected: black;
 	--bkg-color-button-selected: #9e9e9e;
 	--text-color-button-hover: black;
@@ -32,10 +34,10 @@ body.dark-theme {
 	--bkg-color: #242424;
 	--color-strong: #0e0e0e;
 	--color-main: #364a89;
+	--anchor-color: #e5e5e5;
 	--color-error: #d33a2f;
 	--color-warning: #0e0e0e;
-	--color-function: #606060;
-	--anchor-color: #e5e5e5;
+	--bkg-color-menu: #0e0e0e;
 	--bkg-color-modal: #242424;
 	--text-color-table-head: #e5e5e5;
 	--bkg-color-table-head: #181717;
@@ -44,15 +46,17 @@ body.dark-theme {
 	--bkg-color-table-row-hover: #606060;
 	--bkg-color-table-row-selected: #e5e5e5;
 	--text-color-table-row-selected: #181717;
-	--text-color-button-selected: black;
-	--bkg-color-button-selected: #9e9e9e;
-	--text-color-button-hover: black;
-	--bkg-color-button-hover: #cccccc;
 	--bkg-color-dt-button: #181717;
 	--bkg-image-dt-button: none;
 	--text-color-dt-button: white;
 	--bkg-color-light-green: #2d53cb;
 	--bkg-color-tab-hover: #606060;
+	--text-color-button-main: white;
+	--bkg-color-button-main: #364a89;
+	--text-color-button-selected: black;
+	--bkg-color-button-selected: #9e9e9e;
+	--text-color-button-hover: black;
+	--bkg-color-button-hover: #cccccc;
 	color-scheme: dark;
 }
 
@@ -84,7 +88,12 @@ a {
 	margin-top: 8px;
 }
 
-#sidebar, #quick_resource_edit, #quick_volume_edit {
+#sidebar {
+	color: var(--text-color);
+	background-color: var(--bkg-color-menu);
+}
+
+#quick_resource_edit, #quick_volume_edit {
 	color: var(--text-color);
 	background-color: var(--bkg-color-modal);
 }
@@ -143,6 +152,11 @@ a.w3-button:not(.w3-bar-item), button.w3-button:not(.w3-bar-item) {
 
 a.w3-button:active, button.w3-button:active {
 	opacity: 0.5;
+}
+
+.w3-button.w3-green {
+	color: var(--text-color-button-main) !important;
+	background-color: var(--bkg-color-button-main) !important;
 }
 
 .w3-button:hover {
