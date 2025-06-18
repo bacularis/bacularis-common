@@ -192,19 +192,38 @@ var oPluginListSettings = {
 				{
 					data: 'name',
 					render: function (data, type, row) {
-						var btn_edit = document.createElement('BUTTON');
-						btn_edit.className = 'w3-button w3-green';
-						btn_edit.type = 'button';
-						var i_edit = document.createElement('I');
-						i_edit.className = 'fa fa-edit';
-						var label_edit = document.createTextNode(' <%[ Edit ]%>');
-						btn_edit.appendChild(i_edit);
-						btn_edit.innerHTML += '&nbsp';
-						btn_edit.style.marginRight = '8px';
-						btn_edit.appendChild(label_edit);
-						const props = {name: data, plugin: row.plugin, enabled: row.enabled};
-						btn_edit.setAttribute('onclick', 'oPlugins.load_plugin_settings_window(' + JSON.stringify(props) + ')');
-						return btn_edit.outerHTML;
+						let ret;
+						if (oPlugins.plugins.hasOwnProperty(row.plugin)) {
+							// Plugin is installed, show button
+							const btn_edit = document.createElement('BUTTON');
+							btn_edit.className = 'w3-button w3-green';
+							btn_edit.type = 'button';
+							const i_edit = document.createElement('I');
+							i_edit.className = 'fa fa-edit';
+							const label_edit = document.createTextNode(' <%[ Edit ]%>');
+							btn_edit.appendChild(i_edit);
+							btn_edit.innerHTML += '&nbsp';
+							btn_edit.style.marginRight = '8px';
+							btn_edit.appendChild(label_edit);
+							const props = {name: data, plugin: row.plugin, enabled: row.enabled};
+							btn_edit.setAttribute('onclick', 'oPlugins.load_plugin_settings_window(' + JSON.stringify(props) + ')');
+							ret = btn_edit.outerHTML;
+						} else {
+							// Plugin not installed, show warning
+							const span = document.createElement('SPAN');
+							span.classList.add('w3-show-inline-block', 'w3-padding');
+							span.style.width = '280px';
+
+							const label = document.createTextNode(' <%[ Plugin not installed ]%>');
+
+							const i_warning = document.createElement('I');
+							i_warning.classList.add('fa-solid', 'fa-triangle-exclamation', 'w3-text-orange');
+
+							span.appendChild(i_warning);
+							span.appendChild(label);
+							ret = span.outerHTML;
+						}
+						return ret;
 					}
 				}
 			],
@@ -216,12 +235,15 @@ var oPluginListSettings = {
 			},
 			columnDefs: [{
 				className: 'dtr-control',
-				orderable: false,
 				targets: 0
 			},
 			{
 				className: "dt-center",
-				targets: [ 3, 4 ]
+				targets: [ 3, 4, 5 ]
+			},
+			{
+				orderable: false,
+				targets: [ 0, 5 ]
 			}],
 			select: {
 				style:    'os',
@@ -273,8 +295,14 @@ var oPluginListSettings = {
 								ds = '<%[ Disabled ]%>';
 							}
 						} else if (column[0][0] == 2) { // plugin name
-							ds = oPlugins.plugins.hasOwnProperty(item) ? oPlugins.plugins[item].name : '-';
-							item = ds;
+							if (oPlugins.plugins.hasOwnProperty(item)) {
+								// Plugin installed
+								ds = oPlugins.plugins[item].name;
+								item = ds;
+							} else {
+								// Plugin not installed
+								ds = item;
+							}
 						} else {
 							ds = item;
 						}
