@@ -190,7 +190,7 @@ abstract class AuditLog extends CommonModule
 		}
 
 		$ip_address = $_SERVER['REMOTE_ADDR'];
-		$user = $this->Application->User->getUsername();
+		$user = $this->Application->User ? $this->Application->User->getUsername() : '-';
 		$date = date('Y-m-d H:i:s');
 		$log = $this->formatLog(
 			$ip_address,
