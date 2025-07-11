@@ -103,11 +103,12 @@ class Register extends Base
 	/**
 	 * Create authenticator credentials
 	 *
-	 * @param string $username user name to set credentials
+	 * @param string $org_id organization identifier to set credentials
+	 * @param string $user_id user identifier to set credentials
 	 * @param array $data_reg validated registration data
 	 * @return string current credential identifier on success, empty string otherwise
 	 */
-	public function createCredential(string $username, array $data_reg): string
+	public function createCredential(string $org_id, string $user_id, array $data_reg): string
 	{
 		$crypto_keys = $this->getModule('crypto_keys');
 
@@ -133,7 +134,7 @@ class Register extends Base
 			]
 		];
 		$user_config = $this->getModule('user_config');
-		$result = $user_config->updateUserConfig($username, $config);
+		$result = $user_config->updateUserConfig($org_id, $user_id, $config);
 		$ret = ($result ? $credential_id : '');
 		return $ret;
 	}

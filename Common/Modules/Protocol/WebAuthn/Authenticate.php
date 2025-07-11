@@ -104,10 +104,11 @@ class Authenticate extends Base
 	 * Authenticate user in second factor logging in.
 	 *
 	 * @param array $data_auth validated authentication data
-	 * @param string $username user name
+	 * @param string $org_id organization identifier
+	 * @param string $user_id user identifier
 	 * @return bool true on success, false otherwise
 	 */
-	public function authenticate(array $data_auth, string $username): bool
+	public function authenticate(array $data_auth, string $org_id, string $user_id): bool
 	{
 		// Prepare client data
 		$client_data_json = Miscellaneous::decodeBase64URL($data_auth['response']['clientDataJSON']);
@@ -120,7 +121,7 @@ class Authenticate extends Base
 
 		// Prepare user data
 		$user_config = $this->getModule('user_config');
-		$user = $user_config->getUserConfig($username);
+		$user = $user_config->getUserConfig($org_id, $user_id);
 		$credential_id = Miscellaneous::base64UrlToBase64($data_auth['id']);
 
 		if (!key_exists($credential_id, $user['fidou2f_credentials'])) {
@@ -146,7 +147,8 @@ class Authenticate extends Base
 			]
 		];
 		$user_config->updateUserConfig(
-			$username,
+			$org_id,
+			$user_id,
 			$config
 		);
 		return $result;
