@@ -28,8 +28,8 @@ class JWT extends CommonModule
 	/**
 	 * Supported signature algorithm types.
 	 */
-	private const ALG_RS256 = 'RS256';
-	private const ALG_ES256 = 'ES256';
+	public const ALG_RS256 = 'RS256';
+	public const ALG_ES256 = 'ES256';
 
 	/**
 	 * Create data signature (sign data).
@@ -187,6 +187,62 @@ class JWT extends CommonModule
 		$json = json_encode($part);
 		$b64url = Miscellaneous::encodeBase64URL($json);
 		return $b64url;
+	}
+
+	/**
+	 * Decode token.
+	 *
+	 * @param string $token JWT string
+	 * @return array decoded token
+	 */
+	public static function decodeToken(string $token): array
+	{
+		$dtoken = [
+			'header' => '',
+			'body' => '',
+			'signature' => ''
+		];
+
+		// Validate token string
+		$pattern = '/^[A-Za-z0-9_-]{2,}(?:\.[A-Za-z0-9_-]{2,}){2}$/';
+		if (preg_match($pattern, $token) !== 1) {
+			// initial validation error
+			$emsg = "Token validation error. Token: {$token}.";
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				$emsg
+			);
+			return $dtoken;
+		}
+
+		// Extract token parts
+		[
+			$header,
+			$body,
+			$signature
+		] = self::extractTokenParts($token);
+
+		// Decode parts
+		$h = Miscellaneous::decodeBase64URL($header);
+		$b = Miscellaneous::decodeBase64URL($body);
+		$s = Miscellaneous::decodeBase64URL($signature);
+
+		return [
+			'header' => json_decode($h, true),
+			'body' => json_decode($b, true),
+			'signature' => $s
+		];
+	}
+
+	/**
+	 * Extract token parts into header, body and signature.
+	 *
+	 * @param string $token token value
+	 * @return array token parts in order: [header, body, signature]
+	 */
+	public static function extractTokenParts(string $token): array
+	{
+		return explode('.', $token, 3);
 	}
 
 	/**
