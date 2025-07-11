@@ -150,7 +150,7 @@ class CryptoKeys extends ShellCommandModule
 			);
 		}
 
-		$data_file = tempnam($tmpdir, self::PUBKEY_FILE_PREFIX);
+		$data_file = tempnam($tmpdir, self::DATA_FILE_PREFIX);
 		if (file_put_contents($data_file, $data, LOCK_EX) === false) {
 			Logging::log(
 				Logging::CATEGORY_APPLICATION,
@@ -178,6 +178,7 @@ class CryptoKeys extends ShellCommandModule
 				"Error while removing data file {$data_file}"
 			);
 		}
+
 		return $state;
 	}
 
