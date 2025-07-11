@@ -457,6 +457,20 @@ div.TDatePicker_default {
 	background-color: var(--color-strong) !important;
 }
 
+span.TColorPicker_button img {
+	width: 39px;
+	height: 39px;
+	margin-bottom: 0;
+	margin: 0 0 0 4px;
+	vertical-align: top;
+	cursor: pointer;
+}
+span.TColorPicker_button + div {
+	display: block;
+	position: absolute;
+	width: auto;
+	background-color: var(--color-strong);
+}
 i.directive_required {
 	line-height: 40px;
 }
