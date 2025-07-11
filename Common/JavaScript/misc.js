@@ -804,10 +804,21 @@ function get_table_toolbar(table, actions, txt) {
 			// no value, no action
 			return
 		}
+		const is_mact  = Array.isArray(acts[select.value].value)
 		var selected = [];
 		var sel_data = table.rows({selected: true}).data();
 		sel_data.each(function(v, k) {
-			selected.push(v[acts[select.value].value]);
+			let val = acts[select.value].value
+			if (typeof(val) == 'string') {
+				val = [val];
+			}
+			let aval = {};
+			for (let i = 0; i < val.length; i++) {
+				aval[val[i]] = v[val[i]];
+			}
+			// For backward compatibility use string if selection value is one, othwerise use array
+			const sel = is_mact ? aval : aval[val[0]];
+			selected.push(sel);
 		});
 
 		// call validation if defined
@@ -821,7 +832,7 @@ function get_table_toolbar(table, actions, txt) {
 		if (acts[select.value].hasOwnProperty('before') && typeof(acts[select.value].before) == 'function') {
 			acts[select.value].before();
 		}
-		selected = selected.join('|');
+		selected = is_mact ? selected :  selected.join('|');
 		if (acts[select.value].hasOwnProperty('callback')) {
 			acts[select.value].callback.options.RequestTimeOut = 60000; // Timeout set to 1 minute
 			acts[select.value].callback.setCallbackParameter(selected);
