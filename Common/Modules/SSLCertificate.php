@@ -365,6 +365,29 @@ class SSLCertificate extends ShellCommandModule
 	}
 
 	/**
+	 * Get command to get public key from SSL certificate.
+	 * This command uses the OpenSSL binary.
+	 *
+	 * @param string $certificate SSL certificate PEM string
+	 * @param array $cmd_params command options
+	 * @return array command to get public key from certificate
+	 */
+	public static function getPubKeyFromCertCommand(string $certificate): array
+	{
+		$ret = [
+			'echo',
+			'-n',
+			'"' . $certificate . '"',
+			'|',
+			'openssl',
+			'x509',
+			'-pubkey',
+			'-noout'
+		];
+		return $ret;
+	}
+
+	/**
 	 * Parse certificate fields from openssl binary program output.
 	 *
 	 * parsed output:
@@ -735,6 +758,27 @@ class SSLCertificate extends ShellCommandModule
 	}
 
 	/**
+	 * Get public key string from SSL certificate.
+	 *
+	 * @param string $certificate SSL certificate PEM string
+	 * @return array command result details
+	 */
+	public function getPublicKeyFromCert(string $certificate): array
+	{
+		$cmd = self::getPubKeyFromCertCommand($certificate);
+		$result = ExecuteCommand::execCommand($cmd);
+		if ($result['error'] !== 0) {
+			$errmsg = var_export($result['output'], true);
+			$emsg = "Unable to get public key from certificate. Error: {$result['error']}, Msg: {$errmsg}.";
+			Logging::log(
+				Logging::CATEGORY_EXTERNAL,
+				$emsg
+			);
+		}
+		return $result;
+	}
+
+	/**
 	 * Get days left to expiry certificate.
 	 *
 	 * @return int days left to expiry (0 means expired certificate)
@@ -772,5 +816,23 @@ class SSLCertificate extends ShellCommandModule
 		$days_no = (int) ($ddiff / 60 / 60 / 24);
 		$days_no += 1;
 		return $days_no;
+	}
+
+	/**
+	 * Add begin and end markers to certificate.
+	 *
+	 * @param string $cert certificate PEM string without markers
+	 * @return string certificate PEM string with markers
+	 */
+	public static function addCertBeginEnd($cert): string
+	{
+		$cert = trim($cert);
+		$ret = sprintf(
+			"-----BEGIN CERTIFICATE-----
+%s
+-----END CERTIFICATE-----",
+			$cert
+		);
+		return $ret;
 	}
 }
