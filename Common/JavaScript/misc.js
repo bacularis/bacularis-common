@@ -863,6 +863,57 @@ function set_page_tables(objs) {
 }
 
 /**
+ * Match text color to background color.
+ *
+ * @param string bg_color background color (hex HTML notation)
+ * @return string text color (hex HTML notation)
+ */
+function get_text_color_to_bg(bg_color) {
+	// remove hash character
+	bg_color = bg_color.substring(1);
+
+	// get RGB hex values
+	const red_hex = bg_color.substring(0, 2);
+	const green_hex = bg_color.substring(2, 4);
+	const blue_hex = bg_color.substring(4, 6);
+
+	// get RGB decimal values
+	const red = parseInt(red_hex, 16);
+	const green = parseInt(green_hex, 16);
+	const blue = parseInt(blue_hex, 16);
+
+	// prepare sRGB
+	const srgb = [
+		red / 255,
+		green / 255,
+		blue / 255
+	];
+
+	// main function to get contrasted text color
+	const get_color = (srgb) => {
+		const [
+			red,
+			green,
+			blue
+		] = srgb.map((val) => {
+			return (val <= 0.04045) ? (val / 12.92) : ((val + 0.055) / 1.055) ** 2.4;
+		});
+		return (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
+	}
+	const lum = get_color(srgb);
+
+	let txt_color = '';
+	if (lum > 0.179) {
+		// bright background color, use dark text color
+		txt_color = '#000000';
+	} else {
+		// dark background color, use bright text color
+		txt_color = '#ffffff';
+	}
+	return txt_color;
+}
+
+/**
  * Used to escape values before putting them into regular expression.
  * Dedicated to use in table values.
  */
