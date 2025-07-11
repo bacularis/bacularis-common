@@ -53,6 +53,7 @@
 		<!-- communication modules -->
 		<module id="request" class="THttpRequest" UrlManager="url_manager" UrlFormat="HiddenPath" />
 		<module id="url_manager" class="Bacularis\Common\Modules\BaculumUrlMapping" EnableCustomUrl="true" />
+		<module id="session" class="THttpSession" Cookie.HttpOnly="true" />
 		<!-- plugin modules -->
 		<module id="plugins" class="Bacularis\Common\Modules\Plugins" />
 		<module id="bpipe" class="Bacularis\Common\Modules\BPipe" />
