@@ -89,7 +89,7 @@ class CryptoKeys extends ShellCommandModule
 				$lmsg
 			);
 		} else {
-			$ret['output'] = self::getOutput($ret['output']);
+			$ret['output'] = parent::getOutput($ret['output']);
 		}
 		return $ret;
 	}
@@ -351,6 +351,30 @@ class CryptoKeys extends ShellCommandModule
 	}
 
 	/**
+	 * Get public key PEM format from modulus and exponent.
+	 *
+	 * @param string $key_type key type (rsa, ecdsa...)
+	 * @param string $modulus key modulus
+	 * @param string $exponent key exponent
+	 * @param string $tmpdir temporary directory for store tmp keys
+	 * @return string output with PEM public key
+	 */
+	public function getPublicKeyPEMFromModulusExponent(string $key_type, string $modulus, string $exponent, string $tmpdir): string
+	{
+		$mod = self::getKeyModule($key_type);
+		$ret = $mod::getPublicKeyPEMFromModulusExponent($modulus, $exponent, $tmpdir);
+		if (!$ret) {
+			// Error while preparing key
+			$emsg = "Error while preparing public key PEM.";
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				$emsg
+			);
+		}
+		return $ret;
+	}
+
+	/**
 	 * Get key module by type.
 	 *
 	 * @param string $type key type
@@ -368,22 +392,6 @@ class CryptoKeys extends ShellCommandModule
 			$mod = RSAKey::class;
 		}
 		return $mod;
-	}
-
-	private static function getOutput(array $out): string
-	{
-		$output = [];
-		for ($i = 0; $i < count($out); $i++) {
-			$line = trim($out[$i]);
-			if (preg_match('/^(spawn\s|password:|\[sudo\]\s|writing\sRSA\skey)/i', $line) === 1) {
-				continue;
-			}
-			if (empty($line)) {
-				break;
-			}
-			$output[] = $line;
-		}
-		return implode(PHP_EOL, $output);
 	}
 
 	/**

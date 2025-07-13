@@ -41,6 +41,11 @@ class RSAKey extends ShellCommandModule
 	private const SUDO = 'sudo -S';
 
 	/**
+	 * Public key in binary format.
+	 */
+	private const PUBKEY_ASN1PARSE_FILE_PREFIX = 'pubkey_asn1parse';
+
+	/**
 	 * Get command to prepare RSA private key.
 	 * This command uses the OpenSSL binary.
 	 *
@@ -118,6 +123,95 @@ class RSAKey extends ShellCommandModule
 		$cmd_params['use_shell'] = true;
 		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
+	}
+
+	/**
+	 * Get public key asn1parse config with modulus and exponent.
+	 *
+	 * @param string $modulus base64url encoded key modulus
+	 * @param string $exponent base64url encoded key exponent
+	 * @return string asn1parse configuration file
+	 */
+	public static function getPubKeyASN1ConfModulusExponent($modulus, $exponent): string
+	{
+		$n = bin2hex(Miscellaneous::decodeBase64URL($modulus));
+		$e = bin2hex(Miscellaneous::decodeBase64URL($exponent));
+		$pk_asn1 = "asn1=SEQUENCE:pubkeyinfo
+[pubkeyinfo]
+algorithm=SEQUENCE:rsa_alg
+pubkey=BITWRAP,SEQUENCE:rsapubkey
+[rsa_alg]
+algorithm=OID:rsaEncryption
+parameter=NULL
+[rsapubkey]
+n=INTEGER:0x$n
+e=INTEGER:0x$e
+";
+		return $pk_asn1;
+	}
+
+	/**
+	 * Get public key PEM format from modulus and exponent.
+	 *
+	 * @param string $modulus base64url encoded key modulus
+	 * @param string $exponent base64url encoded key exponent
+	 * @param string $tmpdir temporary directory for storing key
+	 * @return string public key (PEM format) or empty string on error
+	 */
+	public static function getPublicKeyPEMFromModulusExponent(string $modulus, string $exponent, string $tmpdir): string
+	{
+		$pk_file = tempnam($tmpdir, self::PUBKEY_ASN1PARSE_FILE_PREFIX);
+		$pk_file_der = "{$pk_file}.der";
+		$pk_asn1_conf = self::getPubKeyASN1ConfModulusExponent($modulus, $exponent);
+		if (file_put_contents($pk_file, $pk_asn1_conf) === false) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while writing public key asn1 file {$pk_file}"
+			);
+		}
+
+		$cmd = [
+			'openssl',
+			'asn1parse',
+			'-genconf',
+			$pk_file,
+			'-out',
+			$pk_file_der,
+			'-noout',
+			'&&',
+			'openssl',
+			'rsa',
+			'-in',
+			$pk_file_der,
+			'-inform',
+			'DER',
+			'-pubin'
+		];
+		$ret = ExecuteCommand::execCommand($cmd);
+		$state = ($ret['error'] == 0);
+		if (!$state) {
+			$errmsg = var_export($ret['output'], true);
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while preparing public key Error: {$ret['error']} Msg: {$errmsg}"
+			);
+		}
+
+		if (!unlink($pk_file)) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while removing public key asn1 file {$pk_file}"
+			);
+		}
+		if (!unlink($pk_file_der)) {
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				"Error while removing public key der file {$pk_file_der}"
+			);
+		}
+
+		$key = $state ? parent::getOutput($ret['output']) : '';
+		return $key;
 	}
 
 	/**

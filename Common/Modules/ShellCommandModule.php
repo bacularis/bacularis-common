@@ -131,4 +131,20 @@ class ShellCommandModule extends CommonModule
 		);
 		return $result;
 	}
+
+	protected static function getOutput(array $out): string
+	{
+		$output = [];
+		for ($i = 0; $i < count($out); $i++) {
+			$line = trim($out[$i]);
+			if (preg_match('/^(spawn\s|password:|\[sudo\]\s|writing\sRSA\skey)/i', $line) === 1) {
+				continue;
+			}
+			if (empty($line)) {
+				break;
+			}
+			$output[] = $line;
+		}
+		return implode(PHP_EOL, $output);
+	}
 }
