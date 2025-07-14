@@ -195,7 +195,8 @@ class Client extends CommonModule
 
 		return [
 			'output' => $output,
-			'error' => $errno
+			'error' => $errno,
+			'headers' => $headers
 		];
 	}
 }
