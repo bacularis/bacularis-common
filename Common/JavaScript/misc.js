@@ -903,7 +903,7 @@ function get_text_color_to_bg(bg_color) {
 	const lum = get_color(srgb);
 
 	let txt_color = '';
-	if (lum > 0.179) {
+	if (lum > 0.25) {
 		// bright background color, use dark text color
 		txt_color = '#000000';
 	} else {
