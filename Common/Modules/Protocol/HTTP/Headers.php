@@ -62,4 +62,19 @@ class Headers extends CommonModule
 		}
 		return $result;
 	}
+
+	/**
+	 * Get cache-control HTTP header the cache max age time (TTL).
+	 *
+	 * @param string $header cache-control header value
+	 * @return int cache control max age value
+	 */
+	public static function getCacheControlMaxAge(string $header): int
+	{
+		$max_age = -1;
+		if (preg_match('/max-age=(?P<time_sec>\d+)/', $header, $match) === 1) {
+			$max_age = (int) $match['time_sec'];
+		}
+		return $max_age;
+	}
 }
