@@ -120,10 +120,29 @@ class AuthBasic extends AuthBase implements IAuthModule
 			$is_auth = true;
 		}
 		if (!$is_auth) {
-			$h1 = sprintf('WWW-Authenticate: Basic realm="%s"', $realm);
-			header($h1);
+			self::setAuthenticateHeader($realm);
 			header('HTTP/1.0 401 Unauthorized');
 		}
 		return $is_auth;
+	}
+
+	/**
+	 * Set authentication header.
+	 *
+	 * @param string $realm basic auth realm
+	 * @return string header value
+	 */
+	public static function setAuthenticateHeader($realm = ''): void
+	{
+		$hr = '';
+		if (!empty($realm)) {
+			$hr = sprintf(
+				'WWW-Authenticate: Basic realm="%s"',
+				$realm
+			);
+		} else {
+			$hr = 'WWW-Authenticate: Basic';
+		}
+		header($hr);
 	}
 }
