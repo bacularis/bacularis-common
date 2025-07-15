@@ -1,4 +1,4 @@
-module bacularis 1.0.8;
+module bacularis 1.0.9;
 
 require {
 	attribute can_change_process_identity;
@@ -69,6 +69,7 @@ require {
 	type systemd_systemctl_exec_t;
 	type systemd_unit_file_t;
 	type tape_device_t;
+	type transproxy_port_t;
 	type unconfined_t;
 	type unreserved_port_t;
 	type user_tmp_t;
@@ -196,6 +197,7 @@ allow httpd_t systemd_unit_file_t:dir { write add_name create remove_name };
 allow httpd_t systemd_unit_file_t:file { create getattr open write setattr unlink relabelfrom relabelto rename };
 allow httpd_t systemd_unit_file_t:service { start stop status };
 allow httpd_t tape_device_t:chr_file read;
+allow httpd_t transproxy_port_t:tcp_socket name_connect;
 allow httpd_t unreserved_port_t:tcp_socket { name_connect name_bind };
 allow httpd_t user_tmp_t:file { execute execute_no_trans open };
 allow httpd_t usr_t:dir { add_name create relabelfrom relabelto remove_name setattr write rmdir };
