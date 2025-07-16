@@ -83,6 +83,10 @@ class BaculumPage extends TPage
 			$url .= '#' . $fragment;
 		}
 		header('Location: ' . $url);
+		$log = $this->getModule('log');
+		if ($log) {
+			$log->collectLogs(null);
+		}
 		exit();
 	}
 
