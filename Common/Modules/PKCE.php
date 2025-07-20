@@ -37,7 +37,7 @@ class PKCE extends CommonModule
 	/**
 	 * Generate random key.
 	 *
-	 * @param integer $length key size
+	 * @param int $length key size
 	 * @return string hexadecimal representation of key
 	 */
 	public static function generateRandomKey(int $length = self::DEF_KEY_LENGTH): string
@@ -76,7 +76,7 @@ class PKCE extends CommonModule
 		if (strtoupper($method) === self::CODE_CHALLENGE_METHOD_S256) {
 			$vkey = hash('sha256', $vkey);
 			$bin = pack('H*', $vkey);
-			$challenge =  Miscellaneous::encodeBase64URL($bin);
+			$challenge = Miscellaneous::encodeBase64URL($bin);
 		}
 		return $challenge;
 	}

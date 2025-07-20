@@ -52,7 +52,7 @@ class Client extends CommonModule
 	 */
 	private static function getHeaders(array $heads = []): array
 	{
-		$pre_def_heads =  [];
+		$pre_def_heads = [];
 		$headers = array_merge($pre_def_heads, $heads);
 		return $headers;
 	}
@@ -174,7 +174,9 @@ class Client extends CommonModule
 			$output = ConnectionError::MSG_ERROR_CONNECTION_TO_HOST_PROBLEM;
 			$output .= sprintf(
 				'Errno: %d, Error: %s, Output: %s',
-				$errno, $error, var_export($output, true)
+				$errno,
+				$error,
+				var_export($output, true)
 			);
 			$error = ConnectionError::ERROR_CONNECTION_TO_HOST_PROBLEM;
 		}
