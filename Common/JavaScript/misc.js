@@ -804,22 +804,7 @@ function get_table_toolbar(table, actions, txt) {
 			// no value, no action
 			return
 		}
-		const is_mact  = Array.isArray(acts[select.value].value)
-		var selected = [];
-		var sel_data = table.rows({selected: true}).data();
-		sel_data.each(function(v, k) {
-			let val = acts[select.value].value
-			if (typeof(val) == 'string') {
-				val = [val];
-			}
-			let aval = {};
-			for (let i = 0; i < val.length; i++) {
-				aval[val[i]] = v[val[i]];
-			}
-			// For backward compatibility use string if selection value is one, othwerise use array
-			const sel = is_mact ? aval : aval[val[0]];
-			selected.push(sel);
-		});
+		let selected = get_table_action_selected_items(table, acts[select.value].value);
 
 		// call validation if defined
 		if (acts[select.value].hasOwnProperty('validate') && typeof(acts[select.value].validate) == 'function') {
@@ -832,6 +817,7 @@ function get_table_toolbar(table, actions, txt) {
 		if (acts[select.value].hasOwnProperty('before') && typeof(acts[select.value].before) == 'function') {
 			acts[select.value].before();
 		}
+		const is_mact  = Array.isArray(acts[select.value].value);
 		selected = is_mact ? selected :  selected.join('|');
 		if (acts[select.value].hasOwnProperty('callback')) {
 			acts[select.value].callback.options.RequestTimeOut = 60000; // Timeout set to 1 minute
@@ -842,6 +828,26 @@ function get_table_toolbar(table, actions, txt) {
 	table_toolbar.appendChild(select);
 	table_toolbar.appendChild(btn);
 	return table_toolbar;
+}
+
+function get_table_action_selected_items(table, val) {
+	let is_mact  = true;
+	const selected = [];
+	const sel_data = table.rows({selected: true}).data();
+	if (typeof(val) == 'string') {
+		val = [val];
+		is_mact = false;
+	}
+	sel_data.each(function(v, k) {
+		let aval = {};
+		for (let i = 0; i < val.length; i++) {
+			aval[val[i]] = v[val[i]];
+		}
+		// For backward compatibility use string if selection value is one, othwerise use array
+		const sel = is_mact ? aval : aval[val[0]];
+		selected.push(sel);
+	});
+	return selected;
 }
 
 /**
