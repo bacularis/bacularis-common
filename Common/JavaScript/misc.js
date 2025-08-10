@@ -808,6 +808,7 @@ function get_table_toolbar(table, actions, txt) {
 
 		// call validation if defined
 		if (acts[select.value].hasOwnProperty('validate') && typeof(acts[select.value].validate) == 'function') {
+			const sel_data = table.rows({selected: true}).data();
 			if (acts[select.value].validate(sel_data) === false) {
 				// validation error
 				return false;
