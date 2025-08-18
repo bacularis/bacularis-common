@@ -1983,7 +1983,7 @@ class MariaDBBackup extends BacularisCommonPluginBase implements IBaculaBackupFi
 			$restore_dir,
 			$filename
 		]);
-		$cmd = ['tee', $restore_path, '>/dev/null'];
+		$cmd = ['tee', '"' . $restore_path . '"', '>/dev/null'];
 
 		$result = $this->execCommand($cmd);
 		$success = ($result['exitcode'] === 0);
