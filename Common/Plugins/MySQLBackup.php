@@ -167,7 +167,7 @@ class MySQLBackup extends BacularisCommonPluginBase implements IBaculaBackupFile
 	 */
 	public static function getVersion(): string
 	{
-		return '1.0.0';
+		return '1.0.1';
 	}
 
 	/**
