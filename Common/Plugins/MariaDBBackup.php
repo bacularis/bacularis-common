@@ -156,7 +156,7 @@ class MariaDBBackup extends BacularisCommonPluginBase implements IBaculaBackupFi
 	 */
 	public static function getVersion(): string
 	{
-		return '1.0.0';
+		return '1.0.1';
 	}
 
 	/**
