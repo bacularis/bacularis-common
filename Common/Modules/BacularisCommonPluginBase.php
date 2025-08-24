@@ -33,8 +33,8 @@ abstract class BacularisCommonPluginBase extends CommonModule
 	 * Encode/decode charaters.
 	 * Some plugin parameters need to be encoded into entities.
 	 */
-	private const ENCODE_PARAM_CHARS = [' '];
-	private const DECODE_PARAM_CHARS = ['\\x20'];
+	private const ENCODE_PARAM_CHARS = [' ', ':'];
+	private const DECODE_PARAM_CHARS = ['\\x20', '\\x3A'];
 
 	public function __construct(array $config = [])
 	{
