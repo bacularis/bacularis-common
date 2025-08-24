@@ -1,9 +1,10 @@
-module bacularis 1.0.10;
+module bacularis 1.0.11;
 
 require {
 	attribute can_change_process_identity;
 	attribute can_change_process_role;
 	type admin_home_t;
+	type bacula_t;
 	type bacula_admin_exec_t;
 	type bacula_etc_t;
 	type bacula_exec_t;
@@ -11,6 +12,7 @@ require {
 	type bacula_spool_t;
 	type bacula_var_lib_t;
 	type bin_t;
+	type chkpwd_exec_t;
 	type default_context_t;
 	type devpts_t;
 	type etc_t;
@@ -88,7 +90,7 @@ require {
 	class netlink_audit_socket { write nlmsg_relay create read };
 	class netlink_selinux_socket { bind create };
 	class passwd { rootok };
-	class process { setrlimit noatsecure rlimitinh siginh transition setexec execmem signull };
+	class process { setrlimit noatsecure rlimitinh setsched siginh transition setexec execmem signull };
 	class security { compute_create compute_av };
 	class service { start stop status reload };
 	class sock_file { getattr };
@@ -178,7 +180,6 @@ allow httpd_t self:netlink_audit_socket { write nlmsg_relay create read };
 allow httpd_t self:netlink_selinux_socket { bind create };
 allow httpd_t self:passwd rootok;
 allow httpd_t self:process { setrlimit setexec execmem };
-allow httpd_t self:process setexec;
 allow httpd_t selinux_config_t:file { read open getattr };
 allow httpd_t session_dbusd_tmp_t:sock_file getattr;
 allow httpd_t shadow_t:file { open read getattr };
@@ -221,3 +222,15 @@ allow fprintd_t httpd_t:dbus send_msg;
 typeattribute httpd_t can_change_process_identity;
 typeattribute httpd_t can_change_process_role;
 allow httpd_t unconfined_t:process transition;
+
+#============= bacula_t ==============
+allow bacula_t chkpwd_exec_t:file { execute execute_no_trans map };
+allow bacula_t httpd_cache_t:dir write;
+allow bacula_t httpd_sys_rw_content_t:dir write;
+allow bacula_t self:capability { audit_write net_admin sys_resource };
+allow bacula_t self:netlink_audit_socket { create read write nlmsg_relay };
+allow bacula_t self:process { setsched setrlimit };
+allow bacula_t sudo_exec_t:file { execute execute_no_trans map };
+allow bacula_t systemd_logind_t:dbus send_msg;
+allow bacula_t systemd_logind_sessions_t:fifo_file write;
+
