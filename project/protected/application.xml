@@ -59,6 +59,7 @@
 		<module id="bpipe" class="Bacularis\Common\Modules\BPipe" />
 		<module id="mysqlbackup_plugin" class="Bacularis\Common\Plugins\MySQLBackup" />
 		<module id="mariadbbackup_plugin" class="Bacularis\Common\Plugins\MariaDBBackup" />
+		<module id="postgresqlbackup_plugin" class="Bacularis\Common\Plugins\PostgreSQLBackup" />
 		<!-- web modules available in common -->
 		<module id="host_config" class="Bacularis\Web\Modules\HostConfig" />
 	</modules>
