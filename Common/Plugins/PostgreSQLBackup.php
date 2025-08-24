@@ -216,7 +216,7 @@ class PostgreSQLBackup extends BacularisCommonPluginBase implements IBaculaBacku
 			[
 				'name' => 'system-user',
 				'type' => 'string',
-				'default' => 'root',
+				'default' => '',
 				'label' => 'System username to execute PostgreSQL commands',
 				'category' => [self::PARAM_CAT_GENERAL]
 			],
@@ -2125,7 +2125,7 @@ class PostgreSQLBackup extends BacularisCommonPluginBase implements IBaculaBacku
 	private function getGeneralParams(array $args): array
 	{
 		$params = [];
-		if (key_exists('user', $args)) {
+		if (key_exists('user', $args) && !key_exists('system-user', $args)) {
 			$params['username'] = $args['user'];
 		}
 		return $params;
@@ -2227,7 +2227,7 @@ class PostgreSQLBackup extends BacularisCommonPluginBase implements IBaculaBacku
 	 */
 	private function addSystemUser(array $args, string &$cmd): void
 	{
-		if (key_exists('system-user', $args) && $args['system-user']) {
+		if (key_exists('system-user', $args) && !empty($args['system-user']) && $args['system-user'] != 'root') {
 			$cmd = "sudo -u '{$args['system-user']}' $cmd";
 		}
 	}
