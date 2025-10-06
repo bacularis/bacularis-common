@@ -1,4 +1,4 @@
-module bacularis 1.0.11;
+module bacularis 1.0.12;
 
 require {
 	attribute can_change_process_identity;
@@ -73,6 +73,7 @@ require {
 	type tape_device_t;
 	type transproxy_port_t;
 	type unconfined_t;
+	type unconfined_service_t;
 	type unreserved_port_t;
 	type user_tmp_t;
 	type usr_t;
@@ -233,4 +234,5 @@ allow bacula_t self:process { setsched setrlimit };
 allow bacula_t sudo_exec_t:file { execute execute_no_trans map };
 allow bacula_t systemd_logind_t:dbus send_msg;
 allow bacula_t systemd_logind_sessions_t:fifo_file write;
+allow bacula_t unconfined_service_t:unix_stream_socket connectto;
 
