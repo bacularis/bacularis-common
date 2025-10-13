@@ -102,6 +102,7 @@
 						CssClass="w3-input w3-border"
 						Width="400px"
 						Text="<%=preg_replace('/(:\d+)?$/', '', $_SERVER['HTTP_HOST'])%>"
+						ActiveControl.EnableUpdate="false"
 					/>
 					<com:TRequiredFieldValidator
 						ValidationGroup="CertsGroup"
@@ -126,6 +127,7 @@
 						CssClass="w3-input w3-border"
 						Width="400px"
 						Text="<%=preg_replace('/(:\d+)?$/', '', $_SERVER['HTTP_HOST'])%>"
+						ActiveControl.EnableUpdate="false"
 					/>
 					<com:TRequiredFieldValidator
 						ValidationGroup="CertsGroup"
