@@ -72,7 +72,7 @@ class Su extends CommonModule
 		if ($ptype === self::PTYPE_REG_CMD) {
 			$expect->addAction('Password:$', $password, self::SU_CASE_TIMEOUT);
 			if (key_exists('use_sudo', $params) && $params['use_sudo'] === true) {
-				$expect->addAction('.sudo. password for.*:', $password, self::SU_CASE_TIMEOUT);
+				$expect->addAction('(.sudo. password for.*|.sudo: authenticate. [Pp]assword):', $password, self::SU_CASE_TIMEOUT);
 			}
 		}
 
@@ -214,6 +214,14 @@ expect {
 		exp_continue
 	}
 	-re ".sudo. password for.*:" {
+		expect_user -re "(.*)\n"
+		set pwd $expect_out(1,string)
+		send "$pwd\r"
+		puts "\r\n\r"
+		sleep 0.3
+		exp_continue
+	}
+	-re ".sudo: authenticate. \[Pp\]assword:" {
 		expect_user -re "(.*)\n"
 		set pwd $expect_out(1,string)
 		send "$pwd\r"
