@@ -413,6 +413,11 @@ class Miscellaneous extends TModule
 		return (preg_match('/^(raw|json)$/', $type) === 1);
 	}
 
+	public static function isWindowsPath(string $path): bool
+	{
+		return (preg_match('/^[A-Z]:[\\\\\/]/i', $path) === 1);
+	}
+
 	public function escapeCharsToConsole($path)
 	{
 		return preg_replace('/([$])/', '\\\${1}', $path);
