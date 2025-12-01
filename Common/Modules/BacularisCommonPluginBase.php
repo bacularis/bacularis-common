@@ -150,12 +150,19 @@ abstract class BacularisCommonPluginBase extends CommonModule
 		} else {
 			exec($cmd, $output, $exitcode);
 		}
+		$params_mask = $misc->maskPasswordParams($command);
+		$cmd_mask = implode(' ', $params_mask);
+		$errstr = implode(PHP_EOL, $output);
 		if ($exitcode != 0) {
-			$params_mask = $misc->maskPasswordParams($command);
-			$cmd_mask = implode(' ', $params_mask);
-			$errstr = implode(PHP_EOL, $output);
-			Plugins::log(Plugins::LOG_ERROR, "Error while executing '{$cmd_mask}' command. Error: $exitcode, Output: {$errstr}.");
+			Plugins::log(
+				Plugins::LOG_ERROR,
+				"Error while executing '{$cmd_mask}' command. Error: $exitcode, Output: {$errstr}."
+			);
 		}
+		Plugins::debug(
+			"====> EXECUTION\nCommand: '{$cmd_mask}'\nError: {$exitcode}\nOutput:\n{$errstr}\n\n",
+			Plugins::LOG_DEST_FILE
+		);
 		return [
 			'output' => $output,
 			'exitcode' => $exitcode
