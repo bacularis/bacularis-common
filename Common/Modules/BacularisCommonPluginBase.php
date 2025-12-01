@@ -229,6 +229,9 @@ abstract class BacularisCommonPluginBase extends CommonModule
 		if (key_exists($first, $result)) {
 			$result = array_merge([$first => $result[$first]], $result);
 		}
+		if (key_exists('debug', $args)) {
+			$result['debug'] = $args['debug'];
+		}
 		return $result;
 	}
 
