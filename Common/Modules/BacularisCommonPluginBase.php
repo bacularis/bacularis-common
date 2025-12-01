@@ -73,6 +73,18 @@ abstract class BacularisCommonPluginBase extends CommonModule
 		$params_encode = fn ($param) => str_replace(self::ENCODE_PARAM_CHARS, self::DECODE_PARAM_CHARS, $param);
 		$cmd = [];
 		foreach ($params as $key => $value) {
+			if (strlen($key) == 1) {
+				// short params support (ex: -x or -Q ...etc.)
+				if ($value === true) {
+					$cmd[] = "-{$key}";
+				} else {
+					if ($encode) {
+						$value = $params_encode($value);
+					}
+					$cmd[] = "-{$key} \"$value\"";
+				}
+				continue;
+			}
 			if ($value === true) {
 				$cmd[] = "--{$key}";
 			} elseif ($value === null) {
