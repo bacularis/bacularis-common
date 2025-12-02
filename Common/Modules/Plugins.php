@@ -117,6 +117,17 @@ class Plugins extends CommonModule
 	 */
 	public static function debug($msg, int $dest = self::LOG_DEST_STDOUT): void
 	{
+		if (php_sapi_name() == 'cli' && isset($GLOBALS['argv'])) {
+			$dlevels = self::LOG_DEST_STDOUT . self::LOG_DEST_FILE;
+			$debug_param = array_filter(
+				$GLOBALS['argv'],
+				fn ($item) => preg_match('/^--debug="?[' . $dlevels . ']"?$/', $item) === 1
+			);
+			if (count($debug_param) == 0) {
+				// without debug parameter - no debug log
+				return;
+			}
+		}
 		if (!is_string($msg)) {
 			$msg = var_export($msg, true);
 		}
