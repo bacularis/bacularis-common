@@ -845,12 +845,13 @@ class MSSQLDBBackup extends BacularisCommonPluginBase implements IBaculaBackupFi
 	private function getRestoreSQLCommand(array $args, string $raction, string $item): string
 	{
 		$action = 'command/restore';
-		$restore_args = $this->filterParametersByCategory($args, []);
+		$restore_args = $this->filterParametersByCategory($args, [
+			self::PARAM_CAT_BACKUP_OPTIONS
+		]);
 		$restore_args['plugin-config'] = $args['plugin-config'];
 		$restore_args['job-starttime'] = $args['job-starttime'];
 		$restore_args['job-id'] = $args['job-id'];
 		$restore_args['job-level'] = $args['job-level'];
-		$restore_args['server-name'] = $args['server-name'];
 		$restore_args['restore-item'] = $item;
 		$restore_args['restore-action'] = $raction;
 		$restore_args['where'] = '%w';
@@ -869,10 +870,11 @@ class MSSQLDBBackup extends BacularisCommonPluginBase implements IBaculaBackupFi
 	private function getRestoreEncryptionCommand(array $args, string $raction, string $item): string
 	{
 		$action = 'command/restore';
-		$restore_args = $this->filterParametersByCategory($args, []);
+		$restore_args = $this->filterParametersByCategory($args, [
+			self::PARAM_CAT_BACKUP_OPTIONS
+		]);
 		$restore_args['plugin-config'] = $args['plugin-config'];
 		$restore_args['encryption-databases'] = $args['encryption-databases'];
-		$restore_args['server-name'] = $args['server-name'];
 		$restore_args['restore-item'] = $item;
 		$restore_args['restore-action'] = $raction;
 		$restore_args['where'] = '%w';
