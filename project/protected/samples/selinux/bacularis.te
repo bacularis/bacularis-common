@@ -1,4 +1,4 @@
-module bacularis 1.0.12;
+module bacularis 1.0.13;
 
 require {
 	attribute can_change_process_identity;
@@ -67,6 +67,7 @@ require {
 	type systemd_logind_inhibit_var_run_t;
 	type systemd_logind_sessions_t;
 	type systemd_logind_t;
+	type systemd_logind_var_run_t;
 	type systemd_passwd_var_run_t;
 	type systemd_systemctl_exec_t;
 	type systemd_unit_file_t;
@@ -94,7 +95,7 @@ require {
 	class process { setrlimit noatsecure rlimitinh setsched siginh transition setexec execmem signull };
 	class security { compute_create compute_av };
 	class service { start stop status reload };
-	class sock_file { getattr };
+	class sock_file { getattr write };
 	class system { reload };
 	class tcp_socket { name_bind name_connect };
 	class unix_stream_socket { connectto };
@@ -173,7 +174,7 @@ allow httpd_t rpm_t:process signull;
 allow httpd_t rpm_var_cache_t:dir { create read write add_name remove_name rename rmdir };
 allow httpd_t rpm_var_cache_t:file { getattr setattr write open read ioctl create lock unlink };
 allow httpd_t rpm_var_lib_t:dir { read write add_name remove_name create };
-allow httpd_t rpm_var_lib_t:file { setattr getattr read write open lock map create unlink };
+allow httpd_t rpm_var_lib_t:file { setattr getattr read write open lock map create unlink rename };
 allow httpd_t scsi_generic_device_t:chr_file { open read write ioctl };
 allow httpd_t security_t:security { compute_create compute_av };
 allow httpd_t self:capability { audit_write sys_resource net_admin sys_admin setfcap fsetid fowner };
@@ -193,6 +194,7 @@ allow httpd_t systemd_logind_inhibit_var_run_t:fifo_file write;
 allow httpd_t systemd_logind_sessions_t:file { open read };
 allow httpd_t systemd_logind_sessions_t:fifo_file write;
 allow httpd_t systemd_logind_t:dbus send_msg;
+allow httpd_t systemd_logind_var_run_t:sock_file write;
 allow httpd_t systemd_passwd_var_run_t:dir watch;
 allow httpd_t systemd_systemctl_exec_t:file { getattr open read execute execute_no_trans };
 allow httpd_t systemd_unit_file_t:dir { write add_name create remove_name };
