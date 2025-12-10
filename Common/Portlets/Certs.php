@@ -17,6 +17,7 @@ namespace Bacularis\Common\Portlets;
 
 use DateTime;
 use Bacularis\Common\Modules\AuditLog;
+use Bacularis\Common\Modules\BinaryPackage;
 use Bacularis\Common\Modules\ExecuteCommand;
 use Bacularis\Common\Modules\LetsEncryptCert;
 use Bacularis\Common\Modules\Logging;
@@ -36,6 +37,15 @@ use Prado\TPropertyValue;
  */
 class Certs extends PortletTemplate
 {
+	/**
+	 * Additional operating systems which are supported to certificate settings.
+	 */
+	private const EXTRA_OS = [
+		'Alpine Linux' => [
+			'repository_type' => BinaryPackage::TYPE_APK
+		]
+	];
+
 	private const UPDATE_HOST_CONFIG = 'UpdateHostConfig';
 
 	/**
@@ -150,6 +160,11 @@ class Certs extends PortletTemplate
 	{
 		$config = $this->getModule('osprofile_config')->getPreDefinedOSProfiles();
 		$names = array_keys($config);
+
+		// Add extran OSes
+		$extra_names = array_keys(self::EXTRA_OS);
+		$names = array_merge($names, $extra_names);
+
 		sort($names, SORT_NATURAL | SORT_FLAG_CASE);
 		array_unshift($names, '');
 		$osps = array_combine($names, $names);
@@ -589,13 +604,19 @@ class Certs extends PortletTemplate
 	 */
 	private function enableHTTPSInWebServer(): bool
 	{
-		$osprofile_name = $this->CertsOSProfile->getSelectedValue();
-		if (empty($osprofile_name)) {
+		$os_name = $this->CertsOSProfile->getSelectedValue();
+		if (empty($os_name)) {
 			// for renew certificate the OS profile can be missing
 			return true;
 		}
 		$osprofile_config = $this->getModule('osprofile_config');
-		$osprofile = $osprofile_config->getOSProfileConfig($osprofile_name);
+		$osprofile = $osprofile_config->getOSProfileConfig($os_name);
+		$repository_type = '';
+		if (count($osprofile) > 0) {
+			$repository_type = $osprofile['repository_type'];
+		} elseif (key_exists($os_name, self::EXTRA_OS)) {
+			$repository_type = self::EXTRA_OS[$os_name]['repository_type'];
+		}
 
 		$common_name = $this->CertsSelfSignedCommonName->Text;
 		$web_server = $this->CertsWebServer->getSelectedValue();
@@ -612,7 +633,7 @@ class Certs extends PortletTemplate
 
 		$ws_config = $this->getModule('ws_config');
 		$result = $ws_config->enableHTTPS(
-			$osprofile['repository_type'],
+			$repository_type,
 			$web_server,
 			$cmd_params
 		);
@@ -642,13 +663,19 @@ class Certs extends PortletTemplate
 	 */
 	private function reloadWebServerConfig(AdminAccess $adm_access): bool
 	{
-		$osprofile_name = $this->CertsOSProfile->getSelectedValue();
-		if (empty($osprofile_name)) {
+		$os_name = $this->CertsOSProfile->getSelectedValue();
+		if (empty($os_name)) {
 			// for renew certificate the OS profile can be missing
 			return true;
 		}
 		$osprofile_config = $this->getModule('osprofile_config');
-		$osprofile = $osprofile_config->getOSProfileConfig($osprofile_name);
+		$osprofile = $osprofile_config->getOSProfileConfig($os_name);
+		$repository_type = '';
+		if (count($osprofile) > 0) {
+			$repository_type = $osprofile['repository_type'];
+		} elseif (key_exists($os_name, self::EXTRA_OS)) {
+			$repository_type = self::EXTRA_OS[$os_name]['repository_type'];
+		}
 
 		$web_server = $this->CertsWebServer->getSelectedValue();
 
@@ -664,7 +691,7 @@ class Certs extends PortletTemplate
 
 		$ws_config = $this->getModule('ws_config');
 		$result = $ws_config->reloadConfig(
-			$osprofile['repository_type'],
+			$repository_type,
 			$web_server,
 			$cmd_params
 		);
@@ -762,13 +789,19 @@ class Certs extends PortletTemplate
 	 */
 	public function disableHTTPSInWebServer(): bool
 	{
-		$osprofile_name = $this->CertsOSProfile->getSelectedValue();
-		if (empty($osprofile_name)) {
+		$os_name = $this->CertsOSProfile->getSelectedValue();
+		if (empty($os_name)) {
 			// to remove certificate the OS profile cannot be missing
 			return true;
 		}
 		$osprofile_config = $this->getModule('osprofile_config');
-		$osprofile = $osprofile_config->getOSProfileConfig($osprofile_name);
+		$osprofile = $osprofile_config->getOSProfileConfig($os_name);
+		$repository_type = '';
+		if (count($osprofile) > 0) {
+			$repository_type = $osprofile['repository_type'];
+		} elseif (key_exists($os_name, self::EXTRA_OS)) {
+			$repository_type = self::EXTRA_OS[$os_name]['repository_type'];
+		}
 
 		$web_server = $this->CertsWebServer->getSelectedValue();
 
@@ -784,7 +817,7 @@ class Certs extends PortletTemplate
 
 		$ws_config = $this->getModule('ws_config');
 		$result = $ws_config->disableHTTPS(
-			$osprofile['repository_type'],
+			$repository_type,
 			$web_server,
 			$cmd_params
 		);
@@ -849,13 +882,19 @@ class Certs extends PortletTemplate
 	 */
 	public function setWebServerPort(int $port, AdminAccess $admin_access): bool
 	{
-		$osprofile_name = $this->CertsOSProfile->getSelectedValue();
-		if (empty($osprofile_name)) {
+		$os_name = $this->CertsOSProfile->getSelectedValue();
+		if (empty($os_name)) {
 			// for renew certificate the OS profile can be missing
 			return true;
 		}
 		$osprofile_config = $this->getModule('osprofile_config');
-		$osprofile = $osprofile_config->getOSProfileConfig($osprofile_name);
+		$osprofile = $osprofile_config->getOSProfileConfig($os_name);
+		$repository_type = '';
+		if (count($osprofile) > 0) {
+			$repository_type = $osprofile['repository_type'];
+		} elseif (key_exists($os_name, self::EXTRA_OS)) {
+			$repository_type = self::EXTRA_OS[$os_name]['repository_type'];
+		}
 
 		$web_server = $this->CertsWebServer->getSelectedValue();
 
@@ -870,7 +909,7 @@ class Certs extends PortletTemplate
 		];
 		$ws_config = $this->getModule('ws_config');
 		$result = $ws_config->setPort(
-			$osprofile['repository_type'],
+			$repository_type,
 			$web_server,
 			$port,
 			$cmd_params

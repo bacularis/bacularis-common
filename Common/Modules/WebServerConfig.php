@@ -26,7 +26,7 @@ class WebServerConfig extends ShellCommandModule
 	/**
 	 * Get command to enable HTTPS connection in the Nginx web server configuration file.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param array $cmd_params command options
 	 * @return array command to enable HTTPS in Nginx config
 	 */
@@ -61,7 +61,7 @@ class WebServerConfig extends ShellCommandModule
 	/**
 	 * Get command to disable HTTPS connection in the Nginx web server configuration file.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param array $cmd_params command options
 	 * @return array command to disable HTTPS in Nginx config
 	 */
@@ -86,7 +86,7 @@ class WebServerConfig extends ShellCommandModule
 	 * Get command to set listening port in the Nginx web server configuration file.
 	 * NOTE: The sed first string occurence substitution works only with GNU sed version.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param int $port port to set
 	 * @param array $cmd_params command optionsa
 	 * @return array command to set listening port in Nginx config
@@ -186,7 +186,7 @@ ssl.pemfile = "' . $pem_file . '"
 	/**
 	 * Get command to enable HTTPS connection in the Apache web server configuration file.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param array $cmd_params command options
 	 * @return array command to enable HTTPS in Apache config
 	 */
@@ -224,7 +224,7 @@ ssl.pemfile = "' . $pem_file . '"
 	/**
 	 * Get command to disable HTTPS connection in the Apache web server configuration file.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param array $cmd_params command options
 	 * @return array command to disable HTTPS in Apache config
 	 */
@@ -248,7 +248,7 @@ ssl.pemfile = "' . $pem_file . '"
 	 * Get command to set listening port in the Apache web server configuration file.
 	 * NOTE: The sed first string occurence substitution works only with GNU sed version.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param int $port port to set
 	 * @param array $cmd_params command optionsa
 	 * @return array command to set listening port in Apache config
@@ -276,21 +276,26 @@ ssl.pemfile = "' . $pem_file . '"
 	 * Get Nginx web server configuration file path.
 	 * NOTE: Paths are hardcoded.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @return string Nginx web server config path
 	 */
 	private static function getNginxConfigFilePath(string $package_type): string
 	{
 		$cfg_path = '';
-		if ($package_type == 'rpm') {
+		if ($package_type == BinaryPackage::TYPE_RPM) {
 			$cfg_path = implode(
 				DIRECTORY_SEPARATOR,
 				['', 'etc', 'nginx', 'conf.d', 'bacularis.conf']
 			);
-		} elseif ($package_type == 'deb') {
+		} elseif ($package_type == BinaryPackage::TYPE_DEB) {
 			$cfg_path = implode(
 				DIRECTORY_SEPARATOR,
 				['', 'etc', 'nginx', 'sites-available', 'bacularis.conf']
+			);
+		} elseif ($package_type == BinaryPackage::TYPE_APK) {
+			$cfg_path = implode(
+				DIRECTORY_SEPARATOR,
+				['', 'etc', 'nginx', 'http.d', 'bacularis.conf']
 			);
 		}
 		return $cfg_path;
@@ -300,21 +305,26 @@ ssl.pemfile = "' . $pem_file . '"
 	 * Get Apache web server configuration file path.
 	 * NOTE: Paths are hardcoded.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @return string Apache web server config path
 	 */
 	private static function getApacheConfigFilePath(string $package_type): string
 	{
 		$cfg_path = '';
-		if ($package_type == 'rpm') {
+		if ($package_type == BinaryPackage::TYPE_RPM) {
 			$cfg_path = implode(
 				DIRECTORY_SEPARATOR,
 				['', 'etc', 'httpd', 'conf.d', 'bacularis.conf']
 			);
-		} elseif ($package_type == 'deb') {
+		} elseif ($package_type == BinaryPackage::TYPE_DEB) {
 			$cfg_path = implode(
 				DIRECTORY_SEPARATOR,
 				['', 'etc', 'apache2', 'sites-available', 'bacularis.conf']
+			);
+		} elseif ($package_type == BinaryPackage::TYPE_APK) {
+			$cfg_path = implode(
+				DIRECTORY_SEPARATOR,
+				['', 'etc', 'apache2', 'conf.d', 'bacularis.conf']
 			);
 		}
 		return $cfg_path;
@@ -338,24 +348,30 @@ ssl.pemfile = "' . $pem_file . '"
 	/**
 	 * Reload Apache web server configuration.
 	 *
-	 * @param string $package_type OS package type: rpm or deb
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param array $cmd_params command options
 	 * @return array Apache web server reload command
 	 */
 	public static function getApacheReloadCommand(string $package_type, array $cmd_params = []): array
 	{
 		$ret = [];
-		if ($package_type == 'rpm') {
+		if ($package_type == BinaryPackage::TYPE_RPM) {
 			$ret = [
 				'systemctl',
 				'reload',
 				'httpd'
 			];
-		} elseif ($package_type == 'deb') {
+		} elseif ($package_type == BinaryPackage::TYPE_DEB) {
 			$ret = [
 				'systemctl',
 				'reload',
 				'apache2'
+			];
+		} elseif ($package_type == BinaryPackage::TYPE_APK) {
+			$ret = [
+				'rc-service',
+				'apache2',
+				'reload'
 			];
 		}
 		static::setCommandParameters($ret, $cmd_params);
@@ -365,16 +381,26 @@ ssl.pemfile = "' . $pem_file . '"
 	/**
 	 * Reload Nginx web server configuration.
 	 *
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param array $cmd_params command options
 	 * @return array Nginx web server reload command
 	 */
-	public static function getNginxReloadCommand(array $cmd_params = []): array
+	public static function getNginxReloadCommand(string $package_type, array $cmd_params = []): array
 	{
-		$ret = [
-			'systemctl',
-			'reload',
-			'nginx'
-		];
+		$ret = [];
+		if ($package_type == BinaryPackage::TYPE_RPM || $package_type == BinaryPackage::TYPE_DEB) {
+			$ret = [
+				'systemctl',
+				'reload',
+				'nginx'
+			];
+		} elseif ($package_type == BinaryPackage::TYPE_APK) {
+			$ret = [
+				'rc-service',
+				'nginx',
+				'reload'
+			];
+		}
 		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
 	}
@@ -382,16 +408,30 @@ ssl.pemfile = "' . $pem_file . '"
 	/**
 	 * Reload Lighttpd web server configuration.
 	 *
+	 * @param string $package_type OS package type: rpm, deb or apk
 	 * @param array $cmd_params command options
 	 * @return array Lighttpd web server reload command
 	 */
-	public static function getLighttpdRestartCommand(array $cmd_params = []): array
+	public static function getLighttpdRestartCommand(string $package_type, array $cmd_params = []): array
 	{
-		$ret = [
-			'systemctl',
-			'restart',
-			'bacularis-lighttpd'
-		];
+		$ret = [];
+		if ($package_type == BinaryPackage::TYPE_RPM || $package_type == BinaryPackage::TYPE_DEB) {
+			$ret = [
+				'systemctl',
+				'restart',
+				'bacularis-lighttpd'
+			];
+		} elseif ($package_type == BinaryPackage::TYPE_APK) {
+			/**
+			 * NOTE: This bacularis-lighttpd service does not exists on Alpine.
+			 * This service has to be prepared by user self until Bacularis starts providing it.
+			 */
+			$ret = [
+				'rc-service',
+				'bacularis-lighttpd',
+				'restart'
+			];
+		}
 		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
 	}
@@ -470,10 +510,12 @@ ssl.pemfile = "' . $pem_file . '"
 		$cmd = [];
 		if ($web_server == Miscellaneous::WEB_SERVERS['nginx']['id']) {
 			$cmd = self::getNginxReloadCommand(
+				$repository_type,
 				$cmd_params
 			);
 		} elseif ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
 			$cmd = self::getLighttpdRestartCommand(
+				$repository_type,
 				$cmd_params
 			);
 		} elseif ($web_server == Miscellaneous::WEB_SERVERS['apache']['id']) {
