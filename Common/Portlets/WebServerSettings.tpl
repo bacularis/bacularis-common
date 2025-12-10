@@ -85,7 +85,7 @@
 		</div>
 	</div>
 	<div class="w3-container w3-row w3-padding w3-center">
-		<button class="w3-button w3-green" type="button" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'WebServerGroup') && oWebServerSettings.show_confirm_modal(true));"><i class="fa fa-save"></i> &nbsp;<%[ Save ]%></button>
+		<button class="w3-button w3-green" type="button" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'WebServerGroup') && oWebServerSettings.check_support() && oWebServerSettings.show_confirm_modal(true));"><i class="fa fa-save"></i> &nbsp;<%[ Save ]%></button>
 	</div>
 	<div id="web_server_setttings_confirm" class="w3-modal" style="display: none">
 		<div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width: 600px">
@@ -103,14 +103,31 @@
 			</div>
 		</div>
 	</div>
+	<div id="web_server_setttings_support" class="w3-modal" style="display: none">
+		<div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width: 600px">
+			<header class="w3-container w3-orange w3-text-white">
+				<span onclick="oWebServerSettings.show_support_modal(false);" class="w3-button w3-xlarge w3-hover-gray w3-display-topright">&times;</span>
+				<h2><%[ Warning ]%></h2>
+			</header>
+			<div class="w3-container">
+				<p class="justify"><%[ The selected operating system and web server combination is not supported for this action. ]%></p>
+			</div>
+			<div class="w3-center">
+				<button class="w3-button w3-green w3-margin-bottom" type="button" onclick="oWebServerSettings.show_support_modal(false);"><i class="fa fa-times"></i> &nbsp;<%[ OK ]%></button>
+			</div>
+		</div>
+	</div>
 </div>
 <com:TCallback ID="LoadOSProfiles" OnCallback="loadOSProfiles" />
 <script>
 oWebServerSettings = {
 	ids: {
 		confirm_modal: 'web_server_setttings_confirm',
+		support_modal: 'web_server_setttings_support',
 		ws_autodetected: 'install_web_server_ws_autodetected',
-		port: '<%=$this->WebServerPort->ClientID%>'
+		port: '<%=$this->WebServerPort->ClientID%>',
+		os_profile: '<%=$this->WebServerOSProfile->ClientID%>',
+		web_server: '<%=$this->WebServerList->ClientID%>'
 	},
 	web_server: '<%=$this->web_server%>',
 	init: function() {
@@ -124,9 +141,25 @@ oWebServerSettings = {
 		const modal = document.getElementById(this.ids.confirm_modal);
 		modal.style.display = show ? 'block' : 'none';
 	},
+	show_support_modal: function(show) {
+		const modal = document.getElementById(this.ids.support_modal);
+		modal.style.display = show ? 'block' : 'none';
+	},
 	set_web_server: function(value) {
 		const ws_autodetected = document.getElementById(this.ids.ws_autodetected);
 		ws_autodetected.style.display = (value === this.web_server) ? 'inline' : 'none';
+	},
+	check_support: function() {
+		const ws = document.getElementById(this.ids.web_server);
+		const op = document.getElementById(this.ids.os_profile);
+		let supported = true;
+		if (ws.value == '<%=Miscellaneous::WEB_SERVERS['lighttpd']['id']%>' && op.value == '<%=WebServerSettings::EXTRA_OS['Alpine Linux']['name']%>') {
+			supported = false;
+		}
+		if (!supported) {
+			this.show_support_modal(true);
+		}
+		return supported;
 	},
 	go_to_new_page: function() {
 		const prot = window.location.protocol;

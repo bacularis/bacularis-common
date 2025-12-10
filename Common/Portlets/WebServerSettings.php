@@ -33,8 +33,9 @@ class WebServerSettings extends PortletTemplate
 	/**
 	 * Additional operating systems which are supported to web server settings.
 	 */
-	private const EXTRA_OS = [
+	public const EXTRA_OS = [
 		'Alpine Linux' => [
+			'name' => 'Alpine Linux',
 			'repository_type' => BinaryPackage::TYPE_APK
 		]
 	];

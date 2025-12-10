@@ -371,15 +371,29 @@
 		</div>
 	</div>
 	<div class="w3-container w3-row w3-padding w3-center">
-		<button type="button" id="install_cert_save_btn" class="w3-button w3-green" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && <%=$this->CertsAdminAccessCreateCert->ClientID%>_AdminAccess.show_window(true));">
+		<button type="button" id="install_cert_save_btn" class="w3-button w3-green" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && oCerts.check_support() &&<%=$this->CertsAdminAccessCreateCert->ClientID%>_AdminAccess.show_window(true));">
 			<i class="fa-solid fa-save"></i> &nbsp;<%[ Create SSL certificate ]%>
 		</button>
-		<button type="button" id="install_cert_uninstall_btn" class="w3-button w3-red" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && <%=$this->CertsAdminAccessUninstallCert->ClientID%>_AdminAccess.show_window(true));" style="display: none;">
+		<button type="button" id="install_cert_uninstall_btn" class="w3-button w3-red" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && oCerts.check_support() && <%=$this->CertsAdminAccessUninstallCert->ClientID%>_AdminAccess.show_window(true));" style="display: none;">
 			<i class="fa-solid fa-trash-alt"></i> &nbsp;<%[ Uninstall SSL certificate ]%>
 		</button>
-		<button type="button" id="install_cert_renew_btn" class="w3-button w3-green" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && <%=$this->CertsAdminAccessRenewCert->ClientID%>_AdminAccess.show_window(true));" style="display: none;">
+		<button type="button" id="install_cert_renew_btn" class="w3-button w3-green" onclick="const fm = Prado.Validation.getForm(); return (Prado.Validation.validate(fm, 'CertsGroup') && oCerts.check_support() && <%=$this->CertsAdminAccessRenewCert->ClientID%>_AdminAccess.show_window(true));" style="display: none;">
 			<i class="fa-solid fa-redo"></i> &nbsp;<%[ Renew SSL certificate ]%>
 		</button>
+	</div>
+	<div id="install_cert_support" class="w3-modal" style="display: none">
+		<div class="w3-modal-content w3-card-4 w3-animate-top" style="max-width: 600px">
+			<header class="w3-container w3-orange w3-text-white">
+				<span onclick="oCerts.show_support_modal(false);" class="w3-button w3-xlarge w3-hover-gray w3-display-topright">&times;</span>
+				<h2><%[ Warning ]%></h2>
+			</header>
+			<div class="w3-container">
+				<p class="justify"><%[ The selected operating system and web server combination is not supported for this action. ]%></p>
+			</div>
+			<div class="w3-center">
+				<button class="w3-button w3-green w3-margin-bottom" type="button" onclick="oCerts.show_support_modal(false);"><i class="fa fa-times"></i> &nbsp;<%[ OK ]%></button>
+			</div>
+		</div>
 	</div>
 </div>
 <com:TCallback ID="LoadOSProfiles" OnCallback="loadOSProfiles" />
@@ -398,7 +412,10 @@ const oCerts = {
 		validity_not_before: 'installed_cert_validity_not_before',
 		validity_not_after: 'installed_cert_validity_not_after',
 		validity_state: 'installed_cert_validity_state',
-		ws_autodetected: 'install_cert_ws_autodetected'
+		ws_autodetected: 'install_cert_ws_autodetected',
+		support_modal: 'install_cert_support',
+		os_profile: '<%=$this->CertsOSProfile->ClientID%>',
+		web_server: '<%=$this->CertsWebServer->ClientID%>'
 	},
 	rels: {
 		cert_opts: 'cert_opts'
@@ -554,6 +571,22 @@ const oCerts = {
 		url = url.replace('%port', port);
 		url = url.replace('%path', path);
 		window.location.href = url;
+	},
+	show_support_modal: function(show) {
+		const modal = document.getElementById(this.ids.support_modal);
+		modal.style.display = show ? 'block' : 'none';
+	},
+	check_support: function() {
+		const ws = document.getElementById(this.ids.web_server);
+		const op = document.getElementById(this.ids.os_profile);
+		let supported = true;
+		if (ws.value == '<%=Miscellaneous::WEB_SERVERS['lighttpd']['id']%>' && op.value == '<%=WebServerSettings::EXTRA_OS['Alpine Linux']['name']%>') {
+			supported = false;
+		}
+		if (!supported) {
+			this.show_support_modal(true);
+		}
+		return supported;
 	}
 };
 $(function() {

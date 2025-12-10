@@ -40,8 +40,9 @@ class Certs extends PortletTemplate
 	/**
 	 * Additional operating systems which are supported to certificate settings.
 	 */
-	private const EXTRA_OS = [
+	public const EXTRA_OS = [
 		'Alpine Linux' => [
+			'name' => 'Alpine Linux',
 			'repository_type' => BinaryPackage::TYPE_APK
 		]
 	];
@@ -619,6 +620,7 @@ class Certs extends PortletTemplate
 		}
 
 		$common_name = $this->CertsSelfSignedCommonName->Text;
+
 		$web_server = $this->CertsWebServer->getSelectedValue();
 
 		$user = $this->CertsAdminAccessCreateCert->getAdminUser();
