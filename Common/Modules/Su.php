@@ -120,7 +120,7 @@ class Su extends CommonModule
 		// User parameter
 		$cuser = $user;
 		if (!empty($user)) {
-			$user = " -l \"{$user}\"";
+			$cuser = " -l \"{$user}\"";
 		}
 
 		$cmd = sprintf(
