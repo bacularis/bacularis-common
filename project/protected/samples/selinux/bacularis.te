@@ -1,4 +1,4 @@
-module bacularis 1.0.13;
+module bacularis 1.0.14;
 
 require {
 	attribute can_change_process_identity;
@@ -129,7 +129,7 @@ allow httpd_t httpd_config_t:file { create write setattr rename unlink };
 allow httpd_t httpd_log_t:file { write unlink };
 allow httpd_t httpd_sys_rw_content_t:dir { read write };
 allow httpd_t httpd_sys_rw_content_t:file { create append };
-allow httpd_t httpd_unit_file_t:service { reload status };
+allow httpd_t httpd_unit_file_t:service { reload status stop };
 allow httpd_t httpd_var_lib_t:dir relabelfrom;
 allow httpd_t httpd_var_run_t:dir relabelfrom;
 allow httpd_t http_port_t:tcp_socket name_connect;
