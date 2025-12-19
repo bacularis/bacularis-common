@@ -356,22 +356,35 @@ ssl.pemfile = "' . $pem_file . '"
 	{
 		$ret = [];
 		if ($package_type == BinaryPackage::TYPE_RPM) {
-			$ret = [
-				'systemctl',
-				'reload',
-				'httpd'
-			];
+			if (static::binaryExists('systemctl', $cmd_params)) {
+				$ret = [
+					'systemctl',
+					'reload',
+					'httpd'
+				];
+			}
 		} elseif ($package_type == BinaryPackage::TYPE_DEB) {
-			$ret = [
-				'systemctl',
-				'reload',
-				'apache2'
-			];
+			if (static::binaryExists('systemctl', $cmd_params)) {
+				$ret = [
+					'systemctl',
+					'reload',
+					'apache2'
+				];
+			}
 		} elseif ($package_type == BinaryPackage::TYPE_APK) {
+			if (static::binaryExists('rc-service', $cmd_params)) {
+				$ret = [
+					'rc-service',
+					'apache2',
+					'reload'
+				];
+			}
+		}
+		if (count($ret) == 0 && static::binaryExists('apachectl', $cmd_params)) {
+			// Generic command, common for all supported system types
 			$ret = [
-				'rc-service',
-				'apache2',
-				'reload'
+				'apachectl',
+				'graceful',
 			];
 		}
 		static::setCommandParameters($ret, $cmd_params);
@@ -389,15 +402,27 @@ ssl.pemfile = "' . $pem_file . '"
 	{
 		$ret = [];
 		if ($package_type == BinaryPackage::TYPE_RPM || $package_type == BinaryPackage::TYPE_DEB) {
-			$ret = [
-				'systemctl',
-				'reload',
-				'nginx'
-			];
+			if (static::binaryExists('systemctl', $cmd_params)) {
+				$ret = [
+					'systemctl',
+					'reload',
+					'nginx'
+				];
+			}
 		} elseif ($package_type == BinaryPackage::TYPE_APK) {
+			if (static::binaryExists('rc-service', $cmd_params)) {
+				$ret = [
+					'rc-service',
+					'nginx',
+					'reload'
+				];
+			}
+		}
+		if (count($ret) == 0 && static::binaryExists('nginx', $cmd_params)) {
+			// Generic command, common for all supported system types
 			$ret = [
-				'rc-service',
 				'nginx',
+				'-s',
 				'reload'
 			];
 		}

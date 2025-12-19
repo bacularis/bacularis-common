@@ -64,10 +64,9 @@ class Account extends CommonModule
 
 		$privkey_file = $props['privkey_file'] ?? '';
 		$crypto_keys = $this->getModule('crypto_keys');
-		$shell_cmds = new ShellCommandModule();
 
 		// Create account private key if not exists
-		if (!$shell_cmds->fileExists($privkey_file, $cmd_params)) {
+		if (!ShellCommandModule::fileExists($privkey_file, $cmd_params)) {
 			$result = $crypto_keys->createPrivateKey(
 				RSAKey::KEY_TYPE,
 				$privkey_file,

@@ -15,6 +15,8 @@
 
 namespace Bacularis\Common\Modules;
 
+use Prado\Prado;
+
 /**
  * Common shell command module.
  *
@@ -74,15 +76,32 @@ class ShellCommandModule extends CommonModule
 	}
 
 	/**
+	 * Get command to check if binary exists and if it is in PATH.
+	 *
+	 * @param string $binary binary name
+	 * @param string $cmd_params command parameters
+	 * @return array command to check if binary exists in PATH
+	 */
+	public static function getBinaryExistsCommand(string $binary, array $cmd_params = []): array
+	{
+		$ret = [
+			'type',
+			$binary
+		];
+		static::setCommandParameters($ret, $cmd_params);
+		return $ret;
+	}
+
+	/**
 	 * Check if file exists.
 	 *
 	 * @param string $file file path
 	 * @param array $cmd_params command parameters (use_sudo, login, password...)
 	 * @return bool true if file exists, otherwise false
 	 */
-	public function fileExists(string $file, array $cmd_params): bool
+	public static function fileExists(string $file, array $cmd_params): bool
 	{
-		$cmd = ShellCommandModule::getFileExistsCommand($file);
+		$cmd = self::getFileExistsCommand($file);
 
 		// credentials
 		$user = $cmd_params['user'] ?? '';
@@ -91,7 +110,39 @@ class ShellCommandModule extends CommonModule
 		// sudo setting
 		$use_sudo = $cmd_params['use_sudo'] ?? false;
 
-		$su = $this->getModule('su');
+		$su = Prado::getApplication()->getModule('su');
+		$params = [
+			'command' => implode(' ', $cmd),
+			'use_sudo' => $use_sudo
+		];
+		$ret = $su->execCommand(
+			$user,
+			$password,
+			$params
+		);
+		$state = ($ret['exitcode'] == 0);
+		return $state;
+	}
+
+	/**
+	 * Check if binary exists and if it is in PATH
+	 *
+	 * @param string $binary binary name
+	 * @param array $cmd_params command parameters (use_sudo, login, password...)
+	 * @return bool true if binary exists, otherwise false
+	 */
+	public static function binaryExists(string $binary, array $cmd_params): bool
+	{
+		$cmd = self::getBinaryExistsCommand($binary);
+
+		// credentials
+		$user = $cmd_params['user'] ?? '';
+		$password = $cmd_params['password'] ?? '';
+
+		// sudo setting
+		$use_sudo = $cmd_params['use_sudo'] ?? false;
+
+		$su = Prado::getApplication()->getModule('su');
 		$params = [
 			'command' => implode(' ', $cmd),
 			'use_sudo' => $use_sudo
