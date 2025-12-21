@@ -1302,3 +1302,36 @@ div.item_picker div[rel="list"] div.w3-row:hover {
 	color: var(--text-color) !important;
 }
 /** END item picker **/
+
+/** START Generic overlay (ex: for guided tour). **/
+.boverlay {
+    z-index: 3;
+    display: none;
+    padding-top: 100px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/** END Generic overlay (ex: for guided tour). **/
+
+/** START Guided tour tool tip style **/
+div.opentip-container.style-guide_tour canvas {
+	width: 410px !important;
+}
+div.opentip-container.style-guide_tour div.ot-header h1 {
+	font-size: 21px !important;
+	font-weight: bold;
+	padding-left: 12px;
+}
+
+div.opentip-container.style-guide_tour div.ot-content {
+	padding: 5px 10px 5px 5px;
+	font-size: 13px;
+	line-height: 18px;
+}
+/** END Guided tour tool tip style **/
