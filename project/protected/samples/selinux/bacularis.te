@@ -1,4 +1,4 @@
-module bacularis 1.0.14;
+module bacularis 1.0.15;
 
 require {
 	attribute can_change_process_identity;
@@ -12,6 +12,7 @@ require {
 	type bacula_spool_t;
 	type bacula_var_lib_t;
 	type bin_t;
+	type cert_t;
 	type chkpwd_exec_t;
 	type default_context_t;
 	type devpts_t;
@@ -116,6 +117,9 @@ allow httpd_t bacula_var_lib_t:file { getattr open read write };
 allow httpd_t bin_t:dir { write add_name remove_name create relabelfrom relabelto setattr rmdir };
 allow httpd_t bin_t:file { create relabelfrom relabelto rename setattr write link unlink };
 allow httpd_t bin_t:lnk_file { create setattr unlink relabelfrom relabelto rename };
+allow httpd_t cert_t:dir { add_name relabelfrom relabelto setattr write remove_name rmdir };
+allow httpd_t cert_t:file { create relabelfrom relabelto rename setattr unlink write };
+allow httpd_t cert_t:lnk_file { relabelfrom relabelto setattr };
 allow httpd_t default_context_t:file { read open getattr };
 allow httpd_t devpts_t:chr_file { open getattr ioctl read write };
 allow httpd_t etc_t:dir { write add_name remove_name create relabelfrom relabelto rmdir setattr };
@@ -148,6 +152,7 @@ allow httpd_t locale_t:dir { write add_name remove_name };
 allow httpd_t locale_t:file { create write setattr unlink relabelfrom relabelto rename };
 allow httpd_t man_t:dir { add_name remove_name write };
 allow httpd_t man_t:file { create relabelfrom relabelto rename setattr write unlink };
+allow httpd_t man_t:lnk_file { create relabelfrom relabelto rename setattr unlink };
 allow httpd_t mysqld_etc_t:dir { add_name remove_name relabelto write relabelfrom rmdir setattr };
 allow httpd_t mysqld_etc_t:file { create write relabelfrom relabelto rename setattr unlink };
 allow httpd_t mysqld_port_t:tcp_socket name_connect;
@@ -203,6 +208,7 @@ allow httpd_t systemd_unit_file_t:service { start stop status };
 allow httpd_t tape_device_t:chr_file read;
 allow httpd_t transproxy_port_t:tcp_socket name_connect;
 allow httpd_t unreserved_port_t:tcp_socket { name_connect name_bind };
+allow httpd_t user_tmp_t:dir create;
 allow httpd_t user_tmp_t:file { execute execute_no_trans open };
 allow httpd_t usr_t:dir { add_name create relabelfrom relabelto remove_name setattr write rmdir };
 allow httpd_t usr_t:file { write create relabelfrom relabelto rename setattr unlink };
