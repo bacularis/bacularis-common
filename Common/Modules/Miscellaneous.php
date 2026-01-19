@@ -187,6 +187,20 @@ class Miscellaneous extends TModule
 		'never'
 	];
 
+
+	/**
+	 * Volume status list possible to set by user.
+	 */
+	public const VOLSTATUS_USER = [
+		'Append',
+		'Archive',
+		'Disabled',
+		'Full',
+		'Used',
+		'Cleaning',
+		'Read-Only'
+	];
+
 	public function getJobLevels()
 	{
 		return $this->jobLevels;
