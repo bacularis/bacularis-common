@@ -189,7 +189,7 @@ class Miscellaneous extends TModule
 
 
 	/**
-	 * Volume status list possible to set by user.
+	 * Volume status list possible to set by user via Bconsole.
 	 */
 	public const VOLSTATUS_USER = [
 		'Append',
