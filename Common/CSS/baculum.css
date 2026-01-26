@@ -296,8 +296,9 @@ table.dataTable > tbody > tr > th, table.dataTable > tbody > tr > td {
 	padding: 5px 7px;
 }
 
-#last_jobs_list tbody th, #last_jobs_list tbody td {
-	padding: 8px 7px;
+table.list_full tbody th, table.list_full tbody td {
+	padding: 8px 7px !important;
+	height: 36px;
 }
 
 table.dataTable tfoot th:nth-of-type(2), table.dataTable tfoot td:nth-of-type(2) {
@@ -560,7 +561,7 @@ div.config_loader {
 	justify-content: center;
 }
 
-#last_jobs_list tbody tr {
+table.list_full tbody tr {
 	cursor: pointer;
 }
 
