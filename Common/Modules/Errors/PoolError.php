@@ -39,7 +39,9 @@ class PoolError extends GenericError
 {
 	public const ERROR_POOL_DOES_NOT_EXISTS = 40;
 	public const ERROR_NO_VOLUMES_IN_POOL_TO_UPDATE = 41;
+	public const ERROR_POOL_NOT_EMPTY = 42;
 
 	public const MSG_ERROR_POOL_DOES_NOT_EXISTS = 'Pool does not exist.';
 	public const MSG_ERROR_NO_VOLUMES_IN_POOL_TO_UPDATE = 'Pool with inputted poolid does not contain any volume to update.';
+	public const MSG_ERROR_POOL_NOT_EMPTY = 'Pool is not empty.';
 }
