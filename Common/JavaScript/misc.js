@@ -651,6 +651,12 @@ var set_scopes = function(field_id) {
 	document.getElementById(field_id).value = OAuth2Scopes.join(' ');
 }
 
+function parse_url(url) {
+	const a = document.createElement('A');
+	a.href = url;
+	return a;
+}
+
 function get_url_fragment() {
 	var url = window.location.href;
 	var regex = new RegExp('#(.+)$');
@@ -679,7 +685,7 @@ function set_url_fragment(fragment) {
 	window.history.pushState({}, '', url);
 }
 
-function set_tab_by_url_fragment() {
+function set_action_by_url_fragment() {
 	const fragment = get_url_fragment();
 	// for HTML elements (buttons, anchors...)
 	let btn_el = $('#btn_' + fragment);
@@ -687,7 +693,12 @@ function set_tab_by_url_fragment() {
 		// for PRADO controls (TActiveButton, TActiveLinkButton...)
 		const el = document.getElementById(fragment);
 		if (el) {
-			const btn_id = el.getAttribute('data-btn');
+			let btn_id;
+			if (el.hasAttribute('data-btn')) {
+				btn_id = el.getAttribute('data-btn');
+			} else {
+				btn_id = fragment;
+			}
 			btn_el = $('#' + btn_id);
 		}
 	}
@@ -936,6 +947,6 @@ if (typeof($) == 'function') {
 		ThemeMode.init();
 		W3SideBar.init();
 		set_global_listeners();
-		set_tab_by_url_fragment();
+		set_action_by_url_fragment();
 	});
 }
