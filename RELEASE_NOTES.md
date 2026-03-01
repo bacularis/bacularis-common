@@ -1,90 +1,91 @@
 
-We are pleased to announce the release of **Bacularis 5.11.0**. This version
-introduces a number of improvements to the web interface aimed at making it
-even more convenient to use, simplifying selected actions, and reducing the
-number of steps required to perform them.
+We are pleased to announce the release of **Bacularis 6.0.0**. This is a new
+major release. We know that many of you have been waiting for this version
+in order to upgrade from your current major version ``5.0.0``. Compared to
+version ``5.0.0``, this release represents nearly a year of development and
+comes with a long list of new features and improvements. We are very happy
+to finally deliver this new version to you.
 
-### Dashboard Enhancements
+Binary packages for the major version ``6.0.0`` are now available to all
+users in all official Bacularis package repositories. Let’s take a look
+ at what’s new in version ``6.0.0``.
 
-One of the most notable additions is the introduction of new tabs on the
- Dashboard page. These provide information about:
+### Role mapping for Bacularis
 
- * the most recently executed Bacula jobs,
- * jobs scheduled for today,
- * jobs scheduled for the next five days.
+We have introduced Bacularis role mapping. This feature enables centralized
+management of Bacularis roles from an external IAM system.
 
-With these improvements, users can immediately see upcoming Bacula activity
-right after logging into the web interface.
+Currently, two operating modes are supported:
 
-### Bulk Actions for Volumes
+ * Local role management within Bacularis
+ * Remote role management for logins using an Identity Provider (IdP)
 
-This release introduces a set of new bulk actions for the Volumes list. Users
-can now perform operations on single or multiple volumes at once. Supported
-bulk actions include:
+Remote management is possible through mapping IAM roles to Bacularis roles.
+This feature request was submitted by a member of the Bacularis community,
+**jsiit**.
 
- * setting volume status,
- * changing the volume pool,
- * updating data retention,
- * configuring recycle, inchanger, and enabled flags,
- * and more.
+You can read more about this feature in the Bacularis documentation:
 
-These enhancements significantly streamline volume management tasks.
+https://bacularis.app/doc/users/role-mapping.html
 
-### Bulk Actions for Other Resource Lists
+### Backup verification from the job list
 
-New bulk actions have also been added to the following lists:
+Another new feature is the ability to verify backups directly from the Bacula
+job list. You can select the jobs you want to verify and run verification for
+them using your dedicated Verify-type job.
 
- * Jobs
- * Clients
- * Storage
- * Pools
+### Extended "breadcrumbs" navigation
 
-All of them support performing actions on both individual items
-and selected groups of items.
+We have introduced a new extended "breadcrumbs"-style navigation menu. This is
+not a typical breadcrumbs component – in addition to navigating back through
+the page hierarchy, it also allows you to execute any function available from
+each page within the current hierarchy.
 
-### Data Views for Jobs
+We hope this new navigation component will make moving around Bacularis even
+more intuitive and efficient.
 
-Another long-awaited feature is the introduction of data views for the Jobs list.
-This allows Bacula jobs to be organized into logical groups for easier management.
-The Jobs list was one of the few remaining areas without support for data views,
-and we are happy to finally bring this functionality there.
+### Enabling and disabling Bacula components
 
-### API Updates
+Another new feature is the ability to temporarily or permanently enable and
+disable Bacula clients directly from the client list.
 
-On the API side, we have added several new actions, particularly for the Pool and
-Client endpoints. As usual, the API documentation has been updated accordingly.
+ * **Temporary** enable/disable operations are executed using the Bconsole
+   ``enable`` and ``disable`` commands.
+ * **Permanent** disable is performed using the configuration directive
+    ``Enabled = yes/no``.
 
-### Bug Fixes
+A very similar feature has also been introduced in this version for
+temporarily enabling and disabling storage resources directly from
+ the storage list.
 
-We have also implemented several fixes in the new tape storage wizard.
+### Improvements and API updates
 
-### Important Notice
+We have also made improvements to page headers to make them clearer and
+ more readable.
 
-If your Bacularis instance includes users with limited Bacula resource permissions
-(using Console ACLs), and you would like them to see their scheduled Bacula jobs on
-the Dashboard page, you need to add an additional CommandAcl directive to their
-ConsoleACL configuration to allow the use of the status command, for example:
+On the API layer, we added several new endpoints, particularly for the newly
+introduced enable/disable functionality for Bacula components. As usual,
+the API documentation has also been updated accordingly.
 
- CommandACL = status
+### Bug fixes
 
-If your Bacularis users do not use Console ACLs, you do not have non-administrator
-users, or you do not wish to expose job schedules to users, no additional action is
- required.
+This release includes both important fixes – for example, related to
+authorization – as well as smaller fixes, mainly focused on visual and UI
+improvements.
 
-For more details, please refer to the related Git commit:
-https://github.com/bacularis/bacularis-web/commit/a91e8d95795aef74b2c4db24d412fc68215dc687
+Any feedback is highly appreciated. Please let us know your impressions,
+issues, and thoughts.
 
-We wish everyone smooth installations and upgrades.
+We wish you smooth installations and upgrades.
 
-Enjoy using Bacularis!
+Enjoy using Bacularis.
 
-— The Bacularis Team
+ – The Bacularis Team
 
 ### Main changes
 
 **Bacularis Common**
 
- * Add new pool error
- * Improve dashboard table styles
- * Move to common part volstatuses possible to set by user
+ * Add breadcrumbs nav and page header styles
+ * Extend call action function
 
