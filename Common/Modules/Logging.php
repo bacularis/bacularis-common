@@ -105,7 +105,7 @@ class Logging extends CommonModule
 		$trace = debug_backtrace();
 		if (isset($trace[1]['file']) && isset($trace[1]['line'])) {
 			$file_line = sprintf(
-				'%s:%s: ',
+				'[%s:%s]: ',
 				basename($trace[1]['file']),
 				$trace[1]['line']
 			);
