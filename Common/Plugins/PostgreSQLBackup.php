@@ -2222,7 +2222,7 @@ class PostgreSQLBackup extends BacularisCommonPluginBase implements IBaculaBacku
 	/**
 	 * Add executing command as given system user.
 	 *
-	 * @param string $args command parameters
+	 * @param array $args command parameters
 	 * @param string $cmd command
 	 */
 	private function addSystemUser(array $args, string &$cmd): void
