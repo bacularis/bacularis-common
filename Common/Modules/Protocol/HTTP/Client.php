@@ -74,6 +74,7 @@ class Client extends CommonModule
 		$error = curl_error($ch);
 		$errno = curl_errno($ch);
 		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$http_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
 		curl_close($ch);
 		$head = substr($result, 0, $header_size);
 		$body = substr($result, $header_size);
@@ -83,6 +84,7 @@ class Client extends CommonModule
 			$body,
 			$error,
 			$errno,
+			$http_code,
 			$heads
 		);
 		return $ret;
@@ -108,6 +110,7 @@ class Client extends CommonModule
 		$error = curl_error($ch);
 		$errno = curl_errno($ch);
 		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$http_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
 		curl_close($ch);
 		$head = substr($result, 0, $header_size);
 		$rbody = substr($result, $header_size);
@@ -121,6 +124,7 @@ class Client extends CommonModule
 			$rbody,
 			$error,
 			$errno,
+			$http_code,
 			$heads
 		);
 		return $ret;
@@ -144,6 +148,7 @@ class Client extends CommonModule
 		$error = curl_error($ch);
 		$errno = curl_errno($ch);
 		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$http_code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
 		curl_close($ch);
 		$head = substr($result, 0, $header_size);
 		$body = substr($result, $header_size);
@@ -153,6 +158,7 @@ class Client extends CommonModule
 			$body,
 			$error,
 			$errno,
+			$http_code,
 			$heads
 		);
 		return $ret;
@@ -165,10 +171,11 @@ class Client extends CommonModule
 	 * @param mixed $output response body (payload)
 	 * @param string $error error message
 	 * @param int $errno error number
+	 * @param int $http_code HTTP error code
 	 * @param array $headers HTTP response headers
 	 * @return array output, error and nonce
 	 */
-	private static function prepareResult(string $url, $output, string $error, int $errno, array $headers = []): array
+	private static function prepareResult(string $url, $output, string $error, int $errno, int $http_code, array $headers = []): array
 	{
 		if ($errno != 0) {
 			$output = ConnectionError::MSG_ERROR_CONNECTION_TO_HOST_PROBLEM;
@@ -178,7 +185,6 @@ class Client extends CommonModule
 				$error,
 				var_export($output, true)
 			);
-			$error = ConnectionError::ERROR_CONNECTION_TO_HOST_PROBLEM;
 		}
 
 		Logging::log(
@@ -198,6 +204,7 @@ class Client extends CommonModule
 		return [
 			'output' => $output,
 			'error' => $errno,
+			'http_code' => $http_code,
 			'headers' => $headers
 		];
 	}
