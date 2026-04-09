@@ -2101,7 +2101,7 @@ class MariaDBBackup extends BacularisCommonPluginBase implements IBaculaBackupFi
 				unset($body[$db_name]['Differential']);
 			}
 		} elseif ($level == 'Differential') {
-			// It is full backup, so delete incremental and differential cors
+			// It is differential backup, so delete incremental cors
 			if (key_exists('Incremental', $body[$db_name])) {
 				unset($body[$db_name]['Incremental']);
 			}
