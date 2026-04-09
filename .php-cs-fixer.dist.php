@@ -38,7 +38,7 @@ $config
 	'ternary_operator_spaces' => true,
 	'ternary_to_null_coalescing' => true,
 	'trim_array_spaces' => true,
-	'visibility_required' => true,
+	'modifier_keywords' => true,
 	'whitespace_after_comma_in_array' => true,
     ])
     ->setFinder($finder);
