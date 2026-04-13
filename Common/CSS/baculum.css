@@ -169,6 +169,10 @@ a.w3-button:active, button.w3-button:active {
 	background-color: var(--bkg-color-button-selected) !important;
 }
 
+.margin-top-small {
+	margin-top: 10px !important;
+}
+
 table.dataTable {
 	font-size: 14px;
 	line-height: 1.2;
@@ -1357,8 +1361,8 @@ div.opentip-container.style-guide_tour div.ot-content {
 	list-style: none;
 	display: inline-table;
 	padding-left: 16px;
-	margin-top: 7px;
 	margin-bottom: 0;
+	margin-top: 0;
 }
 
 #crumbs ul li {
