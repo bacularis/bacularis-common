@@ -682,4 +682,20 @@ class Miscellaneous extends TModule
 	{
 		return str_replace('\\"', '"', $value);
 	}
+
+	/**
+	 * Search and filter simple list.
+	 * Matches list items against wildcard pattern.
+	 *
+	 * @param array $list list to filter
+	 * @param string $pattern wildcard pattern
+	 */
+	public static function filterList(array &$list, string $pattern): void
+	{
+		$list = array_filter(
+			$list,
+			fn ($item) => fnmatch($pattern, $item, FNM_NOESCAPE | FNM_CASEFOLD),
+		);
+		$list = array_values($list);
+	}
 }
