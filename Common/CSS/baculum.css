@@ -1463,3 +1463,208 @@ div.opentip-container.style-guide_tour div.ot-content {
 }
 
 /** END Breadcrumbs **/
+
+/** START Search field **/
+
+#bsearch_field {
+	color: var(--text-color) !important;
+	padding: 6px 24px !important;
+	border-radius: 1.5em;
+	width: 235px;
+	height: 34px;
+	display: flex;
+}
+
+#bsearch_field i {
+	padding: .3em;
+}
+
+#bsearch_field .label {
+	display: inline-flex;
+	padding: 0 .1em;
+}
+
+#bsearch_field .shortcut {
+	margin-left: auto;
+}
+
+#bsearch_field .shortcut kbd {
+	box-shadow: 1px 1px 1px var(--bkg-color-button-selected);
+	padding: 0 .4rem;
+	border: 1px solid var(--bkg-color-button-hover);
+	border-radius: .25rem;
+	font-size: .85em;
+}
+
+#bsearch_form {
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	flex-direction: column;
+	padding-top: 0 !important;
+}
+
+#bsearch_form > div:nth-of-type(1) {
+	display: flex;
+	align-items: flex-start;
+	flex-direction: column;
+	position: fixed;
+	top: 28%;
+	left: 0;
+	right: 0;
+	align-self: flex-start;
+	width: 620px;
+	height: 55px;
+	z-index: 1055;
+	background-color: transparent !important;
+}
+
+#bsearch_form span.w3-badge {
+	margin-right: 8px;
+	color: var(--text-color);
+	background-color: var(--bkg-color-menu);
+	cursor: pointer;
+}
+
+#bsearch_form span.w3-badge:hover {
+	background-color: var(--bkg-color-button-hover);
+}
+
+#bsearch_form span.w3-badge i {
+	padding: 26px 0;
+	width: 40px;
+	height: 52px;
+}
+
+#bsearch_form > div > div > span:nth-of-type(1) {
+	position: relative;
+	display: inline-flex;
+}
+
+#bsearch_form > div > div > span:nth-of-type(1) > span {
+	position: absolute;
+	right: 26px;
+	top: 17px;
+}
+
+#bsearch_text {
+	width: 405px !important;
+	height: 55px !important;
+	font-size: 1.5em;
+	border-radius: 1.5em;
+	padding: 4px 24px;
+	margin-right: 8px;
+	border: 1px solid var(--bkg-color-button-selected);
+}
+
+#bsearch_text:focus {
+	outline: none;
+}
+
+#bsearch_categories {
+	height: 50px;
+	width: 120px;
+	color: var(--text-color);
+}
+
+#bsearch_categories, #bsearch_last_search span, #bsearch_scroll_down span {
+	background-color: var(--bkg-color-menu);
+	border: 1px solid var(--bkg-color-button-selected);
+}
+
+#bsearch_categories + div {
+	width: 180px;
+	color: var(--text-color);
+	background-color: var(--bkg-color-menu);
+}
+
+#bsearch_form a {
+	padding: 10px 24px;
+}
+
+#bsearch_last_search {
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+	height: 30px;
+	margin-top: 4px;
+}
+
+#bsearch_last_search span, #bsearch_scroll_down span {
+	font-size: 13px;
+	padding: 1px 14px;
+	margin: 0 2px;
+	border-radius: 16px;
+}
+
+#bsearch_last_search span:nth-of-type(1) {
+	border-radius: 0;
+	border: 0;
+	background-color: transparent;
+	color: var(--text-color-button-main);
+}
+
+#bsearch_results {
+	flex-direction: column;
+	align-self: flex-end;
+	position: fixed;
+	top: 38%;
+	left: 0;
+	right: 0;
+	z-index: 5 !important;
+	width: 620px;
+	overflow-y: auto;
+	height: 500px;
+	background-color: transparent !important;
+	/** Hide scrollbar **/
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;  /* Firefox */
+}
+
+/** Hide scrollbar **/
+#bsearch_results::-webkit-scrollbar {
+	  display: none;
+}
+
+#bsearch_results > ul {
+	margin: 7px 0;
+	border-radius: 1.5em;
+	background-color: var(--bkg-color) !important;
+}
+
+#bsearch_results > ul > li a {
+	text-decoration: none;
+}
+
+#bsearch_results > ul > li:hover {
+	cursor: pointer;
+	color: var(--text-color-button-hover);
+	background-color: var(--bkg-color-button-hover);
+}
+
+#bsearch_results > ul > li:hover a {
+	color: var(--text-color-button-hover) !important;
+}
+
+#bsearch_results > ul > li:first-child:hover {
+	border-top-left-radius: 1.5em;
+	border-top-right-radius: 1.5em;
+}
+#bsearch_results > ul > li:last-child:hover {
+	border-bottom-left-radius: 1.5em;
+	border-bottom-right-radius: 1.5em;
+}
+
+#bsearch_scroll_down {
+	width: 620px;
+	overflow-y: auto;
+	height: 24px;
+	position: fixed;
+	top: calc(38% + 505px);
+	left: 0;
+	right: 0;
+	background-color: transparent !important;
+	text-align: center;
+	justify-content: center;
+}
+/** END Search field **/
