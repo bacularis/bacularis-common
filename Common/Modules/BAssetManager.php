@@ -64,7 +64,8 @@ class BAssetManager extends TAssetManager
 		}
 		$dst_file = $dst . DIRECTORY_SEPARATOR . basename($src);
 		$src_mtime = @filemtime($src);
-		if (@filemtime($dst_file) !== $src_mtime) {
+		$src_size = @filesize($src);
+		if (@filemtime($dst_file) !== $src_mtime || @filesize($dst_file) !== $src_size) {
 			@copy($src, $dst_file);
 			if ($src_mtime !== false) {
 				@touch($dst_file, $src_mtime);
@@ -86,7 +87,8 @@ class BAssetManager extends TAssetManager
 					continue;
 				} elseif (is_file($src_file)) {
 					$src_mtime = @filemtime($src_file);
-					if (@filemtime($dst_file) !== $src_mtime) {
+					$src_size = @filesize($src_file);
+					if (@filemtime($dst_file) !== $src_mtime || @filesize($dst_file) !== $src_size) {
 						@copy($src_file, $dst_file);
 						if ($src_mtime !== false) {
 							@touch($dst_file, $src_mtime);
