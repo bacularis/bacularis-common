@@ -1,91 +1,87 @@
 
-We are pleased to announce the release of **Bacularis 6.0.0**. This is a new
-major release. We know that many of you have been waiting for this version
-in order to upgrade from your current major version ``5.0.0``. Compared to
-version ``5.0.0``, this release represents nearly a year of development and
-comes with a long list of new features and improvements. We are very happy
-to finally deliver this new version to you.
+We're happy to announce the release of Bacularis ``6.1.0``. This update brings
+quite a long list of changes, definitely more than we originally planned when
+we started preparing this release.
 
-Binary packages for the major version ``6.0.0`` are now available to all
-users in all official Bacularis package repositories. Let’s take a look
- at what’s new in version ``6.0.0``.
+### New global resource search
 
-### Role mapping for Bacularis
+One of the highlights of this release is the new global Bacula resource search.
+It's modern, user-friendly, and fully configurable.
 
-We have introduced Bacularis role mapping. This feature enables centralized
-management of Bacularis roles from an external IAM system.
+Our goal was to provide a simple way to search across clients, storage, jobs,
+and many other resources - all in one place. We hope this feature will be useful
+both in large environments with many resources and in smaller setups as well.
 
-Currently, two operating modes are supported:
+You can learn more here and see it in action:
 
- * Local role management within Bacularis
- * Remote role management for logins using an Identity Provider (IdP)
+https://bacularis.app/doc/misc/global-search-box.html
 
-Remote management is possible through mapping IAM roles to Bacularis roles.
-This feature request was submitted by a member of the Bacularis community,
-**jsiit**.
+### Dashboard improvements
 
-You can read more about this feature in the Bacularis documentation:
+We've introduced several enhancements to the dashboard, including a new time
+range selector for charts. Instead of relying only on fixed ranges, you can
+now dynamically adjust the time scope whenever needed.
 
-https://bacularis.app/doc/users/role-mapping.html
+The static range option is still available and remains the default setting.
 
-### Backup verification from the job list
+### Upcoming OS support
 
-Another new feature is the ability to verify backups directly from the Bacula
-job list. You can select the jobs you want to verify and run verification for
-them using your dedicated Verify-type job.
+We've added support for upcoming distributions (not yet officially released
+at the time of writing):
 
-### Extended "breadcrumbs" navigation
+ * Ubuntu 26.04 Resolute Raccoon (LTS)
+ * Fedora 44
 
-We have introduced a new extended "breadcrumbs"-style navigation menu. This is
-not a typical breadcrumbs component – in addition to navigating back through
-the page hierarchy, it also allows you to execute any function available from
-each page within the current hierarchy.
+This support also includes new OS profiles for deploying Bacula and Bacularis
+instances on remote hosts. We've prepared binary package repositories for
+these systems and updated the SELinux policy module accordingly.
 
-We hope this new navigation component will make moving around Bacularis even
-more intuitive and efficient.
+### API updates
 
-### Enabling and disabling Bacula components
+On the API side, we've added several new endpoints and extended existing ones
+with additional parameters to provide more flexibility.
 
-Another new feature is the ability to temporarily or permanently enable and
-disable Bacula clients directly from the client list.
+### UI and navigation tweaks
 
- * **Temporary** enable/disable operations are executed using the Bconsole
-   ``enable`` and ``disable`` commands.
- * **Permanent** disable is performed using the configuration directive
-    ``Enabled = yes/no``.
-
-A very similar feature has also been introduced in this version for
-temporarily enabling and disabling storage resources directly from
- the storage list.
-
-### Improvements and API updates
-
-We have also made improvements to page headers to make them clearer and
- more readable.
-
-On the API layer, we added several new endpoints, particularly for the newly
-introduced enable/disable functionality for Bacula components. As usual,
-the API documentation has also been updated accordingly.
+We've also made a number of smaller improvements to the dashboard and breadcrumb
+navigation. These include visual refinements and text corrections to improve
+overall usability.
 
 ### Bug fixes
 
-This release includes both important fixes – for example, related to
-authorization – as well as smaller fixes, mainly focused on visual and UI
-improvements.
+This release includes several bug fixes. We'd like to take this opportunity to
+thank our community members for their engagement and support. It really means
+a lot.
 
-Any feedback is highly appreciated. Please let us know your impressions,
-issues, and thoughts.
+### Technical note
 
-We wish you smooth installations and upgrades.
+When upgrading to version ``6.1.0``, we recommend updating both:
 
-Enjoy using Bacularis.
+ * the web interface host
+ * and the API host
 
- – The Bacularis Team
+This is required for the new search feature to work correctly.
+
+If your web interface and API are running within the same local Bacularis
+instance, or if you don't plan to use the search feature, this does not apply
+to you.
+
+We wish you smooth installations and upgrades, and a great time using Bacularis!
+
+ - The Bacularis Team
+
 
 ### Main changes
 
 **Bacularis Common**
 
- * Add breadcrumbs nav and page header styles
- * Extend call action function
+ * Add styles for search box
+ * Add helper for simple list filtering
+ * Add new margin for top page elements
+ * Update SELinux policy module for Fedora 44
+ * Update required phpstan version
+ * Replace deprecated rule in PHP-CS-Fixer configuration
+ * Fix update for file mtime clumping
+ * Fix comment in MySQL and MariaDB backup plugins
+ * Fix comment in PostgreSQL backup plugin
 
