@@ -2037,7 +2037,7 @@ class MSSQLDBBackup extends BacularisCommonPluginBase implements IBaculaBackupFi
 		$success = ($result['exitcode'] === 0);
 		if (!$success) {
 			$output = implode(PHP_EOL, $result['output']);
-			$emsg = "Error while running binary restore. Output: '{$output}' ExitCode: '{$result['exitcode']}'.";
+			$emsg = "Error while running local file restore. Output: '{$output}' ExitCode: '{$result['exitcode']}'.";
 			Plugins::log(Plugins::LOG_ERROR, $emsg);
 		}
 		$result = ['status' => $success, 'path' => $restore_path];
