@@ -100,7 +100,7 @@ class Plugins extends CommonModule
 		} elseif ($category == self::LOG_DEBUG) {
 			$msg_type = 'DEBUG';
 		}
-		$message = sprintf('[%s] %s', $msg_type, $msg);
+		$message = PHP_EOL . sprintf('[%s] %s', $msg_type, $msg);
 		if ($dest === self::LOG_DEST_STDOUT) {
 			fwrite(STDERR, $message);
 		} elseif ($dest === self::LOG_DEST_FILE) {
