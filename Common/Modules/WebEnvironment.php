@@ -59,7 +59,7 @@ class WebEnvironment
 			return false;
 		}
 		$pattern = '/:' . $_SERVER['SERVER_PORT'] . '$/';
-		if (preg_match($pattern,  $_SERVER['HTTP_HOST']) === 0) {
+		if (preg_match($pattern, $_SERVER['HTTP_HOST']) === 0) {
 			// Correct port is missing in HTTP Host - add it
 			$_SERVER['HTTP_HOST'] .= ':' . $_SERVER['SERVER_PORT'];
 			return true;
