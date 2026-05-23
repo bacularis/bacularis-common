@@ -78,7 +78,3 @@ class BException extends TException
 		);
 	}
 }
-
-class AuthException extends BException
-{
-}
