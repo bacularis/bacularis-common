@@ -20,6 +20,7 @@ use Prado\IO\TOutputWriter;
 use Prado\TApplication;
 use Prado\Shell\TShellWriter;
 use Bacularis\Common\Modules\BacularisCommonPluginBase;
+use Bacularis\Common\Modules\Logging;
 
 /**
  * Generic Bacularis shell application module.
@@ -49,6 +50,14 @@ abstract class BShellApplication extends TApplication
 	 * Stores command actions.
 	 */
 	protected $actions = [];
+
+	public function __construct(...$params)
+	{
+		parent::__construct(...$params);
+
+		// enable logging by default
+		Logging::$debug_enabled = true;
+	}
 
 	/**
 	 * Run application.

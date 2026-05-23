@@ -64,9 +64,9 @@ class Logging extends CommonModule
 		];
 	}
 
-	public static function log($category, $message)
+	public static function log($category, $message, $force = false)
 	{
-		if (self::$debug_enabled !== true && php_sapi_name() != 'cli') {
+		if (self::$debug_enabled !== true && $force === false) {
 			return;
 		}
 		$current_mode = Prado::getApplication()->getMode();
