@@ -62,13 +62,28 @@ class ConfigIni extends CommonModule implements IConfigFormat
 	 * @param string $source config file path
 	 * @return array config data
 	 */
-	public function read($source)
+	public function read($source): array
 	{
-		$content = parse_ini_file($source, true, INI_SCANNER_RAW);
-		if (!is_array($content)) {
-			$content = [];
+		$content = file_get_contents($source);
+		if (!is_string($content)) {
+			$content = '';
 		}
-		return $content;
+		return $this->parseConfig($content);
+	}
+
+	/**
+	 * Parse configuration file data.
+	 *
+	 * @param mixed $content raw configuration text
+	 * @return array parsed configuration
+	 */
+	protected function parseConfig(string $content): array
+	{
+		$config = parse_ini_string($content, true, INI_SCANNER_RAW);
+		if (!is_array($config)) {
+			$config = [];
+		}
+		return $config;
 	}
 
 	/**
