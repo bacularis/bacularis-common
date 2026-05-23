@@ -281,6 +281,9 @@ const oPluginForm = {
 		input.id = this.name_prefix + prop.name;
 		input.name = this.name_prefix + prop.name;
 		input.classList.add('w3-input', 'w3-border');
+		if (prop.placeholder) {
+			input.placeholder = prop.placeholder;
+		}
 		return input;
 	},
 	get_text_long_field: function(prop) {
