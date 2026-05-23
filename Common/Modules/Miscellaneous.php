@@ -336,6 +336,11 @@ class Miscellaneous extends TModule
 		return array_filter($name_list, fn ($item) => $this->isValidName($item));
 	}
 
+	public function isValidSimpleName($name)
+	{
+		return (preg_match('/^[\w.\-]{1,127}$/', $name) === 1);
+	}
+
 	public function isValidState($state)
 	{
 		return (preg_match('/^[\w\-]+$/', $state) === 1);
