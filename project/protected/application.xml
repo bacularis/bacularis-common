@@ -12,6 +12,7 @@
 		<module id="logging" class="Bacularis\Common\Modules\Logging" />
 		<module id="misc" class="Bacularis\Common\Modules\Miscellaneous" />
 		<module id="config_ini" class="Bacularis\Common\Modules\ConfigIni" />
+		<module id="config_nini" class="Bacularis\Common\Modules\ConfigNIni" />
 		<module id="config_section" class="Bacularis\Common\Modules\ConfigSection" />
 		<module id="expect" class="Bacularis\Common\Modules\BExpect" />
 		<module id="data_deps" class="Bacularis\Common\Modules\DataDependencies" />
@@ -61,6 +62,10 @@
 		<module id="mariadbbackup_plugin" class="Bacularis\Common\Plugins\MariaDBBackup" />
 		<module id="postgresqlbackup_plugin" class="Bacularis\Common\Plugins\PostgreSQLBackup" />
 		<module id="mssqldbbackup_plugin" class="Bacularis\Common\Plugins\MSSQLDBBackup" />
+		<module id="amazonec2backup_plugin" class="Bacularis\Common\Plugins\AmazonEC2Backup" />
+		<!-- API modules available in common -->
+		<module id="awscli" class="Bacularis\API\Modules\AWSCLI" />
+		<module id="aws_command" class="Bacularis\API\Modules\Cloud\Amazon\AWSCommand" />
 		<!-- web modules available in common -->
 		<module id="host_config" class="Bacularis\Web\Modules\HostConfig" />
 	</modules>
