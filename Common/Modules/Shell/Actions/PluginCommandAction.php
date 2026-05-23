@@ -38,6 +38,19 @@ class PluginCommandAction extends BShellAction
 	];
 	public $params = [];
 
+
+	/**
+	 * Run pre-run action.
+	 *
+	 * @param object $plugin plugin instance
+	 */
+	private function preRunAction(object $plugin): void
+	{
+		if (method_exists($plugin, 'initialize')) {
+			$plugin->initialize($this->params);
+		}
+	}
+
 	/**
 	 * List plugin commands action.
 	 *
@@ -59,6 +72,8 @@ class PluginCommandAction extends BShellAction
 	{
 		$plugins = $this->Application->getModule('plugins');
 		$plugin = $plugins->getPluginByName($this->params['plugin-name']);
+		$plugin->addDefaultParameterValues($this->params);
+		$this->preRunAction($plugin);
 		return $plugin->doBackup($this->params);
 	}
 
@@ -71,6 +86,7 @@ class PluginCommandAction extends BShellAction
 	{
 		$plugins = $this->Application->getModule('plugins');
 		$plugin = $plugins->getPluginByName($this->params['plugin-name']);
+		$plugin->addDefaultParameterValues($this->params);
 		$params = $this->params;
 		if (key_exists('where', $this->params) && strpos($this->params['where'], '#') === 0) {
 			// add config parameters on restore
@@ -79,6 +95,7 @@ class PluginCommandAction extends BShellAction
 			$params = array_merge($this->params, $config);
 			$params['where'] = '/'; // it means restore to original location (not local file restore)
 		}
+		$this->preRunAction($plugin);
 		return $plugin->doRestore($params);
 	}
 

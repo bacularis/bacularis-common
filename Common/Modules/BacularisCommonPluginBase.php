@@ -212,9 +212,10 @@ abstract class BacularisCommonPluginBase extends CommonModule
 	 *
 	 * @param array $args command arguments
 	 * @param array $category command category (general, backup, restore ...etc.)
+	 * @param bool $add_defaults add default parameter values
 	 * @return array filtered command parameters
 	 */
-	protected function filterParametersByCategory(array $args, array $category): array
+	protected function filterParametersByCategory(array $args, array $category, bool $add_defaults = true): array
 	{
 		$result = [
 			'plugin-name' => $args['plugin-name']
@@ -223,11 +224,16 @@ abstract class BacularisCommonPluginBase extends CommonModule
 		$params = $this->getParameters();
 		for ($i = 0; $i < count($params); $i++) {
 			if (!key_exists($params[$i]['name'], $args)) {
-				// argument does not exist, check if it has default value
-				if (!isset($params[$i]['default']) || in_array($params[$i]['default'], ['', false])) {
+				if ($add_defaults) {
+					$added = $this->addDefaultParameterValue($params[$i], $args);
+					if (!$added) {
+						// defaults used but added
+						continue;
+					}
+				} else {
+					// defaults not used, so skip this param
 					continue;
 				}
-				$args[$params[$i]['name']] = $params[$i]['default'];
 			}
 			if (key_exists('first', $params[$i]) && $params[$i]['first']) {
 				$first = $params[$i]['name'];
@@ -245,6 +251,27 @@ abstract class BacularisCommonPluginBase extends CommonModule
 			$result['debug'] = $args['debug'];
 		}
 		return $result;
+	}
+
+	public function addDefaultParameterValues(array &$args): void
+	{
+		$params = $this->getParameters();
+		for ($i = 0; $i < count($params); $i++) {
+			$this->addDefaultParameterValue($params[$i], $args);
+		}
+	}
+
+	public function addDefaultParameterValue($param, array &$args): bool
+	{
+		$added = false;
+		if (!key_exists($param['name'], $args)) {
+			// argument does not exist, check if it has default value
+			if (isset($param['default']) && !in_array($param['default'], ['', false])) {
+				$args[$param['name']] = $param['default'];
+				$added = true;
+			}
+		}
+		return $added;
 	}
 
 	/**
