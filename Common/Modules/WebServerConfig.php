@@ -356,29 +356,20 @@ ssl.pemfile = "' . $pem_file . '"
 	{
 		$ret = [];
 		if ($package_type == BinaryPackage::TYPE_RPM) {
-			if (static::binaryExists('systemctl', $cmd_params)) {
-				$ret = [
-					'systemctl',
-					'reload',
-					'httpd'
-				];
-			}
+			$ret = Systemd::getSystemCtlCommand(
+				['reload', 'httpd'],
+				$cmd_params
+			);
 		} elseif ($package_type == BinaryPackage::TYPE_DEB) {
-			if (static::binaryExists('systemctl', $cmd_params)) {
-				$ret = [
-					'systemctl',
-					'reload',
-					'apache2'
-				];
-			}
+			$ret = Systemd::getSystemCtlCommand(
+				['reload', 'apache2'],
+				$cmd_params
+			);
 		} elseif ($package_type == BinaryPackage::TYPE_APK) {
-			if (static::binaryExists('rc-service', $cmd_params)) {
-				$ret = [
-					'rc-service',
-					'apache2',
-					'reload'
-				];
-			}
+			$ret = OpenRC::getRCServiceCommand(
+				['apache2', 'reload'],
+				$cmd_params
+			);
 		}
 		if (count($ret) == 0 && static::binaryExists('apachectl', $cmd_params)) {
 			// Generic command, common for all supported system types
@@ -386,8 +377,8 @@ ssl.pemfile = "' . $pem_file . '"
 				'apachectl',
 				'graceful',
 			];
+			static::setCommandParameters($ret, $cmd_params);
 		}
-		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
 	}
 
@@ -402,21 +393,15 @@ ssl.pemfile = "' . $pem_file . '"
 	{
 		$ret = [];
 		if ($package_type == BinaryPackage::TYPE_RPM || $package_type == BinaryPackage::TYPE_DEB) {
-			if (static::binaryExists('systemctl', $cmd_params)) {
-				$ret = [
-					'systemctl',
-					'reload',
-					'nginx'
-				];
-			}
+			$ret = Systemd::getSystemCtlCommand(
+				['reload', 'nginx'],
+				$cmd_params
+			);
 		} elseif ($package_type == BinaryPackage::TYPE_APK) {
-			if (static::binaryExists('rc-service', $cmd_params)) {
-				$ret = [
-					'rc-service',
-					'nginx',
-					'reload'
-				];
-			}
+			$ret = OpenRC::getRCServiceCommand(
+				['nginx', 'reload'],
+				$cmd_params
+			);
 		}
 		if (count($ret) == 0 && static::binaryExists('nginx', $cmd_params)) {
 			// Generic command, common for all supported system types
@@ -425,8 +410,8 @@ ssl.pemfile = "' . $pem_file . '"
 				'-s',
 				'reload'
 			];
+			static::setCommandParameters($ret, $cmd_params);
 		}
-		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
 	}
 
@@ -441,23 +426,20 @@ ssl.pemfile = "' . $pem_file . '"
 	{
 		$ret = [];
 		if ($package_type == BinaryPackage::TYPE_RPM || $package_type == BinaryPackage::TYPE_DEB) {
-			$ret = [
-				'systemctl',
-				'restart',
-				'bacularis-lighttpd'
-			];
+			$ret = Systemd::getSystemCtlCommand(
+				['restart', 'bacularis-lighttpd'],
+				$cmd_params
+			);
 		} elseif ($package_type == BinaryPackage::TYPE_APK) {
 			/**
 			 * NOTE: This bacularis-lighttpd service does not exists on Alpine.
 			 * This service has to be prepared by user self until Bacularis starts providing it.
 			 */
-			$ret = [
-				'rc-service',
-				'bacularis-lighttpd',
-				'restart'
-			];
+			$ret = OpenRC::getRCServiceCommand(
+				['bacularis-lighttpd', 'restart'],
+				$cmd_params
+			);
 		}
-		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
 	}
 
@@ -487,7 +469,7 @@ ssl.pemfile = "' . $pem_file . '"
 				$cmd_params
 			);
 		}
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 
@@ -517,7 +499,7 @@ ssl.pemfile = "' . $pem_file . '"
 				$cmd_params
 			);
 		}
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 
@@ -549,7 +531,7 @@ ssl.pemfile = "' . $pem_file . '"
 				$cmd_params
 			);
 		}
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 
@@ -584,7 +566,7 @@ ssl.pemfile = "' . $pem_file . '"
 				$cmd_params
 			);
 		}
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 }
