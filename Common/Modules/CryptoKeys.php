@@ -50,7 +50,7 @@ class CryptoKeys extends ShellCommandModule
 	{
 		$mod = self::getKeyModule($key_type);
 		$cmd = $mod::getPreparePrivateKeyCommand($privkey_file, null, $cmd_params);
-		$ret = $this->execCommand($cmd, $cmd_params);
+		$ret = static::execCommand($cmd, $cmd_params);
 		$state = ($ret['error'] == 0);
 		if (!$state) {
 			// Error while creating key
@@ -70,14 +70,14 @@ class CryptoKeys extends ShellCommandModule
 	 *
 	 * @param string $key_type key type (rsa, ecdsa...)
 	 * @param string $privkey_file private key file path
-	 * @param string $cmd_params key command parameters
+	 * @param array $cmd_params key command parameters
 	 * @return string command result with public key in output
 	 */
 	public function getPublicKey(string $key_type, string $privkey_file, array $cmd_params): array
 	{
 		$mod = self::getKeyModule($key_type);
 		$cmd = $mod::getPreparePublicKeyCommand($privkey_file, '', $cmd_params);
-		$ret = $this->execCommand($cmd, $cmd_params);
+		$ret = static::execCommand($cmd, $cmd_params);
 		$state = ($ret['error'] == 0);
 		if (!$state) {
 			// Error while creating key
@@ -187,7 +187,7 @@ class CryptoKeys extends ShellCommandModule
 	 *
 	 * @param string $key_type key type (rsa, ecdsa...)
 	 * @param string $privkey_file private key file path
-	 * @param string $cmd_params key command parameters
+	 * @param array $cmd_params key command parameters
 	 * @return array command result with JWK thumbprint in output
 	 */
 	public function getJWKThumbprint(string $key_type, string $privkey_file, array $cmd_params): array
@@ -214,7 +214,7 @@ class CryptoKeys extends ShellCommandModule
 
 		$mod = self::getKeyModule($key_type);
 		$cmd = $mod::getPrepareJWKThumbprintCommand($pubkey_json, $cmd_params);
-		$ret = $this->execCommand($cmd, $cmd_params);
+		$ret = static::execCommand($cmd, $cmd_params);
 		$state = ($ret['error'] == 0);
 		if (!$state) {
 			// Error
@@ -259,14 +259,14 @@ class CryptoKeys extends ShellCommandModule
 	 *
 	 * @param string $key_type key type (rsa, ecdsa...)
 	 * @param string $pubkey public key
-	 * @param string $cmd_params key command parameters
+	 * @param array $cmd_params key command parameters
 	 * @return array command output with JWK public key in output
 	 */
 	public function getPublicKeyJWKFormat(string $key_type, string $pubkey, array $cmd_params): array
 	{
 		$mod = self::getKeyModule($key_type);
 		$cmd = $mod::getPreparePublicKeyModulusExponentCommand($pubkey, $cmd_params);
-		$ret = $this->execCommand($cmd, $cmd_params);
+		$ret = static::execCommand($cmd, $cmd_params);
 		$state = ($ret['error'] == 0);
 		if (!$state) {
 			// Error while creating key

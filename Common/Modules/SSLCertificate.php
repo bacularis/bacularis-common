@@ -60,8 +60,8 @@ class SSLCertificate extends ShellCommandModule
 	 * Get command to prepare SSL certificate for web server HTTPS connections.
 	 * This command uses the OpenSSL binary.
 	 *
-	 * @param string $params certificate parameters
-	 * @param string $cmd_params command parameters (use_sudo, user, password...)
+	 * @param array $params certificate parameters
+	 * @param array $cmd_params command parameters (use_sudo, user, password...)
 	 * @return array command to prepare certificate
 	 */
 	public static function getPrepareHTTPSCertCommand(array $params, array $cmd_params): array
@@ -116,8 +116,8 @@ class SSLCertificate extends ShellCommandModule
 	 * Get command to prepare CSR (Certificate Signing Request).
 	 * This command uses the OpenSSL binary.
 	 *
-	 * @param string $params certificate parameters
-	 * @param string $cmd_params command parameters (use_sudo, user, password...)
+	 * @param array $params certificate parameters
+	 * @param array $cmd_params command parameters (use_sudo, user, password...)
 	 * @return array command to prepare certificate
 	 */
 	public static function getPrepareCSRCommand(array $params, array $cmd_params = []): array
@@ -165,7 +165,7 @@ class SSLCertificate extends ShellCommandModule
 	 * Get command to create SSL certificate.
 	 *
 	 * @param string $certificate certificate in PEM form
-	 * @param string $cmd_params certificate parameters
+	 * @param array $cmd_params certificate parameters
 	 * @return array command to prepare certificate
 	 */
 	public static function getCreateHTTPSCertCommand(string $certificate, array $cmd_params): array
@@ -186,7 +186,7 @@ class SSLCertificate extends ShellCommandModule
 	/**
 	 * Get command to remove SSL certificate and key.
 	 *
-	 * @param string $cmd_params command parameters
+	 * @param array $cmd_params command parameters
 	 * @return array command to prepare certificate
 	 */
 	public static function getRemoveHTTPSCertKeyCommand(array $cmd_params): array
@@ -213,7 +213,7 @@ class SSLCertificate extends ShellCommandModule
 	/**
 	 * Get command to do backup SSL certificate and key.
 	 *
-	 * @param string $cmd_params command parameters
+	 * @param array $cmd_params command parameters
 	 * @return array command to prepare certificate
 	 */
 	public static function getBackupHTTPSCertKeyCommand(array $cmd_params): array
@@ -252,7 +252,7 @@ class SSLCertificate extends ShellCommandModule
 	/**
 	 * Get command to do restore SSL certificate and key.
 	 *
-	 * @param string $cmd_params command parameters
+	 * @param array $cmd_params command parameters
 	 * @return array command to prepare certificate
 	 */
 	public static function getRestoreHTTPSCertKeyCommand(array $cmd_params): array
@@ -509,7 +509,7 @@ class SSLCertificate extends ShellCommandModule
 		];
 
 		$cmd = self::getPrepareCSRCommand($csr_params, $cmd_params);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		$state = ($result['error'] == 0);
 		if (!$state) {
 			$output = implode(PHP_EOL, $result['output']);
@@ -686,7 +686,7 @@ class SSLCertificate extends ShellCommandModule
 	public function createCertFile(string $cert, array $cmd_params)
 	{
 		$cmd = self::getCreateHTTPSCertCommand($cert, $cmd_params);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 
@@ -700,7 +700,7 @@ class SSLCertificate extends ShellCommandModule
 	public function createCertKeyPemFile(array $cmd_params): array
 	{
 		$cmd = self::getPrepareHTTPSPemCommand($cmd_params);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 
@@ -714,7 +714,7 @@ class SSLCertificate extends ShellCommandModule
 	public function removeCertKeyPemFile(array $cmd_params): array
 	{
 		$cmd = self::getRemoveHTTPSPemCommand($cmd_params);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 
@@ -727,7 +727,7 @@ class SSLCertificate extends ShellCommandModule
 	public function removeCertAndKeyFiles(array $cmd_params): array
 	{
 		$cmd = self::getRemoveHTTPSCertKeyCommand($cmd_params);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 
@@ -740,7 +740,7 @@ class SSLCertificate extends ShellCommandModule
 	public function backupCertAndKeyFiles(array $cmd_params): array
 	{
 		$cmd = self::getBackupHTTPSCertKeyCommand($cmd_params);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 
@@ -753,7 +753,7 @@ class SSLCertificate extends ShellCommandModule
 	public function restoreCertAndKeyFiles(array $cmd_params): array
 	{
 		$cmd = self::getRestoreHTTPSCertKeyCommand($cmd_params);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		return $result;
 	}
 

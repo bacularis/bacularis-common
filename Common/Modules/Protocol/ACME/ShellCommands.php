@@ -100,7 +100,7 @@ class ShellCommands extends ShellCommandModule
 	{
 		$path = self::getChallengeHttp01Path();
 		$cmd = self::getCreateChallengeHttp01Dir($path, $cmd_params);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		$state = ($result['error'] == 0);
 		if (!$state) {
 			$output = implode(PHP_EOL, $result['output']);
@@ -129,7 +129,7 @@ class ShellCommands extends ShellCommandModule
 			$file,
 			$cmd_params
 		);
-		$result = $this->execCommand($cmd, $cmd_params);
+		$result = static::execCommand($cmd, $cmd_params);
 		$state = ($result['error'] == 0);
 		if (!$state) {
 			$output = implode(PHP_EOL, $result['output']);

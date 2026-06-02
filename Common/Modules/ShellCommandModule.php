@@ -164,7 +164,7 @@ class ShellCommandModule extends CommonModule
 	 * @param array $cmd_params command parameters
 	 * @return array command result details
 	 */
-	protected function execCommand(array $cmd, array $cmd_params): array
+	protected static function execCommand(array $cmd, array $cmd_params): array
 	{
 		$user = $cmd_params['user'] ?? '';
 		$password = $cmd_params['password'] ?? '';
@@ -174,7 +174,7 @@ class ShellCommandModule extends CommonModule
 			'command' => implode(' ', $cmd),
 			'use_sudo' => $use_sudo
 		];
-		$su = $this->getModule('su');
+		$su = Prado::getApplication()->getModule('su');
 		$result = $su->execCommand(
 			$user,
 			$password,
@@ -184,6 +184,18 @@ class ShellCommandModule extends CommonModule
 	}
 
 	protected static function getOutput(array $out): string
+	{
+		$output = self::stripOutput($out);
+		return implode(PHP_EOL, $output);
+	}
+
+	/**
+	 * Strip output from not needed lines.
+	 *
+	 * @param array $out full output
+	 * @param array stripped output
+	 */
+	protected static function stripOutput(array $out): array
 	{
 		$output = [];
 		for ($i = 0; $i < count($out); $i++) {
@@ -196,6 +208,6 @@ class ShellCommandModule extends CommonModule
 			}
 			$output[] = $line;
 		}
-		return implode(PHP_EOL, $output);
+		return $output;
 	}
 }
