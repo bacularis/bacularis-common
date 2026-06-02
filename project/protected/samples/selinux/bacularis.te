@@ -1,4 +1,4 @@
-module bacularis 1.0.15;
+module bacularis 1.0.16;
 
 require {
 	attribute can_change_process_identity;
@@ -211,7 +211,7 @@ allow httpd_t tape_device_t:chr_file read;
 allow httpd_t transproxy_port_t:tcp_socket name_connect;
 allow httpd_t unreserved_port_t:tcp_socket { name_connect name_bind };
 allow httpd_t user_home_t:file { read open };
-allow httpd_t user_tmp_t:dir create;
+allow httpd_t user_tmp_t:dir { create watch };
 allow httpd_t user_tmp_t:file { execute execute_no_trans open };
 allow httpd_t usr_t:dir { add_name create relabelfrom relabelto remove_name setattr write rmdir };
 allow httpd_t usr_t:file { write create relabelfrom relabelto rename setattr unlink };
