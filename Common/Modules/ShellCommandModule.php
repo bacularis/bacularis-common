@@ -30,7 +30,7 @@ class ShellCommandModule extends CommonModule
 	 *
 	 * @var string
 	 */
-	private const SUDO = 'sudo -S';
+	private const SUDO = 'sudo -S -k';
 
 	/**
 	 * Set common command parameters.
