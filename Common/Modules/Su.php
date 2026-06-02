@@ -37,8 +37,11 @@ class Su extends CommonModule
 
 	/**
 	 * SU command patterns.
+	 *
+	 * Form:
+	 * %env_params %cmd %user_param %other_parameters
 	 */
-	private const SU_COMMAND_PATTERN = "%s %s %s";
+	private const SU_COMMAND_PATTERN = "%s %s %s %s";
 
 	/**
 	 * SU command timeout in seconds.
@@ -123,8 +126,22 @@ class Su extends CommonModule
 			$cuser = " -l \"{$user}\"";
 		}
 
+		/**
+		 * Set TERM=dumb before running 'su'.
+		 *
+		 * Newer Fedora/systemd releases load OSC 3008 (Operating System Command)
+		 * shell integration from /etc/profile.d/80-systemd-osc-context.sh.
+		 * When executed through Expect's pseudo-terminal, these OSC sequences are
+		 * emitted together with command output and can interfere with parsing.
+		 *
+		 * Setting TERM=dumb disables OSC 3008 initialization while preserving the
+		 * normal login environment provided by 'su -l'.
+		 */
+		$env_vars = 'env TERM=dumb';
+
 		$cmd = sprintf(
 			$cp_cmd,
+			$env_vars,
 			self::CMD,
 			$cuser,
 			$options
