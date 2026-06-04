@@ -31,7 +31,7 @@ class Reload extends CommonModule
 	 */
 	public static function refresh(): void
 	{
-		$app  = Prado::getApplication();
+		$app = Prado::getApplication();
 		$page_uri = $app->getRequest()->getRequestUri();
 		Redirection::redirect($page_uri);
 	}
