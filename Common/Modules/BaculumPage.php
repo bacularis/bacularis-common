@@ -29,6 +29,7 @@
 
 namespace Bacularis\Common\Modules;
 
+use Bacularis\Common\Modules\Protocol\HTTP\Redirection;
 use Prado\Web\UI\TPage;
 
 /**
@@ -82,12 +83,7 @@ class BaculumPage extends TPage
 		if (is_string($fragment)) {
 			$url .= '#' . $fragment;
 		}
-		header('Location: ' . $url);
-		$log = $this->getModule('log');
-		if ($log) {
-			$log->collectLogs(null);
-		}
-		exit();
+		Redirection::redirect($url);
 	}
 
 	/**

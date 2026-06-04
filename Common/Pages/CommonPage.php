@@ -28,6 +28,7 @@
  */
 
 use Bacularis\Common\Modules\BaculumPage;
+use Bacularis\Common\Modules\Protocol\HTTP\Redirection;
 
 /**
  * Common page class.
@@ -47,9 +48,9 @@ class CommonPage extends BaculumPage
 		$path_info = $this->Request->getPathInfo();
 		if (empty($path_info) || $path_info == '/') {
 			if ($first_run) {
-				$this->Response->redirect('/panel/config');
+				Redirection::redirect('/panel/config');
 			} else {
-				$this->Response->redirect('/web');
+				Redirection::redirect('/web');
 			}
 		}
 	}
