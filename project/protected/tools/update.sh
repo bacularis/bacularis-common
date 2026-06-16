@@ -15,7 +15,7 @@
 ####
 
 # Paths
-PROJDIR="`readlink -f $(dirname ${0})/../..`"
+PROJDIR="`readlink -f $(dirname ${0})/../../../../../../..`"
 
 # Vendor directory
 VENDIR="protected/vendor"
@@ -28,6 +28,12 @@ PROT_DIRS=(
 	"${VENDIR}/bacularis/bacularis-api/API/"{Logs,Config}
 	"${VENDIR}/bacularis/bacularis-web/Web/"{Logs,Config}
 	"${VENDIR}/bacularis/bacularis-common/Common/Working"
+)
+
+# Files/dirs to copy recurively
+COPY_FILES_RS=(
+	"protected/vendor/bacularis/bacularis-common/project/.|./"
+	"protected/vendor/npm-asset/fontsource--inter/files/inter-latin-*.woff2|htdocs/themes/Baculum-v2/fonts/webfonts/"
 )
 
 # Do config and log files backup.
@@ -82,6 +88,24 @@ function privileges_info()
 	fi
 }
 
+# Prepare required project files
+function set_up_project()
+{
+	# Copy multiple-files recursively
+	for ((i = 0; i < ${#COPY_FILES_RS[@]}; i++)); do
+		src="`echo ${COPY_FILES_RS[$i]} | awk -F '|' '{print $1}'`"
+		dest="`echo ${COPY_FILES_RS[$i]} | awk -F '|' '{print $2}'`"
+		if [ -d $dest ]
+		then
+			if ! \cp -rf "$src" "$dest"
+			then
+				echo "ERROR: Problem while recursive copying $src to $dest"
+				exit 1
+			fi
+		fi
+	done
+}
+
 function usage() {
 	echo "$0 (backup|restore):
 		backup			Web and API configuration backup
@@ -103,6 +127,7 @@ then
 elif [ "$1" == "restore" ]
 then
 	restore_files
+	set_up_project
 	privileges_info
 else
 	usage
