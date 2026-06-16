@@ -33,7 +33,7 @@ PROT_DIRS=(
 # Files/dirs to copy recurively
 COPY_FILES_RS=(
 	"protected/vendor/bacularis/bacularis-common/project/.|./"
-	"protected/vendor/npm-asset/fontsource--inter/files/inter-latin-*.woff2|htdocs/themes/Baculum-v2/fonts/webfonts/"
+	"protected/vendor/npm-asset/fontsource--inter/files/.|htdocs/themes/Baculum-v2/fonts/webfonts/"
 )
 
 # Do config and log files backup.
