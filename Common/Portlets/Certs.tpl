@@ -65,7 +65,7 @@
 			</div> &nbsp;<i class="fa fa-asterisk w3-text-red w3-margin-left opt_req"></i>
 		</div>
 		<div id="install_lets_encrypt_cert" rel="cert_opts" style="display: none">
-			<div id="install_lets_encrypt_cert_port_info" class="w3-panel w3-blue w3-padding w3-twothird" style="display: none; float: none;">
+			<div id="install_lets_encrypt_cert_port_info" class="w3-panel w3-success w3-padding w3-twothird" style="display: none; float: none;">
 				<h3 style="margin: 3px auto;"><%[ Information ]%></h3>
 				<p style="margin: 5px auto;"><%[ This certificate type can be useful if you are going to share Bacularis outside your local network. ]%></p>
 				<p style="margin: 5px auto;"><%[ To prepare this certificate type, there is required to have Bacularis available on publicly open TCP port 80. This is necessary to perform by the certificate provider a validation that proves your control over the domain name. This it called the HTTP-01 challenge. ]%></p>
@@ -502,8 +502,8 @@ const oCerts = {
 			msg = msg.replace('%state', '<%[ Expired ]%>');
 		} else {
 			// certificate valid for long time - OK
-			state.classList.add('w3-text-green');
-			img.classList.add('fa-solid', 'fa-check-square', 'w3-text-green');
+			state.classList.add('w3-text-success');
+			img.classList.add('fa-solid', 'fa-check-square', 'w3-text-success');
 			msg = msg.replace('%state', '<%[ OK ]%>');
 		}
 		msg = msg.replace('%time', validity_val);

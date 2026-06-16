@@ -176,7 +176,7 @@ function <%=$this->ClientID%>set_preview(id, mode) {
 		preview.className = 'w3-text-yellow bold';
 		preview.textContent = '<%[ read only ]%>';
 	} else if (mode == 'rw') {
-		preview.className = 'w3-text-green bold';
+		preview.className = 'w3-text-success bold';
 		preview.textContent = '<%[ read write ]%>';
 	} else if (mode == 'no') {
 		preview.className = 'w3-text-red bold';

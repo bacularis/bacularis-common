@@ -1,31 +1,33 @@
 body {
-	--text-color: black;
-	--bkg-color: #f1f1f1;
+	--text-color: #0f172a;
+	--bkg-color: #f8fafc;
 	--color-strong: white;
-	--color-main: #4caf50;
+	--color-main: #0c84e3;
 	--anchor-color: black;
+	--color-success: #4CAF50;
 	--color-error: #f44336;
 	--color-warning: #ffffcc;
 	--bkg-color-menu: white;
 	--bkg-color-modal: white;
-	--text-color-table-head: white;
-	--bkg-color-table-head: #4c4b4b;
+	--text-color-table-head: #0f172a;
+	--bkg-color-table-head: #f0f7ff;
 	--bkg-color-table-row-odd: white;
-	--bkg-color-table-row-even: #f1f1f1;
-	--bkg-color-table-row-hover: #ffcf9e;
-	--bkg-color-table-row-selected: #f5a55b;
+	--bkg-color-table-row-even: #fafcfd;
+	--bkg-color-table-row-hover: #f1f5f9;
+	--bkg-color-table-row-selected: #b3cbe3;
 	--text-color-table-row-selected: black;
 	--text-color-button-main: white;
-	--bkg-color-button-main: #4caf50;
-	--text-color-button-selected: black;
-	--bkg-color-button-selected: #9e9e9e;
+	--bkg-color-button-main: #0c84e3;
+	--text-color-button-selected: #0c84e3;
+	--bkg-color-button-selected: #e7f0ff;
 	--text-color-button-hover: black;
 	--bkg-color-button-hover: #cccccc;
-	--bkg-color-dt-button: #e9e9e9;
-	--bkg-image-dt-button: linear-gradient(to bottom, white 0%, #e9e9e9 100%);
-	--text-color-dt-button: black;
-	--bkg-color-light-green: #8bc34a;
-	--bkg-color-tab-hover: #e7e7e7;
+	--bkg-color-dt-button: white;
+	--bkg-image-dt-button: none;
+	--text-color-dt-button: #0f172a;
+	--bkg-color-light-green: #e7f0ff;
+	--bkg-color-tab-hover: #e7f0ff;
+	--border-color: #d2d4d9;
 	color-scheme: light;
 }
 
@@ -35,6 +37,7 @@ body.dark-theme {
 	--color-strong: #0e0e0e;
 	--color-main: #364a89;
 	--anchor-color: #e5e5e5;
+	--color-success: #4CAF50;
 	--color-error: #d33a2f;
 	--color-warning: #0e0e0e;
 	--bkg-color-menu: #0e0e0e;
@@ -53,11 +56,58 @@ body.dark-theme {
 	--bkg-color-tab-hover: #606060;
 	--text-color-button-main: white;
 	--bkg-color-button-main: #364a89;
-	--text-color-button-selected: black;
-	--bkg-color-button-selected: #9e9e9e;
+	--text-color-button-selected: #2d53cb;
+	--bkg-color-button-selected: #cccccc;
 	--text-color-button-hover: black;
 	--bkg-color-button-hover: #cccccc;
+	--border-color: #424242;
 	color-scheme: dark;
+}
+
+/**
+ * For tables with many columns that are wider than page width,
+ * position fixed worked incorrectly in Chrome browser. This caused
+ * probelms with elements with fixed position (such as button to switch
+ * sidebar menu. This overflow-x set to hidden fixes it.
+ */
+html, body {
+    overflow-x: hidden;
+}
+
+/* Inter Regular */
+@font-face {
+    font-family: 'Inter';
+    src: url('../../themes/Baculum-v2/fonts/webfonts/inter-latin-400-normal.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Inter Medium */
+@font-face {
+    font-family: 'Inter';
+    src: url('../../themes/Baculum-v2/fonts/webfonts/inter-latin-500-normal.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Inter SemiBold */
+@font-face {
+    font-family: 'Inter';
+    src: url('../../themes/Baculum-v2/fonts/webfonts/inter-latin-600-normal.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Inter Bold */
+@font-face {
+    font-family: 'Inter';
+    src: url('../../themes/Baculum-v2/fonts/webfonts/inter-latin-700-normal.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
 }
 
 body {
@@ -83,9 +133,57 @@ a {
 	--dt-row-stripe-alpha: 0 !important;
 }
 
-#page_main > header {
+#page_main {
+	margin-left: 250px;
+	width: auto;
+	margin-top: 0;
+}
+
+@media (max-width: 610px) {
+	#page_main {
+		width: 100%;
+	}
+}
+
+#page_main > div > header {
 	display: inline-block;
 	margin-top: 8px;
+}
+
+@media only screen and (max-width: 600px) {
+	#menu_open_btn {
+		position: fixed;
+		background-color: var(--bkg-color);
+		top: 0;
+		z-index: 10;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	#bd_container, #top_bar_items > div:nth-of-type(2) {
+		margin-left: 46px;
+	}
+}
+
+
+#top_bar_items > div:nth-of-type(1) {
+	display: flex;
+	justify-content: start;
+	align-items: center;
+	flex-wrap: wrap;
+}
+#top_bar_items > div:nth-of-type(2) {
+	display: flex;
+	justify-content: end;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+#top_bar_items {
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	margin-bottom: 4px;
 }
 
 #sidebar {
@@ -98,19 +196,36 @@ a {
 	background-color: var(--bkg-color-modal);
 }
 
-#jobs_summary_graph, #jobs_bytes_files_graph {
-	height: 310px;
-	max-width: 800px;
+#jobs_summary_graph {
+	height: 240px;
+	width: 65%;
 	z-index: 0;
 	cursor: pointer;
 }
 
+#jobs_summary_legend {
+	height: 100%;
+	width: 35%;
+	position: absolute;
+	z-index: 2;
+	left: auto;
+	bottom: auto;
+	top: 35%;
+	right: 0;
+}
+
 #jobs_bytes_files_graph {
+	max-width: 800px;
 	height: 250px;
+	z-index: 0;
+	cursor: pointer;
 }
 
 html, body {
 	font-family: "Liberation Sans", Arial, Helvetica, sans-serif !important;
+	font-family: Inter, sans-serif !important;
+	font-size: 14px;
+	font-weight: 400;
 }
 
 .monospace {
@@ -169,6 +284,26 @@ a.w3-button:active, button.w3-button:active {
 	background-color: var(--bkg-color-button-selected) !important;
 }
 
+.w3-bar-item {
+	transition:
+		background-color .2s ease,
+		color .2s ease !important;
+}
+
+.w3-bar-item:hover {
+	background-color: var(--bkg-color-table-row-hover) !important;
+}
+
+.w3-bar-block .w3-bar-item {
+	width: 90%;
+	margin: 1px auto;
+	border-radius: 6px;
+}
+
+.w3-sidebar {
+	border: 1px solid var(--border-color) !important;
+}
+
 .margin-top-small {
 	margin-top: 10px !important;
 }
@@ -176,9 +311,13 @@ a.w3-button:active, button.w3-button:active {
 table.dataTable {
 	font-size: 14px;
 	line-height: 1.2;
-	border: 1px solid #c1c1c1;
+	border-radius: 12px;
+	border-collapse: separate;
+	border-spacing: 0;
+	overflow: hidden;
+	background-color: var(--color-strong);
+	border: 1px solid var(--border-color) !important;
 }
-
 
 table.dataTable tbody tr:nth-child(odd),  .w3-striped tbody tr:nth-child(odd) {
 	background-color: var(--bkg-color-table-row-odd);
@@ -192,29 +331,33 @@ table.dataTable button.w3-button, table.dataTable a.w3-button {
 	font-size: 10px;
 }
 
-table.dataTable tfoot th, table.dataTable tfoot td {
-	border-top: 1px solid #c1c1c1;
+table.dataTable.row-border>tbody>tr>*, table.dataTable.display>tbody>tr>* {
+	border-color: var(--border-color) !important;
 }
 
-table.dataTable thead th, table.dataTable thead td {
-	border-bottom: 1px solid #c1c1c1;
-}
-
-table.dataTable thead tr {
+table.dataTable>thead>tr>th, table.dataTable>thead>tr>td, div.dtfh-floatingparent table {
 	background-color: var(--bkg-color-table-head);
 	color: var(--text-color-table-head);
+	border-color: var(--border-color) !important;
+	font-weight: bold;
 }
 
-th, table.dataTable thead td {
+div.dtfh-floatingparent table {
+	border-radius: 0;
+}
+
+div.dt-container.dt-empty-footer tbody>tr:last-child>* {
 	border-bottom: none !important;
 }
 
-table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
-	padding: 10px 18px;
+table.dataTable tbody tr {
+	transition: background-color .15s ease !important;
 }
 
-table.dataTable.row-border > tbody > tr > *, table.dataTable.display > tbody > tr > * {
-	border: none !important;
+table.dataTable > thead > tr > th, table.dataTable > thead > tr > td {
+	padding: 12px 16px;
+	font-weight: 600;
+	white-space: nowrap;
 }
 
 table.dataTable tbody td {
@@ -225,8 +368,16 @@ table.dataTable tbody td.dtr-control:before {
 	border: 0 !important;
 }
 
+table.dataTable tbody td.child li.dtr-control-custom {
+	display: none !important;
+}
+
+table.dataTable thead th.dtr-control-custom, table.dataTable tbody td.dtr-control-custom, table.dataTable tfoot th.dtr-control-custom {
+	display: none;
+}
+
 table.dataTable.no-footer {
-	border-bottom: 1px solid #c1c1c1;
+	border-radius: 4px;
 }
 
 .dt-paging .dt-paging-button {
@@ -301,7 +452,7 @@ table.dataTable > tbody > tr > th, table.dataTable > tbody > tr > td {
 }
 
 table.list_full tbody th, table.list_full tbody td {
-	padding: 8px 7px !important;
+	padding: 10px 7px 7px 7px !important;
 	height: 36px;
 }
 
@@ -439,6 +590,7 @@ img.reset_btn, img.remove_btn {
 }
 
 .step.w3-light-green {
+	color: var(--text-color) !important;
 	background-color: var(--bkg-color-light-green) !important;
 }
 
@@ -540,7 +692,7 @@ div.details_card {
 }
 @media screen and (min-width: 621px) {
 	div.details_card {
-		width: 270px;
+		width: 275px;
 	}
 }
 
@@ -703,10 +855,13 @@ table.status_table td, table.status_table td i {
 
 .progressbar-label {
 	position: absolute;
+	width: 100%;
 	left: 50%;
-	transform: translateX(-50%);
-	top: 4px;
+	top: 50%;
+	transform: translate(-50%, -50%);
 	font-weight: bold;
+	color: var(--text-color-button-main);
+	text-shadow: -1px 0 var(--color-main), 0 1px var(--color-main), 1px 0 var(--color-main), 0 -1px var(--color-main);
 }
 
 .smallbox {
@@ -751,20 +906,29 @@ table.component td:nth-of-type(1) {
 }
 
 .usage_box {
-	height: 79px;
-	-webkit-transition: height 0.3s; /* For Safari 3.1 to 6.0 */
-	transition: height 0.3s;
-	border-radius: 5px;
+	height: 126px;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.usage_box:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.05);
+}
+
+.usage_box .w3-small {
+	margin: 6px 0 4px 0;
 }
 
 @media (max-width:600px) {
 	.usage_box {
-		border-radius: 0;
+		margin-bottom: 8px;
 	}
 }
 
-.usage_box:hover {
-	height: 140px;
+@media (min-width: 610px) and (max-width:1360px) {
+	.usage_box > div.w3-text {
+		display: none;
+	}
 }
 
 .usage_box h5 {
@@ -844,7 +1008,7 @@ table.component td:nth-of-type(1) {
 
 .status_header {
 	cursor: pointer;
-	border: 1px solid #dddddd;
+	border: 1px solid var(--border-color);
 }
 
 .status_header:hover {
@@ -903,17 +1067,6 @@ img.job_weather_icon {
 	height: 32px;
 	width: 32px;
 	cursor: help;
-}
-
-/* API server OAuth2 progress bar */
-
-#progress_label {
-	position: absolute;
-	width: 100%;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	font-weight: bold;
 }
 
 /* STATUS type classes */
@@ -1031,7 +1184,7 @@ input:checked + .slider:before {
 }
 
 .w3-modal {
-	z-index: 4 !important;
+	z-index: 6 !important;
 }
 
 .w3-modal-content {
@@ -1040,6 +1193,9 @@ input:checked + .slider:before {
 
 .w3-card {
 	background-color: var(--color-strong);
+	border: 1px solid var(--border-color) !important;
+	border-radius: 12px;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
 }
 
 .w3-code {
@@ -1047,8 +1203,26 @@ input:checked + .slider:before {
 	background-color: var(--color-strong);
 }
 
-.w3-green, .w3-blue {
+.w3-border {
+	border: 1px solid var(--border-color) !important;
+}
+
+.w3-green {
 	background-color: var(--color-main) !important;
+}
+
+.w3-blue {
+	background-color: var(--bkg-color-button-selected) !important;
+	color: var(--text-color-button-selected) !important;
+}
+
+.w3-success {
+	background-color: var(--color-success) !important;
+	color: var(--color-strong) !important;
+}
+
+.w3-text-success {
+	color: var(--color-success) !important;
 }
 
 .w3-text-green:not(.fa-check-square) {
@@ -1061,6 +1235,10 @@ input:checked + .slider:before {
 
 .w3-text-red {
 	color: var(--color-error) !important;
+}
+
+.w3-border-red {
+	border-color: var(--color-main) !important;
 }
 
 .w3-select {
@@ -1320,7 +1498,7 @@ div.item_picker div[rel="list"] div.w3-row:hover {
 
 /** START Generic overlay (ex: for guided tour). **/
 .boverlay {
-    z-index: 3;
+    z-index: 4;
     display: none;
     padding-top: 100px;
     position: fixed;
@@ -1345,7 +1523,7 @@ div.opentip-container.style-guide_tour div.ot-header h1 {
 }
 
 div.opentip-container.style-guide_tour div.ot-content {
-	padding: 5px 10px 5px 5px;
+	padding: 5px 20px 5px 5px;
 	font-size: 13px;
 	line-height: 18px;
 }
@@ -1450,7 +1628,7 @@ div.opentip-container.style-guide_tour div.ot-content {
 }
 
 #crumbs_action_list li:hover {
-	background-color: var(--bkg-color-dt-button);
+	background-color: var(--bkg-color-light-green);
 	border-radius: 6px;
 }
 
@@ -1636,18 +1814,18 @@ div.opentip-container.style-guide_tour div.ot-content {
 	text-decoration: none;
 }
 
-#bsearch_results > ul > li:hover {
+#bsearch_results > ul > li:hover, #bsearch_results > ul > li .w3-bar-item:hover {
 	cursor: pointer;
-	color: var(--text-color-button-hover);
-	background-color: var(--bkg-color-button-hover);
+	color: var(--text-color) !important;
+	background-color: var(--bkg-color-tab-hover) !important;
 }
 
 #bsearch_results > ul > li:hover a {
-	color: var(--text-color-button-hover) !important;
+	color: var(--text-color) !important;
 }
 
 #bsearch_results > ul > li:first-child:hover {
-	border-top-left-radius: 1.5em;
+border-top-left-radius: 1.5em;
 	border-top-right-radius: 1.5em;
 }
 #bsearch_results > ul > li:last-child:hover {
@@ -1668,3 +1846,23 @@ div.opentip-container.style-guide_tour div.ot-content {
 	justify-content: center;
 }
 /** END Search field **/
+
+/**
+ * START OVERWRITE
+ * Overwrite sort characters in table headers because in the original
+ * usage from datatables it becomes broken (ex: â–² instead of ▲).
+ */
+table.dataTable thead > tr > th.dt-orderable-asc .dt-column-order:before,
+table.dataTable thead > tr > th.dt-ordering-asc .dt-column-order:before,
+table.dataTable thead > tr > td.dt-orderable-asc .dt-column-order:before,
+table.dataTable thead > tr > td.dt-ordering-asc .dt-column-order:before {
+    content: "\25B2";
+}
+
+table.dataTable thead > tr > th.dt-orderable-desc .dt-column-order:after,
+table.dataTable thead > tr > th.dt-ordering-desc .dt-column-order:after,
+table.dataTable thead > tr > td.dt-orderable-desc .dt-column-order:after,
+table.dataTable thead > tr > td.dt-ordering-desc .dt-column-order:after {
+    content: "\25BC";
+}
+/* END OVERWRITE */

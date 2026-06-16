@@ -238,28 +238,28 @@
 					</td>
 					<td valign="middle">
 						<com:TActiveLabel ID="APITestLoader" Display="None"><i class="fa fa-sync w3-spin"></i></com:TActiveLabel>
-						<com:TActiveLabel ID="APITestResultOk" Display="None" CssClass="w3-text-green" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<%[ OK ]%></com:TActiveLabel>
+						<com:TActiveLabel ID="APITestResultOk" Display="None" CssClass="w3-text-success" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<%[ OK ]%></com:TActiveLabel>
 						<com:TActiveLabel ID="APITestResultErr" Display="None" CssClass="w3-text-red" EnableViewState="false"><i class="fa fa-times"></i> &nbsp;<%[ Connection error ]%></com:TActiveLabel>
 					</td>
 				</tr>
 				<tr>
 					<td><%[ Catalog support ]%></td>
 					<td>
-						<com:TActiveLabel ID="APICatalogSupportYes" Display="None" CssClass="w3-text-green" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<strong><%[ Supported ]%></strong></com:TActiveLabel>
+						<com:TActiveLabel ID="APICatalogSupportYes" Display="None" CssClass="w3-text-success" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<strong><%[ Supported ]%></strong></com:TActiveLabel>
 						<com:TActiveLabel ID="APICatalogSupportNo" Display="None" CssClass="w3-text-dark-grey" EnableViewState="false"><i class="fa fa-times"></i> &nbsp;<strong><%[ Not supported ]%></strong></com:TActiveLabel>
 					</td>
 				</tr>
 				<tr>
 					<td><%[ Console support ]%></td>
 					<td>
-						<com:TActiveLabel ID="APIConsoleSupportYes" Display="None" CssClass="w3-text-green" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<strong><%[ Supported ]%></strong></com:TActiveLabel>
+						<com:TActiveLabel ID="APIConsoleSupportYes" Display="None" CssClass="w3-text-success" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<strong><%[ Supported ]%></strong></com:TActiveLabel>
 						<com:TActiveLabel ID="APIConsoleSupportNo" Display="None" CssClass="validator-info" EnableViewState="false"><i class="fa fa-times"></i> &nbsp;<strong><%[ Not supported ]%></strong></com:TActiveLabel>
 					</td>
 				</tr>
 				<tr>
 					<td><%[ Config support ]%></td>
 					<td>
-						<com:TActiveLabel ID="APIConfigSupportYes" Display="None" CssClass="w3-text-green" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<strong><%[ Supported ]%></strong></com:TActiveLabel>
+						<com:TActiveLabel ID="APIConfigSupportYes" Display="None" CssClass="w3-text-success" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<strong><%[ Supported ]%></strong></com:TActiveLabel>
 						<com:TActiveLabel ID="APIConfigSupportNo" Display="None" CssClass="validator-info" EnableViewState="false"><i class="fa fa-times"></i> &nbsp;<strong><%[ Not supported ]%></strong></com:TActiveLabel>
 					</td>
 				</tr>

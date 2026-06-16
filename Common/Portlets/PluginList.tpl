@@ -113,6 +113,7 @@ var oPluginListSettings = {
 		this.table = $('#' + this.ids.table).DataTable({
 			data: data,
 			deferRender: true,
+			autoWidth: false,
 			fixedHeader: {
 				header: true,
 				headerOffset: $('#main_top_bar').height()
@@ -234,7 +235,7 @@ var oPluginListSettings = {
 				}
 			},
 			columnDefs: [{
-				className: 'dtr-control',
+				className: 'dtr-control-custom',
 				targets: 0
 			},
 			{
@@ -350,6 +351,7 @@ var oPluginListPlugins = {
 		this.table = $('#' + this.ids.table).DataTable({
 			data: data,
 			deferRender: true,
+			autoWidth: false,
 			layout: {
 				topStart: [
 					{
@@ -394,7 +396,7 @@ var oPluginListPlugins = {
 				}
 			},
 			columnDefs: [{
-				className: 'dtr-control',
+				className: 'dtr-control-custom',
 				orderable: false,
 				targets: 0
 			},

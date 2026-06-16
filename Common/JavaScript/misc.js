@@ -16,11 +16,18 @@ const Components = {
 
 var Cookies = {
 	default_exipration_time: 31536000000, // 1 year in miliseconds
-	set_cookie: function(name, value, expiration) {
+	def_params: 'samesite=lax',
+	set_cookie: function(name, value, expiration, path) {
 		var date = new Date();
-		date.setTime(date.getTime() + this.default_exipration_time);
-		var expires = 'expires=' + date.toUTCString();
-		document.cookie = name + '=' + value + '; ' + expires;
+		if (typeof(expiration) == 'number') {
+			date.setTime(expiration);
+		} else {
+			date.setTime(date.getTime() + this.default_exipration_time);
+		}
+		const val = name + '=' + value + '; ';
+		var expires = 'expires=' + date.toUTCString() + ';';
+		const cpath = path ? 'path=' + path + '; ' : '/; ';
+		document.cookie = val + expires + cpath + this.def_params;
 	},
 	get_cookie: function(name) {
 		name += '=';
@@ -30,7 +37,7 @@ var Cookies = {
 		for (var i = 0; i < values.length; i++) {
 			value = values[i];
 			while (value.charAt(0) == ' ') {
-				value = value.substr(1);
+				value = value.substring(1);
 			}
 			if (value.indexOf(name) == 0) {
 				cookie_val = value.substring(name.length, value.length);
@@ -38,6 +45,9 @@ var Cookies = {
 			}
 		}
 		return cookie_val;
+	},
+	del_cookie: function(name) {
+		this.set_cookie(name, '', 0);
 	}
 }
 
@@ -138,17 +148,17 @@ var W3SideBar = {
 		if (this.sidebar.style.display === 'block' || this.sidebar.style.display === '') {
 			this.close();
 		} else {
-			Cookies.set_cookie('baculum_side_bar_hide', 0);
+			Cookies.del_cookie('baculum_side_bar_hide');
 			this.sidebar.style.display = 'block';
 			this.overlay_bg.style.display = 'block';
-			this.page_main.css({'margin-left': '250px', 'width': 'calc(100% - 250px)'});
+			this.page_main.animate({'margin-left': '250px'});
 		}
 	},
 	close: function() {
 		Cookies.set_cookie('baculum_side_bar_hide', 1);
 		this.sidebar.style.display = 'none';
 		this.overlay_bg.style.display = 'none';
-		this.page_main.css({'margin-left': '0', 'width': '100%'});
+		this.page_main.animate({'margin-left': '0'});
 	}
 };
 
@@ -607,16 +617,43 @@ function set_global_listeners() {
 
 	window.addEventListener('resize', function() {
 		$('table.dataTable').each(function () {
-			/**
-			 * Check if DataTable object is initialized.
-			 * Otherwise tables not initialized yet could be unintentionally become initialized.
-			 */
-			if (DataTable.isDataTable(this)) {
-				const table = $(this).DataTable();
-				table.columns.adjust().responsive.recalc();
-			}
+			adapt_datatable_size(this);
 		});
 	});
+
+	const draw_dt = function (e, settings, json) {
+		$(() => {
+			adapt_datatable_size(this);
+		});
+	};
+	$('table').on('draw.dt', draw_dt);
+
+	const resp_resize_dt = function (e, settings, json) {
+		const is_visible = $(this).is(':visible');
+		if (!is_visible) {
+			return;
+		}
+		$(() => {
+			adapt_datatable_size(this);
+		});
+	};
+	$('table').on('responsive-resize.dt', resp_resize_dt);
+}
+
+function adapt_datatable_size(el) {
+	/**
+	 * Check if DataTable object is initialized.
+	 * Otherwise tables not initialized yet could be unintentionally become initialized.
+	 */
+	if (DataTable.isDataTable(el)) {
+		const table = $(el).DataTable();
+
+		// Adapt columns in responsive mode
+		set_datatable_responsive_display(table, el);
+
+		table.columns.adjust();
+		table.responsive.recalc();
+	}
 }
 
 
@@ -863,6 +900,40 @@ function get_table_action_selected_items(table, val) {
 		selected.push(sel);
 	});
 	return selected;
+}
+
+/**
+ * FixedHeader plugin for DataTables does not work well with Responsive plugin.
+ * If in table is hidden column with control to responsive show/hide details,
+ * FixedHeader wrongly compute header column width and columns do not
+ * aligh to table cell.
+ * This method is a workaround that fixed incorrect table header behaviour.
+ */
+function set_datatable_responsive_display(table, el) {
+	// Check if fixedheader is used at all
+	const fh = table.fixedHeader;
+	if (!fh || !fh.enabled()) {
+		// Fixed header not used in table, stop here
+		return;
+	}
+
+	// Check if there exist any column that became hidden in responsive mode
+	let has_hidden_columns = false;
+	for (let i = 0; i < table.columns().count(); i++) {
+		if (!table.column(i).responsiveHidden()) {
+			has_hidden_columns = true;
+			break;
+		}
+	}
+	const sel = '#' + el.id + ' .dtr-control-custom';
+	const control_btn = $(sel);
+	if (has_hidden_columns) {
+		// at least one column found, show details button
+		control_btn.css('display', 'table-cell');
+	} else {
+		// table works in normal non-responsive mode, hide details button
+		control_btn.css('display', 'none');
+	}
 }
 
 /**
