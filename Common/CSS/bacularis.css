@@ -71,7 +71,7 @@ body.dark-theme {
  * sidebar menu. This overflow-x set to hidden fixes it.
  */
 html, body {
-    overflow-x: hidden;
+    overflow-x: clip;
 }
 
 /* Inter Regular */
