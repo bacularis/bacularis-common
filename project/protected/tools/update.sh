@@ -16,6 +16,7 @@
 
 # Paths
 PROJDIR="`readlink -f $(dirname ${0})/../../../../../../..`"
+PROJDIR_OLD="`readlink -f $(dirname ${0})/../..`"
 
 # Vendor directory
 VENDIR="protected/vendor"
@@ -117,8 +118,12 @@ cd "$PROJDIR"
 
 if [ ! -d "$VENDIR" ]
 then
-	# It is installation, no backup needed
-	exit 0
+	cd "$PROJDIR_OLD"
+	if [ ! -d "$VENDIR" ]
+	then
+		# It is installation, no backup needed
+		exit 0
+	fi
 fi
 
 if [ "$1" == "backup" ]
