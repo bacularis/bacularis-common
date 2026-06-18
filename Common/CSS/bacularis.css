@@ -410,7 +410,6 @@ table.dataTable.no-footer {
 	font-size: 0.95em;
 	padding: 0.1em 0.6em 0 0.6em !important;
 	border: 1px solid #999 !important;
-	border-radius: 2px !important;
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 	margin-bottom: 0.3em !important;
@@ -1191,11 +1190,41 @@ input:checked + .slider:before {
 	background-color: var(--bkg-color-modal) !important;
 }
 
-.w3-card {
+.w3-card, .w3-card-4, .w3-card-4 > header {
 	background-color: var(--color-strong);
 	border: 1px solid var(--border-color) !important;
 	border-radius: 12px;
 	box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.w3-card-4.w3-modal-content, .w3-card-4.w3-modal-content > header {
+	border-radius: 10px;
+}
+
+.w3-card-4.w3-modal-content > header > span.w3-display-topright, .w3-card-4.w3-modal-content > header > span.w3-display-topright:hover {
+	background-color: transparent;
+	border-top-left-radius: 0 !important;
+	border-bottom-left-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+	border-top-right-radius: 10px !important;
+}
+
+input, select, textarea, .dt-button, .dt-select, .dt-input {
+	border-radius: 6px !important;
+	border: 1px solid #d7dde6 !important;
+}
+
+input:hover, select:hover, textarea:hover, .dt-button:hover, .dt-select:hover, .dt-input:hover {
+	border-color: #2185d0;
+	box-shadow: 0 0 0 3px rgba(33,133,208,.12);
+}
+
+.w3-button:not(.w3-bar-item) {
+	border-radius: 8px !important;
+}
+
+div.dt-button-collection .dt-button-active:after {
+	content: "✓" !important;
 }
 
 .w3-code {
@@ -1242,7 +1271,7 @@ input:checked + .slider:before {
 }
 
 .w3-select {
-	padding: 9px !important;
+	padding: 8px !important;
 }
 
 .tabs-window {
@@ -1647,7 +1676,7 @@ div.opentip-container.style-guide_tour div.ot-content {
 #bsearch_field {
 	color: var(--text-color) !important;
 	padding: 6px 24px !important;
-	border-radius: 1.5em;
+	border-radius: 1.5em !important;
 	width: 235px;
 	height: 34px;
 	display: flex;
@@ -1729,7 +1758,7 @@ div.opentip-container.style-guide_tour div.ot-content {
 	width: 405px !important;
 	height: 55px !important;
 	font-size: 1.5em;
-	border-radius: 1.5em;
+	border-radius: 1.5em !important;
 	padding: 4px 24px;
 	margin-right: 8px;
 	border: 1px solid var(--bkg-color-button-selected);
