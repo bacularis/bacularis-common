@@ -308,6 +308,10 @@ a.w3-button:active, button.w3-button:active {
 	margin-top: 10px !important;
 }
 
+.block_container {
+	border-radius: 10px;
+}
+
 table.dataTable {
 	font-size: 14px;
 	line-height: 1.2;
@@ -1020,7 +1024,7 @@ table.component td:nth-of-type(1) {
 }
 
 .status_header.schedule > div {
-	flex-basis: 300px;
+	flex-basis: 285px;
 }
 
 #status_storage_filters select {
