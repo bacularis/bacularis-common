@@ -18,7 +18,7 @@ namespace Bacularis\Common\Modules\Protocol\ACME;
 use DateTime;
 use Bacularis\Common\Modules\CommonModule;
 use Bacularis\Common\Modules\Errors\ConnectionError;
-use Bacularis\Common\Modules\Protocol\HTTP\Headers;
+use Bacularis\Common\Modules\Protocol\HTTP\Header as HTTPHeader;
 use Bacularis\Common\Modules\Logging;
 
 /**
@@ -97,7 +97,7 @@ class Request extends CommonModule
 		curl_close($ch);
 		$head = substr($result, 0, $header_size);
 		$body = substr($result, $header_size);
-		$heads = Headers::parseAll($head);
+		$heads = HTTPHeader::parseAll($head);
 		$ret = self::prepareResult(
 			$url,
 			$body,
@@ -130,7 +130,7 @@ class Request extends CommonModule
 		curl_close($ch);
 		$head = substr($result, 0, $header_size);
 		$rbody = substr($result, $header_size);
-		$heads = Headers::parseAll($head);
+		$heads = HTTPHeader::parseAll($head);
 		Logging::log(
 			Logging::CATEGORY_EXTERNAL,
 			'REQUEST BODY ===> ' . $body . ' <==='
@@ -165,7 +165,7 @@ class Request extends CommonModule
 		curl_close($ch);
 		$head = substr($result, 0, $header_size);
 		$body = substr($result, $header_size);
-		$heads = Headers::parseAll($head);
+		$heads = HTTPHeader::parseAll($head);
 		$ret = self::prepareResult(
 			$url,
 			$body,

@@ -23,7 +23,7 @@ use Bacularis\Common\Modules\CommonModule;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-class Headers extends CommonModule
+class Header extends CommonModule
 {
 	/**
 	 * Parse headers.

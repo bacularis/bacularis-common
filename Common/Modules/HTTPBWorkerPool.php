@@ -15,7 +15,7 @@
 
 namespace Bacularis\Common\Modules;
 
-use Bacularis\Common\Modules\Protocol\HTTP\Headers;
+use Bacularis\Common\Modules\Protocol\HTTP\Header as HTTPHeader;
 
 /**
  * Bacularis HTTP worker pool class.
@@ -191,7 +191,7 @@ class HTTPBWorkerPool extends BWorkerPool
 		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
 		$content = curl_multi_getcontent($ch);
 		$headers_str = substr($content, 0, $header_size);
-		$headers = Headers::parseAll($headers_str);
+		$headers = HTTPHeader::parseAll($headers_str);
 		$data = substr($content, $header_size);
 
 		Logging::log(

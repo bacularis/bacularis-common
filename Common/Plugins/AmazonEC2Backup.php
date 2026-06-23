@@ -36,7 +36,7 @@ use Bacularis\Common\Modules\HTTPBWorkerPool;
 use Bacularis\Common\Modules\IBaculaBackupFileDaemonPlugin;
 use Bacularis\Common\Modules\Logging;
 use Bacularis\Common\Modules\Plugins;
-use Bacularis\Common\Modules\Protocol\HTTP\Codes as HTTPCodes;
+use Bacularis\Common\Modules\Protocol\HTTP\Code as HTTPCode;
 use DateTimeInterface;
 use Prado\Prado;
 use stdClass;
@@ -394,7 +394,7 @@ class AmazonEC2Backup extends BacularisCommonPluginBase implements IBaculaBackup
 			$headers = substr($content, 0, $header_size);
 			$body = substr($content, $header_size);
 			$valid = !AmazonEBSDirectAPI::isRetryRequired($body, $http_code);
-			if (!$valid && $http_code == HTTPCodes::CODE_FORBIDDEN && self::$refresh_creds_lock == false) {
+			if (!$valid && $http_code == HTTPCode::CODE_FORBIDDEN && self::$refresh_creds_lock == false) {
 				$resp = ['headers' => $headers, 'body' => $body, 'http_code' => $http_code];
 				$this->debug($resp);
 				self::refreshAWSCredentials($args);
@@ -717,7 +717,7 @@ class AmazonEC2Backup extends BacularisCommonPluginBase implements IBaculaBackup
 
 		$result = AmazonEBSDirectAPI::get($url, [], $args);
 
-		if ($result['error']['error'] == 0 && in_array($result['error']['http_code'], [0, HTTPCodes::CODE_OK])) {
+		if ($result['error']['error'] == 0 && in_array($result['error']['http_code'], [0, HTTPCode::CODE_OK])) {
 			$block_len = count($result['result']);
 			for ($i = 0; $i < $block_len; $i++) {
 				$blocks = array_merge($blocks, $result['result'][$i]['Blocks']);
@@ -763,7 +763,7 @@ class AmazonEC2Backup extends BacularisCommonPluginBase implements IBaculaBackup
 
 		$result = AmazonEBSDirectAPI::get($url, [], $args);
 
-		if ($result['error']['error'] == 0 && in_array($result['error']['http_code'], [0, HTTPCodes::CODE_OK])) {
+		if ($result['error']['error'] == 0 && in_array($result['error']['http_code'], [0, HTTPCode::CODE_OK])) {
 			$block_len = count($result['result']);
 			for ($i = 0; $i < $block_len; $i++) {
 				if (!isset($result['result'][$i]['ChangedBlocks'])) {

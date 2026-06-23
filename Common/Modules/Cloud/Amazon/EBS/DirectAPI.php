@@ -19,7 +19,7 @@ use Bacularis\Common\Modules\Cloud\Amazon\Region as AmazonRegion;
 use Bacularis\Common\Modules\Cloud\Amazon\SigV4 as AmazonSigV4;
 use Bacularis\Common\Modules\Logging;
 use Bacularis\Common\Modules\Protocol\HTTP\Client as HTTPClient;
-use Bacularis\Common\Modules\Protocol\HTTP\Codes as HTTPCodes;
+use Bacularis\Common\Modules\Protocol\HTTP\Code as HTTPCode;
 use Prado\Prado;
 
 /**
@@ -96,13 +96,13 @@ class DirectAPI
 		$result = HTTPClient::get($url, $heads);
 
 		// Check if response is valid
-		if ($result['http_code'] != HTTPCodes::CODE_OK) {
+		if ($result['http_code'] != HTTPCode::CODE_OK) {
 			Logging::log(
 				Logging::CATEGORY_EXTERNAL,
 				"Wrong HTTP error code. Code: {$result['http_code']}, Body: '{$result['output']}'."
 			);
 		}
-		if ($result['http_code'] == HTTPCodes::CODE_FORBIDDEN) {
+		if ($result['http_code'] == HTTPCode::CODE_FORBIDDEN) {
 			// Refresh credentials
 			self::initHeaderSigner($args, true);
 		}
@@ -123,7 +123,7 @@ class DirectAPI
 		}
 
 		// Check if response is completed
-		if ($result['http_code'] == HTTPCodes::CODE_OK) {
+		if ($result['http_code'] == HTTPCode::CODE_OK) {
 			$result['output_parsed'] = [];
 			$output = json_decode($result['output'], true);
 			if (is_array($output)) {
@@ -167,7 +167,7 @@ class DirectAPI
 		$error = ['output' => '', 'error' => 0, 'http_code' => 0];
 		do {
 			$result = self::getInternal($url, $headers, $args);
-			if ($result['http_code'] != HTTPCodes::CODE_OK) {
+			if ($result['http_code'] != HTTPCode::CODE_OK) {
 				// Request failed (after repeating) - reset results and end
 				$all_result = [];
 				$error['output'] = $result['output'];
@@ -203,12 +203,12 @@ class DirectAPI
 	public static function isRetryRequired(string $body, int $http_code): bool
 	{
 		$retry = false;
-		if (HTTPCodes::isServerCode($http_code)) {
+		if (HTTPCode::isServerCode($http_code)) {
 			// Server codes 5xx - repeat the request
 			$retry = true;
-		} elseif ($http_code == HTTPCodes::CODE_FORBIDDEN) {
+		} elseif ($http_code == HTTPCode::CODE_FORBIDDEN) {
 			$retry = true;
-		} elseif ($http_code == HTTPCodes::CODE_BAD_REQUEST) {
+		} elseif ($http_code == HTTPCode::CODE_BAD_REQUEST) {
 			$out = json_decode($body, true);
 			if (is_array($out)) {
 				$retry = key_exists('__type', $out) && in_array($out['__type'], self::RETRYABLE_EXCEPTIONS);

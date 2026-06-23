@@ -21,7 +21,7 @@ namespace Bacularis\Common\Modules\Protocol\HTTP;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-class Codes
+class Code
 {
 	/**
 	 * 2xx success codes.
