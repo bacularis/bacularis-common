@@ -39,5 +39,5 @@ class AuthenticationError extends GenericError
 {
 	public const ERROR_AUTHENTICATION_TO_API_PROBLEM = 6;
 
-	public const MSG_ERROR_AUTHENTICATION_TO_API_PROBLEM = 'Problem with authentication to Baculum API.';
+	public const MSG_ERROR_AUTHENTICATION_TO_API_PROBLEM = 'Problem with authentication to Bacularis API.';
 }
