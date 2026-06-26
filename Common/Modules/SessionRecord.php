@@ -35,138 +35,183 @@ namespace Bacularis\Common\Modules;
  * @author Marcin Haba <marcin.haba@bacula.pl>
  * @category Module
  */
-class SessionRecord extends CommonModule implements ISessionItem
+abstract class SessionRecord extends CommonModule implements ISessionItem
 {
-	public const SESS_FILE_PERM = 0600;
+	/**
+	 * Session data main key.
+	 */
+	private const SESSION_KEY = 'sess';
 
-	private static $lock = false;
-	private static $queue = 0;
+	/**
+	 * Session file permissions.
+	 */
+	private const SESSION_FILE_PERM = 0600;
 
 	public function __construct()
 	{
+		// Load session data
 		self::restore();
 	}
 
-	public function __destruct()
+	/**
+	 * Store all session data in session file.
+	 */
+	private static function store(): void
 	{
-		self::store();
+		if (!key_exists(self::SESSION_KEY, $GLOBALS)) {
+			// nothing to store in file, end
+			return;
+		}
+
+		$sessfile = static::getSessionFile();
+		$content = serialize($GLOBALS[self::SESSION_KEY]);
+		if (file_exists($sessfile)) {
+			$perm = (fileperms($sessfile) & 0777);
+			if ($perm !== self::SESSION_FILE_PERM) {
+				// Correct permissions to more restrictive if needed
+				chmod($sessfile, self::SESSION_FILE_PERM);
+			}
+		}
+		// Remember original umask
+		$old_umask = umask(0);
+
+		// Prepare new umask
+		$new_umask = (~(self::SESSION_FILE_PERM) & 0777);
+		umask($new_umask);
+
+		// Store session data in file
+		$fp = fopen($sessfile, 'w');
+		if (flock($fp, LOCK_EX)) {
+			// Lock set - write file
+			fwrite($fp, $content);
+			fflush($fp);
+			flock($fp, LOCK_UN);
+			self::forceRefresh();
+		} else {
+			// Lock not set - error
+			$emsg = 'Unable to set exclusive lock on file: ' . $sessfile;
+			Logging::log(
+				Logging::CATEGORY_APPLICATION,
+				$emsg
+			);
+		}
+		fclose($fp);
+
+		// Revert original umask
+		umask($old_umask);
 	}
 
-	private static function store($wouldblock = true)
+	/**
+	 * Restore session data from session file.
+	 */
+	private static function restore(): void
 	{
-		$c = get_called_class();
-		$sessfile = $c::getSessionFile();
-		if (key_exists('sess', $GLOBALS)) {
-			$content = serialize($GLOBALS['sess']);
-			if (file_exists($sessfile)) {
-				$perm = (fileperms($sessfile) & 0777);
-				if ($perm !== self::SESS_FILE_PERM) {
-					// Correct permissions to more restrictive if needed
-					chmod($sessfile, self::SESS_FILE_PERM);
-				}
-			}
-			$old_umask = umask(0);
-			$new_umask = (~(self::SESS_FILE_PERM) & 0777);
-			umask($new_umask);
-			$fp = fopen($sessfile, 'w');
-			if (flock($fp, LOCK_EX, $wouldblock)) {
-				fwrite($fp, $content);
-				fflush($fp);
+		if (key_exists(self::SESSION_KEY, $GLOBALS)) {
+			// Session data already loaded, nothing to do.
+			return;
+		}
+		$sessfile = static::getSessionFile();
+		if (is_readable($sessfile)) {
+			// Session file exists and is readable.
+			$fp = fopen($sessfile, 'r');
+
+			if (flock($fp, LOCK_SH)) {
+				// Lock is set - read file
+				$content = file_get_contents($sessfile);
+				$ucont = unserialize($content);
+				$GLOBALS[self::SESSION_KEY] = is_array($ucont) ? $ucont : [];
 				flock($fp, LOCK_UN);
-				self::forceRefresh();
 			} else {
-				$emsg = 'Unable to exclusive lock ' . $sessfile;
+				// Lock not set -error
+				$emsg = 'Unable to set shared lock on file: ' . $sessfile;
 				Logging::log(
 					Logging::CATEGORY_APPLICATION,
 					$emsg
 				);
 			}
 			fclose($fp);
-			umask($old_umask);
+		} else {
+			// Session file does not exist, initialize new session
+			$GLOBALS[self::SESSION_KEY] = [];
 		}
 	}
 
-	private static function restore($wouldblock = true)
-	{
-		$c = get_called_class();
-		$sessfile = $c::getSessionFile();
-		if (!array_key_exists('sess', $GLOBALS)) {
-			if (is_readable($sessfile)) {
-				$fp = fopen($sessfile, 'r');
-				if (flock($fp, LOCK_SH, $wouldblock)) {
-					$content = file_get_contents($sessfile);
-					$ucont = unserialize($content);
-					$GLOBALS['sess'] = is_array($ucont) ? $ucont : [];
-					flock($fp, LOCK_UN);
-				} else {
-					$emsg = 'Unable to shared lock ' . $sessfile;
-					Logging::log(
-						Logging::CATEGORY_APPLICATION,
-						$emsg
-					);
-				}
-				fclose($fp);
-			} else {
-				$GLOBALS['sess'] = [];
-			}
-		}
-	}
-
-	public function save()
+	/**
+	 * Save session data.
+	 *
+	 * @param bool true if saved successfully, false otherwise
+	 */
+	public function save(): bool
 	{
 		$is_saved = false;
 		$is_updated = false;
 		$vals = &self::get();
-		$c = get_called_class();
-		$primary_key = $c::getPrimaryKey();
+		$primary_key = static::getPrimaryKey();
 		for ($i = 0; $i < count($vals); $i++) {
 			if ($vals[$i][$primary_key] !== $this->{$primary_key}) {
+				// This is not record that we search for - skip it
 				continue;
 			}
 			foreach ($vals[$i] as $key => $val) {
 				if (!is_null($this->{$key})) {
-					// update record
+					// Update record
 					$vals[$i][$key] = $this->{$key};
 					$is_updated = true;
 				}
 			}
 			if ($is_updated) {
+				// Record updated - stop
 				break;
 			}
 		}
 		if (!$is_updated) {
-			// add new record
+			// Record does not exist yet in session - add new record
 			$vals[] = get_object_vars($this);
 			$is_saved = true;
 		}
 		if ($is_saved || $is_updated) {
+			// Record added or updated - store data in file
 			self::store();
 		}
 		return ($is_saved || $is_updated);
 	}
 
-	public static function &get()
+	/**
+	 * Get current class record.
+	 *
+	 * @return array record data container
+	 */
+	public static function &get(): array
 	{
 		self::restore();
-		$result = [];
-		$c = get_called_class();
-		$record_id = $c::getRecordId();
-		if (!array_key_exists($record_id, $GLOBALS['sess'])) {
-			$GLOBALS['sess'][$record_id] = [];
-			;
+		$record_id = static::getRecordId();
+		if (!key_exists($record_id, $GLOBALS[self::SESSION_KEY])) {
+			// Record does not exists in session - initialize record data container
+			$GLOBALS[self::SESSION_KEY][$record_id] = [];
 		}
-		return $GLOBALS['sess'][$record_id];
+		return $GLOBALS[self::SESSION_KEY][$record_id];
 	}
 
-	public static function findByPk($pk)
+	/**
+	 * Find record by primary key.
+	 *
+	 * @param string $pk primary key value
+	 * @return array record data
+	 */
+	public static function findByPk(string $pk): ?array 
 	{
-		$c = get_called_class();
-		$primary_key = $c::getPrimaryKey();
-		$result = self::findBy($primary_key, $pk);
-		return $result;
+		$primary_key = static::getPrimaryKey();
+		return self::findBy($primary_key, $pk);
 	}
 
-	public static function findBy($field, $value)
+	/**
+	 * Find record by field with given value.
+	 *
+	 * @param string $field field to find
+	 * @param mixed $value value to find
+	 * @return null|array record data or null if record not found
+	 */
+	public static function findBy(string $field, $value): ?array
 	{
 		self::restore();
 		$result = null;
@@ -180,13 +225,18 @@ class SessionRecord extends CommonModule implements ISessionItem
 		return $result;
 	}
 
-	public static function deleteByPk($pk)
+	/**
+	 * Delete data record by primary key.
+	 *
+	 * @param string $pk primary key
+	 * @return bool true on success, false otherwise
+	 */
+	public static function deleteByPk(string $pk): bool
 	{
 		self::restore();
 		$result = false;
-		$c = get_called_class();
-		$vals = &self::get();
-		$primary_key = $c::getPrimaryKey();
+		$vals = &static::get();
+		$primary_key = static::getPrimaryKey();
 		for ($i = 0; $i < count($vals); $i++) {
 			if ($vals[$i][$primary_key] === $pk) {
 				array_splice($vals, $i, 1);
@@ -194,23 +244,37 @@ class SessionRecord extends CommonModule implements ISessionItem
 				break;
 			}
 		}
+		self::store();
 		return $result;
 	}
 
-	public static function forceRefresh()
+	/**
+	 * Force refresh session data.
+	 * It removes the current local session container.
+	 */
+	public static function forceRefresh(): void
 	{
-		unset($GLOBALS['sess']);
+		unset($GLOBALS[self::SESSION_KEY]);
 	}
 
-	public static function getPrimaryKey()
-	{
-	}
+	/**
+	 * Get primary key name.
+	 *
+	 * @return string primary key name
+	 */
+	abstract public static function getPrimaryKey(): string;
 
-	public static function getRecordId()
-	{
-	}
+	/**
+	 * Get record identifier.
+	 *
+	 * @return string record identifier
+	 */
+	abstract public static function getRecordId(): string;
 
-	public static function getSessionFile()
-	{
-	}
+	/**
+	 * Get full session file path.
+	 *
+	 * @param string session file path
+	 */
+	abstract public static function getSessionFile(): string;
 }
