@@ -244,7 +244,26 @@ abstract class SessionRecord extends CommonModule implements ISessionItem
 				break;
 			}
 		}
-		self::store();
+		if ($result) {
+			self::store();
+		}
+		return $result;
+	}
+
+	/**
+	 * Delete session record.
+	 *
+	 * @param string $record session record to delete
+	 * @return bool true on success, false otherwise
+	 */
+	public static function deleteByRecord(array $record): bool
+	{
+		$primary_key = static::getPrimaryKey();
+		$pk = $record[$primary_key] ?? null;
+		$result = false;
+		if (is_string($pk)) {
+			$result = self::deleteByPk($pk);
+		}
 		return $result;
 	}
 
