@@ -198,7 +198,7 @@ abstract class SessionRecord extends CommonModule implements ISessionItem
 	 * @param string $pk primary key value
 	 * @return array record data
 	 */
-	public static function findByPk(string $pk): ?array 
+	public static function findByPk(string $pk): ?array
 	{
 		$primary_key = static::getPrimaryKey();
 		return self::findBy($primary_key, $pk);
