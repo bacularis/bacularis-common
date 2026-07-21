@@ -101,24 +101,30 @@ abstract class BShellApplication extends TApplication
 	public function parseActions(array $args): bool
 	{
 		$success = false;
+		$helpmsg = true;
 		foreach ($this->actions as $cls => $action) {
 			if (($method = $action->isValidAction($args)) !== null) {
 				$action->setWriter($this->output_writer);
 				$this->parseActionParams($action);
-				$method = 'action' . $method;
+				$method = 'action' . ucfirst($method);
+				$reflection = new \ReflectionClass($cls);
+				$clsn = $reflection->getShortName();
 				if (method_exists($action, $method)) {
-					$success = $action->{$method}();
+					$success = $action->{$method}($args);
 					if (!$success) {
-						$this->output_writer->write("Action '{$method}' finished with error.\n");
+						$this->output_writer->write("Action '{{$clsn}::{$method}}' finished with error.\n");
 					}
+					$helpmsg = false;
 					break;
 				} else {
-					$this->output_writer->write("Action '{$method}' is not valid action.\n");
+					$this->output_writer->write("Action '{{$clsn}::{$method}}' is not valid action.\n");
 				}
 			}
 		}
+		if ($helpmsg) {
+			$this->printHelp();
+		}
 		if (!$success) {
-			//$this->printHelp();
 			$this->onEndRequest();
 			exit(1);
 		}

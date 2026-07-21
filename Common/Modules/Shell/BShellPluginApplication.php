@@ -74,6 +74,7 @@ class BShellPluginApplication extends BShellApplication
 	public function printGreeting(): void
 	{
 		if (!$this->greetings) {
+			$this->output_writer->writeLine();
 			$msg = 'Bacularis command line tool for plugins v' . Params::BACULARIS_VERSION . '.';
 			$this->output_writer->write($msg, TShellWriter::DARK_GRAY);
 			$this->output_writer->writeLine();

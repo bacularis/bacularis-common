@@ -42,9 +42,10 @@ class TaskCertAction extends BShellAction
 	/**
 	 * Renew SSL certificate action.
 	 *
+	 * @param array $args command parameters
 	 * @return bool true it is always valid
 	 */
-	public function actionRenew()
+	public function actionRenew($args)
 	{
 		$state = false;
 		$refresh_days = (int) ($this->params['days'] ?? 0);
@@ -78,38 +79,13 @@ class TaskCertAction extends BShellAction
 	 */
 	public function renderHelpCommand($cmd)
 	{
-		$this->output_writer->write("\nUsage: ");
-		$this->output_writer->writeLine("task {$this->action}/<action>", [TShellWriter::BLUE, TShellWriter::BOLD]);
-		$this->output_writer->writeLine("\nexample: task {$this->action}/{$this->methods[0]}\n");
-		$this->output_writer->writeLine("The following actions are available:");
-		$this->output_writer->writeLine();
-		foreach ($this->methods as $i => $method) {
-			$params = [];
-			if ($this->parameters[$i]) {
-				$parameters = is_array($this->parameters[$i]) ? $this->parameters[$i] : [$this->parameters[$i]];
-				foreach ($parameters as $v) {
-					$params[] = '<' . $v . '>';
-				}
-			}
-			$parameters = implode(' ', $params);
-			$options = [];
-			if ($this->optional[$i]) {
-				$optional = is_array($this->optional[$i]) ? $this->optional[$i] : [$this->optional[$i]];
-				foreach ($optional as $v) {
-					$options[] = '[' . $v . ']';
-				}
-			}
-			$optional = (strlen($parameters) ? ' ' : '') . implode(' ', $options);
-
-			$description = $this->getWriter()->wrapText($this->description[$i + 1], 10);
-			$parameters = $this->getWriter()->format($parameters, [TShellWriter::BLUE, TShellWriter::BOLD]);
-			$optional = $this->getWriter()->format($optional, [TShellWriter::BLUE]);
-			$description = $this->getWriter()->format($description, TShellWriter::DARK_GRAY);
-
-			$this->output_writer->write('  ');
-			$this->output_writer->writeLine($this->action . '/' . $method . ' ' . $parameters . $optional, [TShellWriter::BLUE, TShellWriter::BOLD]);
-			$this->output_writer->writeLine('         ' . $description);
-			$this->output_writer->writeLine();
-		}
+		$this->showHelpCommand(
+			$this->action,
+			$this->methods,
+			$this->parameters,
+			$this->optional,
+			$this->description,
+			$cmd
+		);
 	}
 }
