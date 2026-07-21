@@ -65,8 +65,10 @@ abstract class BShellApplication extends TApplication
 	 */
 	public function run($args = null)
 	{
-		// shift the script name from arguments
-		array_shift($args);
+		if (is_array($args)) {
+			// shift the script name from arguments
+			array_shift($args);
+		}
 
 		// set arguments
 		$this->arguments = $args;
