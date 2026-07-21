@@ -37,7 +37,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 	 * Stores optional parameters for all Bacula console actions.
 	 * Parameters are added to all actions.
 	 */
-	protected const BASE_OPTIONAL = [];
+	protected const BASE_OPTIONAL = ['debug' => '0/1'];
 
 	/**
 	 * Standard input, output and error pipes for Bconsole process.
@@ -58,7 +58,6 @@ abstract class BaculaConsoleActionBase extends BShellAction
 	 * Session output file prefix.
 	 */
 	private const SESSION_FILE_OUTPUT_PREFIX = 'session_output';
-
 
 	/**
 	 * Send string to command.

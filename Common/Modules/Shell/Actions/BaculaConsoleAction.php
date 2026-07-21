@@ -77,6 +77,24 @@ class BaculaConsoleAction extends BaculaConsoleActionBase
 	 */
 	public $params = [];
 
+
+	public function __construct()
+	{
+		parent::__construct();
+		for ($i = 0; $i < count($this->parameters); $i++) {
+			$this->parameters[$i] = array_merge(
+				parent::BASE_PARAMETERS,
+				$this->parameters[$i]
+			);
+		}
+		for ($i = 0; $i < count($this->optional); $i++) {
+			$this->optional[$i] = array_merge(
+				parent::BASE_OPTIONAL,
+				$this->optional[$i]
+			);
+		}
+	}
+
 	/**
 	 * Start Bacula console session action.
 	 *

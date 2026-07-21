@@ -16,7 +16,9 @@
 namespace Bacularis\Common\Modules\Shell;
 
 use Prado\Shell\TShellWriter;
+use Bacularis\Common\Modules\BacularisCommonPluginBase;
 use Bacularis\Common\Modules\Params;
+use Bacularis\Common\Modules\Logging;
 
 /**
  * Bacularis shell Bacula console module.
@@ -48,6 +50,10 @@ class BShellBaculaConsoleApplication extends BShellApplication
 	 */
 	public function run($args = null)
 	{
+		// Set debug for all Bacula console actions
+		$params = BacularisCommonPluginBase::parseCommandParameters($args);
+		Logging::$debug_enabled = (isset($params['debug']) && $params['debug'] == 1);
+
 		set_exception_handler([static::class, 'handleError']);
 		parent::run($args);
 	}
