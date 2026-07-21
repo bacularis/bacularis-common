@@ -40,8 +40,10 @@ class BconsoleError extends GenericError
 	public const ERROR_BCONSOLE_CONNECTION_PROBLEM = 4;
 	public const ERROR_INVALID_DIRECTOR = 5;
 	public const ERROR_BCONSOLE_DISABLED = 11;
+	public const ERROR_INVALID_SESSION_ID = 12;
 
 	public const MSG_ERROR_BCONSOLE_CONNECTION_PROBLEM = 'Problem with connection to bconsole.';
 	public const MSG_ERROR_INVALID_DIRECTOR = 'Invalid director.';
 	public const MSG_ERROR_BCONSOLE_DISABLED = 'Bconsole support is disabled.';
+	public const MSG_ERROR_INVALID_SESSION_ID = 'Invalid Bconsole session identifier.';
 }
