@@ -1357,18 +1357,18 @@ div.dt-button-collection .dt-button-active:after {
 }
 
 #restore-browser-files-loading {
-	position: absolute;
-	z-index: 10;
+	height: 100%;
+}
+#restore-browser-files-loading div {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
 }
 #restore-browser-files-loading i {
-	position: absolute;
-	width: 75px;
-	height: 75px;
-	margin: auto;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
 	color: var(--color-main);
 }
 
@@ -1899,3 +1899,11 @@ table.dataTable thead > tr > td.dt-ordering-desc .dt-column-order:after {
     content: "\25BC";
 }
 /* END OVERWRITE */
+
+/* START - Blocks */
+
+.block-active-xl {
+	box-shadow: 0 0 0 3px var(--color-main);
+}
+
+/* END - Blocks
