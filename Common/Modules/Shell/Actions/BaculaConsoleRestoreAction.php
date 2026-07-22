@@ -191,7 +191,7 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 	{
 		$command = [];
 		$result = [];
-		$async  = (isset($this->params['async']) && $this->params['async'] == 1);
+		$async = (isset($this->params['async']) && $this->params['async'] == 1);
 		switch ($this->params['command']) {
 			case 'ls': {
 				$command = ['ls'];
@@ -323,7 +323,7 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 	 * @param string $sid session identifier
 	 * @param string $param command aprameter name
 	 * @param string $value command parameter value
-	 * @param string modify command outuput with menu items
+	 * @param string $output modify command outuput with menu items
 	 * @return string command result (output)
 	 */
 	private function selectItem(string $sid, string $param, string $value, string $output = ''): string

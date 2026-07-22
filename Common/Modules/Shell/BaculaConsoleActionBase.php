@@ -60,8 +60,11 @@ abstract class BaculaConsoleActionBase extends BShellAction
 	private const SESSION_FILE_OUTPUT_PREFIX = 'session_output';
 
 	/**
-	 * Send string to command.
-	 * The string is passed to the command stdin
+	 * Start Bacula console session.
+	 *
+	 * @param string $sid session identifier
+	 * @param string $command console command
+	 * @return bool true if console session started successfully, false otherwise
 	 */
 	protected function runConsole(string $sid, string $command): bool
 	{
@@ -258,7 +261,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 		$fpath = $this->getSessionCommandFile($sid);
 		if (file_exists($fpath)) {
 			// File exists, add new command
-			$lock = fopen($fpath,'rb');
+			$lock = fopen($fpath, 'rb');
 			flock($lock, LOCK_SH);
 			$cont = file_get_contents($fpath);
 			$cmds = json_decode($cont, true);
@@ -273,7 +276,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 				$cmds = [];
 			}
 			$content = json_encode($cmds);
-			flock($lock,LOCK_UN);
+			flock($lock, LOCK_UN);
 			fclose($lock);
 		} elseif ($strict) {
 			// File does not exist, create it and add new command
@@ -301,7 +304,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 		if (!file_exists($fpath)) {
 			return null;
 		}
-		$lock = fopen($fpath,'r');
+		$lock = fopen($fpath, 'r');
 		flock($lock, LOCK_SH);
 		$content = file_get_contents($fpath);
 		$command = null;
@@ -325,7 +328,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 	 *
 	 * @param string $sid session identifier
 	 * @param string $cid command identifier
-	 * @param null|int maximum waiting time for result before it times out
+	 * @param null|int $timeout maximum waiting time for result before it times out
 	 * @return null|string command output or null on error or timeout in miliseconds
 	 */
 	protected function waitOnResult(string $sid, string $cid, ?int $timeout = null): ?string
@@ -383,7 +386,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 		if (!$this->isResultReady($sid, $cid)) {
 			return $result;
 		}
-		$lock = fopen($fpath,'rb');
+		$lock = fopen($fpath, 'rb');
 		flock($lock, LOCK_SH);
 		$content = file_get_contents($fpath);
 		$result = $content !== false ? $content : null;
