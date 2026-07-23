@@ -93,7 +93,8 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 			'session-id' => 'session-id',
 			'job-id' => 'job-id',
 			'client' => 'client',
-			'fileset' => 'fileset'
+			'fileset' => 'fileset',
+			'restorejob' => 'restorejob'
 		],
 		[
 			'session-id' => 'session-id',
@@ -163,7 +164,8 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 			'restore',
 			'jobid="' . $this->params['job-id'] . '"',
 			'client="' . $this->params['client'] . '"',
-			'fileset="' . $this->params['fileset'] . '"'
+			'fileset="' . $this->params['fileset'] . '"',
+			'restorejob="' . $this->params['restorejob'] . '"'
 			//'select' - NOTE: select takes latest jobids
 		];
 		$cid = $this->generateCommandId();
