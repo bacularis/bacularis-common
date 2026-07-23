@@ -60,6 +60,12 @@ abstract class BaculaConsoleActionBase extends BShellAction
 	private const SESSION_FILE_OUTPUT_PREFIX = 'session_output';
 
 	/**
+	 * Session idle timeout (in miliseconds).
+	 * Default: 4 hours.
+	 */
+	private const SESSION_IDLE_TIMEOUT = 14400000;
+
+	/**
 	 * Start Bacula console session.
 	 *
 	 * @param string $sid session identifier
@@ -109,11 +115,13 @@ abstract class BaculaConsoleActionBase extends BShellAction
 	{
 		$cid = null;
 		$output = '';
+		$idle_timeout = self::SESSION_IDLE_TIMEOUT;
 		while (true) {
 			$command = $this->popCommand($sid);
 			if (is_null($command)) {
 				// Bconsole is waiting for commands
 				// Do nothing
+				$idle_timeout -= 100;
 			} elseif ($command['command']) {
 				if ($command['command'][0] == 'quit') {
 					// End Bconsole session
@@ -124,6 +132,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 					$cid = $command['cid'];
 					$cmd = implode(' ', $command['command']);
 					fwrite($this->pipes[0], "{$cmd}\n");
+					$idle_timeout = self::SESSION_IDLE_TIMEOUT;
 					Logging::log(Logging::CATEGORY_APPLICATION, "Execute command SID: {$sid}, CID: {$cid}, CMD: {$cmd}.");
 				}
 			}
@@ -147,6 +156,10 @@ abstract class BaculaConsoleActionBase extends BShellAction
 				$output = '';
 			}
 			if (feof($this->pipes[1])) {
+				break;
+			}
+			if ($idle_timeout <= 0) {
+				// Too long inactivity - idle timeout takes place
 				break;
 			}
 			usleep(100000);
