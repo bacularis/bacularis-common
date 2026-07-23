@@ -1,4 +1,4 @@
-module bacularis 1.0.16;
+module bacularis 1.0.17;
 
 require {
 	attribute can_change_process_identity;
@@ -238,7 +238,8 @@ allow httpd_t unconfined_t:process transition;
 #============= bacula_t ==============
 allow bacula_t chkpwd_exec_t:file { execute execute_no_trans map };
 allow bacula_t httpd_cache_t:dir write;
-allow bacula_t httpd_sys_rw_content_t:dir write;
+allow bacula_t httpd_sys_rw_content_t:dir { add_name remove_name write };
+allow bacula_t httpd_sys_rw_content_t:file { create append write unlink };
 allow bacula_t self:capability { audit_write net_admin sys_resource };
 allow bacula_t self:netlink_audit_socket { create read write nlmsg_relay };
 allow bacula_t self:process { setsched setrlimit };
