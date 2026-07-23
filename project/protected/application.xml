@@ -66,6 +66,7 @@
 		<!-- API modules available in common -->
 		<module id="awscli" class="Bacularis\API\Modules\AWSCLI" />
 		<module id="aws_command" class="Bacularis\API\Modules\Cloud\Amazon\AWSCommand" />
+		<module id="bacula-console" class="Bacularis\API\Modules\Bconsole" />
 		<!-- web modules available in common -->
 		<module id="host_config" class="Bacularis\Web\Modules\HostConfig" />
 	</modules>
