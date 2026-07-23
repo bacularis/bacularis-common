@@ -45,6 +45,12 @@ class Logging extends CommonModule
 	 */
 	private const COMMON_DIRECT_LOG = 'bacularis-common.log';
 
+	/**
+	 * Dedicated script log file.
+	 * Created and used for storing debug messages.
+	 */
+	private const SCRIPT_DIRECT_LOG = 'bacularis-%s.log';
+
 	public static $debug_enabled = false;
 
 	public const CATEGORY_EXECUTE = 'Execute';
@@ -144,8 +150,14 @@ class Logging extends CommonModule
 	 */
 	public static function directLog(string $message): void
 	{
+		$script_name = '';
+		if (isset($_SERVER['argv'][0])) {
+			$script_name = sprintf(self::SCRIPT_DIRECT_LOG, basename($_SERVER['argv'][0]));
+		} else {
+			$script_name = self::COMMON_DIRECT_LOG;
+		}
 		$dir = Prado::getPathOfNamespace('Bacularis.Common.Working');
-		$file = implode(DIRECTORY_SEPARATOR, [$dir, self::COMMON_DIRECT_LOG]);
+		$file = implode(DIRECTORY_SEPARATOR, [$dir, $script_name]);
 		file_put_contents($file, $message . PHP_EOL, LOCK_EX | FILE_APPEND);
 	}
 }
