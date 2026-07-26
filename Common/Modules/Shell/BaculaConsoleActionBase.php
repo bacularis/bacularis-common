@@ -420,7 +420,11 @@ abstract class BaculaConsoleActionBase extends BShellAction
 	{
 		$fpath = $this->getSessionOutputFile($sid, $cid);
 		Logging::log(Logging::CATEGORY_APPLICATION, "Save output SID: {$sid}, CID: {$cid}, Output: {$content}.");
-		return (file_put_contents($fpath, $content, LOCK_EX) !== false);
+		$orig_umask = umask(0);
+		umask(0077);
+		$ret = (file_put_contents($fpath, $content, LOCK_EX) !== false);
+		umask($orig_umask);
+		return $ret;
 	}
 
 	/**
@@ -501,7 +505,10 @@ abstract class BaculaConsoleActionBase extends BShellAction
 	protected function createSession(string $sid): bool
 	{
 		$fpath = $this->getSessionCommandFile($sid);
+		$orig_umask = umask(0);
+		umask(0077);
 		$result = (file_put_contents($fpath, '[]', LOCK_EX) !== false);
+		umask($orig_umask);
 		if ($result) {
 			Logging::log(
 				Logging::CATEGORY_APPLICATION,
