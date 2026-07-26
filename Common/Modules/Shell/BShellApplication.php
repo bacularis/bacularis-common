@@ -141,6 +141,10 @@ abstract class BShellApplication extends TApplication
 	 */
 	protected function parseActionParams($action)
 	{
+		if (!property_exists($action, 'params')) {
+			// Action does not use parameters
+			return;
+		}
 		$params = BacularisCommonPluginBase::parseCommandParameters($this->arguments);
 		foreach ($params as $param => $value) {
 			$action->params[$param] = $value ?? '';
