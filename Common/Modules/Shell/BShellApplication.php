@@ -181,11 +181,12 @@ abstract class BShellApplication extends TApplication
 	 */
 	public function printHelp()
 	{
+		$script = basename($_SERVER['argv'][0] ?? 'script');
 		$this->printGreeting();
-		$this->output_writer->writeLine("plugin type[/action] <parameter> [optional]", [TShellWriter::BLUE, TShellWriter::BOLD]);
+		$this->output_writer->writeLine("$script type[/action] <parameter> [optional]", [TShellWriter::BLUE, TShellWriter::BOLD]);
 		$this->output_writer->writeLine();
-		$this->output_writer->writeLine("example: plugin command/list");
-		$this->output_writer->writeLine("example: plugin help");
+		$this->output_writer->writeLine("example: $script command/list");
+		$this->output_writer->writeLine("example: $script help");
 		$this->output_writer->writeLine();
 		$this->output_writer->writeLine("There are available the following action types:");
 		foreach ($this->actions as $action) {
@@ -194,7 +195,7 @@ abstract class BShellApplication extends TApplication
 		}
 		$this->output_writer->writeLine("To see single action help, please run:");
 		$this->output_writer->writeLine();
-		$this->output_writer->writeLine("  plugin help <type-name>/<action-name>");
+		$this->output_writer->writeLine("  $script help <type-name>/<action-name>");
 		$this->output_writer->writeLine();
 		$this->output_writer->flush();
 	}

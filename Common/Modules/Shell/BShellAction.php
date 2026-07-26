@@ -130,7 +130,7 @@ class BShellAction extends TShellAction
 			// Print help message
 			$this->output_writer->write('  ');
 			$this->output_writer->writeLine(
-				$action_method . ' ' . $params_required . $params_optional,
+				$script . ' ' . $action_method . ' ' . $params_required . $params_optional,
 				[TShellWriter::BLUE, TShellWriter::BOLD]
 			);
 			$this->output_writer->writeLine('         ' . $params_description);
