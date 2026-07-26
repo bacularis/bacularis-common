@@ -43,7 +43,7 @@ class TaskCertAction extends BShellAction
 	];
 	protected $description = [
 		'Create SSL certificate commands',
-		'Renew web server SSL certificate before expiry time (default: 10 days). Supported certificate types: self-signed and lets-encrypt.'
+		'Renew web server SSL certificate before expiry time. Supported certificate types: self-signed and lets-encrypt.'
 	];
 	public $params = [];
 
