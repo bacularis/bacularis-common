@@ -31,11 +31,19 @@ class TaskCertAction extends BShellAction
 {
 	protected $action = 'cert';
 	protected $methods = ['renew'];
-	protected $parameters = [['type']];
-	protected $optional = [['days']];
+	protected $parameters = [
+		[
+			'type' => 'certificate-type'
+		]
+	];
+	protected $optional = [
+		[
+			'days' => 'number'
+		]
+	];
 	protected $description = [
-		'Task commands',
-		'Renew web server SSL certificate 10 days before expiry time.'
+		'Create SSL certificate commands',
+		'Renew web server SSL certificate before expiry time (default: 10 days). Supported certificate types: self-signed and lets-encrypt.'
 	];
 	public $params = [];
 
