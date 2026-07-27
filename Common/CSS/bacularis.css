@@ -1618,8 +1618,8 @@ div.opentip-container.style-guide_tour div.ot-content {
 
 
 #crumbs ul li:first-child a {
-	border-top-left-radius: 4px;
-	border-bottom-left-radius: 4px;
+	border-top-left-radius: 8px;
+	border-bottom-left-radius: 8px;
 }
 #crumbs ul li:first-child a:before {
 	display: none;
