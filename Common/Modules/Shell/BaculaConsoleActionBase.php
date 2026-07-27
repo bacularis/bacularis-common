@@ -212,7 +212,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 			'You have messages',
 			'Do you want to restore all the files\? \(yes\|no\):'
 		];
-		$pattern = '/^(' . implode('|', $end_lines) . ')/';
+		$pattern = '/^(' . implode('|', $end_lines) . ')/i';
 		return (preg_match($pattern, $line) === 1);
 	}
 
