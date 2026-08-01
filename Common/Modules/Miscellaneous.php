@@ -697,9 +697,29 @@ class Miscellaneous extends TModule
 	 */
 	public static function filterList(array &$list, string $pattern): void
 	{
+		$filter_cb = function ($item) use ($pattern) {
+			if (is_array($item)) {
+				$assoc_keys = array_filter(array_keys($item), 'is_string');
+				if (count($assoc_keys) > 0) {
+					// associative array, not supported, skip it
+					return false;
+				}
+				$found = false;
+				for ($i = 0; $i < count($item); $i++) {
+					if (fnmatch($pattern, $item[$i], FNM_NOESCAPE | FNM_CASEFOLD)) {
+						$found = true;
+						break;
+					}
+				}
+				return $found;
+			} else {
+				return fnmatch($pattern, $item, FNM_NOESCAPE | FNM_CASEFOLD);
+			}
+		};
+
 		$list = array_filter(
 			$list,
-			fn ($item) => fnmatch($pattern, $item, FNM_NOESCAPE | FNM_CASEFOLD),
+			$filter_cb
 		);
 		$list = array_values($list);
 	}
