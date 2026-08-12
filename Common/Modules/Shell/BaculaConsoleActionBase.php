@@ -350,7 +350,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 		if (!$this->sessionExists($sid)) {
 			return $result;
 		}
-		$interval_msec = 50;
+		$interval_msec = 100;
 		while (true) {
 			$result = $this->readOutput($sid, $cid);
 			if (is_string($result)) {
