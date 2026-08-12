@@ -332,7 +332,6 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 	{
 		$cmd = [];
 		$menu_item = self::PARAM_MENU_LIST[$param] ?? '';
-		$cid = $this->generateCommandId();
 
 		switch ($menu_item['type']) {
 			case ConsoleMenuItem::ITEM_TYPE_INPUT: {
@@ -341,6 +340,7 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 				break;
 			}
 			case ConsoleMenuItem::ITEM_TYPE_SELECT: {
+				$cid = $this->generateCommandId();
 				$output = $this->executeMenuCommand($sid, $cid, $menu_item['item_no']);
 				if (key_exists('map', $menu_item) && key_exists($value, $menu_item['map'])) {
 					$value = $menu_item['map'][$value];
@@ -357,6 +357,7 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 
 		$result = '';
 		if ($cmd) {
+			$cid = $this->generateCommandId();
 			$command = implode("\n", $cmd);
 			$result = $this->executeMenuCommand($sid, $cid, $command);
 		}
