@@ -32,15 +32,19 @@ class Client extends CommonModule
 	/**
 	 * Get a new connection.
 	 *
+	 * @param array $options additional cURL options
 	 * @return CurlHandle|resource cURL connection instance
 	 */
-	private static function getConnection()
+	private static function getConnection(array $options = [])
 	{
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 150); //@TODO Make it configurable
 		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 		curl_setopt($ch, CURLOPT_HEADER, true);
+		if ($options) {
+			curl_setopt_array($ch, $options);
+		}
 		return $ch;
 	}
 
@@ -62,11 +66,12 @@ class Client extends CommonModule
 	 *
 	 * @param string $url destination URL
 	 * @param array $heads HTTP headers
+	 * @param array $options additional connection options
 	 * @return array response result
 	 */
-	public static function get(string $url, array $heads = []): array
+	public static function get(string $url, array $heads = [], array $options = []): array
 	{
-		$ch = self::getConnection();
+		$ch = self::getConnection($options);
 		$headers = self::getHeaders($heads);
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -96,11 +101,12 @@ class Client extends CommonModule
 	 * @param string $url destination URL
 	 * @param string $body request body
 	 * @param array $heads HTTP headers
+	 * @param array $options additional connection options
 	 * @return array response result
 	 */
-	public static function post(string $url, string $body, array $heads = []): array
+	public static function post(string $url, string $body, array $heads = [], array $options = []): array
 	{
-		$ch = self::getConnection();
+		$ch = self::getConnection($options);
 		$headers = self::getHeaders($heads);
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -135,11 +141,12 @@ class Client extends CommonModule
 	 *
 	 * @param string $url destination URL
 	 * @param array $heads HTTP headers
+	 * @param array $options additional connection options
 	 * @return array response result
 	 */
-	public static function head(string $url, array $heads = []): array
+	public static function head(string $url, array $heads = [], array $options = []): array
 	{
-		$ch = self::getConnection();
+		$ch = self::getConnection($options);
 		$headers = self::getHeaders($heads);
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
