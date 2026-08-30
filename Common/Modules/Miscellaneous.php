@@ -70,7 +70,7 @@ class Miscellaneous extends TModule
 		'g' => 'Migration'
 	];
 
-	private $jobLevels = [
+	private const JOB_LEVELS = [
 		'F' => 'Full',
 		'I' => 'Incremental',
 		'D' => 'Differential',
@@ -203,12 +203,18 @@ class Miscellaneous extends TModule
 
 	public function getJobLevels()
 	{
-		return $this->jobLevels;
+		return self::JOB_LEVELS;
 	}
 
 	public function getJobLevelLong($level)
 	{
-		return ($this->jobLevels[$level] ?? '');
+		return (self::JOB_LEVELS[$level] ?? '');
+	}
+
+	public static function getJobLevelShort(string $level_long): string
+	{
+		$levels = array_flip(self::JOB_LEVELS);
+		return ($levels[$level_long] ?? '');
 	}
 
 	public function getJobState($jobStateLetter = null)
@@ -217,7 +223,7 @@ class Miscellaneous extends TModule
 		if (is_null($jobStateLetter)) {
 			$state = $this->jobStates;
 		} else {
-			$state = array_key_exists($jobStateLetter, $this->jobStates) ? $this->jobStates[$jobStateLetter] : null;
+			$state = key_exists($jobStateLetter, $this->jobStates) ? $this->jobStates[$jobStateLetter] : null;
 		}
 		return $state;
 	}
@@ -313,12 +319,23 @@ class Miscellaneous extends TModule
 		return $statesByType;
 	}
 
+	/**
+	 * Get job type name.
+	 *
+	 * @param string $type job type letter
+	 * @return string job type name
+	 */
+	public function getJobTypeName(string $type): string
+	{
+		return $this->job_types[$type] ?? $type;
+	}
+
 	/*
 	 * @TODO: Move it to separate validation module.
 	 */
 	public function isValidJobLevel($jobLevel)
 	{
-		return key_exists($jobLevel, $this->getJobLevels());
+		return key_exists($jobLevel, self::JOB_LEVELS);
 	}
 
 	public function isValidJobType($job_type)
@@ -722,5 +739,35 @@ class Miscellaneous extends TModule
 			$filter_cb
 		);
 		$list = array_values($list);
+	}
+
+	/**
+	 * Get human readable mode/attributes (ex. drwx-r-xr-x).
+	 *
+	 * @param int $dmode mode value in decimal LStat form
+	 * @return string mode in human readable form
+	 */
+	public static function get_human_mode($dmode)
+	{
+		$ts = [
+			0140000 => 'ssocket',
+			0120000 => 'llink',
+			0100000 => '-file',
+			0060000 => 'bblock',
+			0040000 => 'ddir',
+			0020000 => 'cchar',
+			0010000 => 'pfifo'
+		];
+
+		$p = $dmode;
+		$t = decoct($dmode & 0170000); // File Encoding Bit
+		$mode = (key_exists(octdec($t), $ts)) ? $ts[octdec($t)][0] : 'u';
+		$mode .= (($p & 0x0100) ? 'r' : '-') . (($p & 0x0080) ? 'w' : '-');
+		$mode .= (($p & 0x0040) ? (($p & 0x0800) ? 's' : 'x') : (($p & 0x0800) ? 'S' : '-'));
+		$mode .= (($p & 0x0020) ? 'r' : '-') . (($p & 0x0010) ? 'w' : '-');
+		$mode .= (($p & 0x0008) ? (($p & 0x0400) ? 's' : 'x') : (($p & 0x0400) ? 'S' : '-'));
+		$mode .= (($p & 0x0004) ? 'r' : '-') . (($p & 0x0002) ? 'w' : '-');
+		$mode .= (($p & 0x0001) ? (($p & 0x0200) ? 't' : 'x') : (($p & 0x0200) ? 'T' : '-'));
+		return $mode;
 	}
 }
