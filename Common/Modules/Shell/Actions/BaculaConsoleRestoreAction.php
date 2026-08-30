@@ -112,6 +112,7 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 	protected $optional = [
 		[],
 		[
+			'comment' => 'comment',
 			'async' => '0/1'
 		],
 		[
@@ -168,6 +169,9 @@ class BaculaConsoleRestoreAction extends BaculaConsoleActionBase
 			'restorejob="' . $this->params['restorejob'] . '"'
 			//'select' - NOTE: select takes latest jobids
 		];
+		if (isset($this->params['comment'])) {
+			$command[] = 'comment="' . $this->params['comment'] . '"';
+		}
 		$cid = $this->generateCommandId();
 		$result = $this->executeConsole(
 			$this->params['session-id'],
