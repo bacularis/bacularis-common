@@ -1,4 +1,4 @@
-module bacularis 1.0.17;
+module bacularis 1.0.18;
 
 require {
 	attribute can_change_process_identity;
@@ -214,7 +214,7 @@ allow httpd_t user_home_t:file { read open };
 allow httpd_t user_tmp_t:dir { create watch };
 allow httpd_t user_tmp_t:file { execute execute_no_trans open };
 allow httpd_t usr_t:dir { add_name create relabelfrom relabelto remove_name setattr write rmdir };
-allow httpd_t usr_t:file { write create relabelfrom relabelto rename setattr unlink };
+allow httpd_t usr_t:file { write create relabelfrom relabelto rename setattr unlink append };
 allow httpd_t var_t:dir rmdir;
 allow httpd_t var_t:file { open getattr read unlink };
 allow httpd_t var_log_t:dir { create relabelfrom setattr };
@@ -247,4 +247,5 @@ allow bacula_t sudo_exec_t:file { execute execute_no_trans map };
 allow bacula_t systemd_logind_t:dbus send_msg;
 allow bacula_t systemd_logind_sessions_t:fifo_file write;
 allow bacula_t unconfined_service_t:unix_stream_socket connectto;
-
+allow bacula_t usr_t:dir { remove_name write };
+allow bacula_t usr_t:file unlink;
