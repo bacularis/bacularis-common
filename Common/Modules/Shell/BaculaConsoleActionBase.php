@@ -208,6 +208,7 @@ abstract class BaculaConsoleActionBase extends BShellAction
 			'Please enter the full path prefix for restore',
 			'Select replace option',
 			'Select Client \(File daemon\) resource',
+			'No files selected to be restored',
 			'Job queued. JobId=',
 			'You have messages',
 			'Do you want to restore all the files\? \(yes\|no\):'
