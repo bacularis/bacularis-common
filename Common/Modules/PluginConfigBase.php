@@ -45,6 +45,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 	public const PLUGIN_TYPE_BACKUP = 'backup';
 	public const PLUGIN_TYPE_ACTION = 'action';
 	public const PLUGIN_TYPE_RUN_ACTION = 'run-action';
+	public const PLUGIN_TYPE_VERIFICATION = 'verification';
 
 	/**
 	 * Plugin script file pattern.

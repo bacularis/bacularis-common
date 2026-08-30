@@ -63,6 +63,22 @@
 		<module id="postgresqlbackup_plugin" class="Bacularis\Common\Plugins\PostgreSQLBackup" />
 		<module id="mssqldbbackup_plugin" class="Bacularis\Common\Plugins\MSSQLDBBackup" />
 		<module id="amazonec2backup_plugin" class="Bacularis\Common\Plugins\AmazonEC2Backup" />
+		<module id="fileexistscheck_plugin" class="Bacularis\Common\Plugins\FileExistsCheck" />
+		<module id="filesizecheck_plugin" class="Bacularis\Common\Plugins\FileSizeCheck" />
+		<module id="md5checksumhexcheck_plugin" class="Bacularis\Common\Plugins\MD5ChecksumHexCheck" />
+		<module id="md5checksumbase64check_plugin" class="Bacularis\Common\Plugins\MD5ChecksumBase64Check" />
+		<module id="sha1checksumhexcheck_plugin" class="Bacularis\Common\Plugins\SHA1ChecksumHexCheck" />
+		<module id="sha1checksumbase64check_plugin" class="Bacularis\Common\Plugins\SHA1ChecksumBase64Check" />
+		<module id="sha256checksumhexcheck_plugin" class="Bacularis\Common\Plugins\SHA256ChecksumHexCheck" />
+		<module id="sha256checksumbase64check_plugin" class="Bacularis\Common\Plugins\SHA256ChecksumBase64Check" />
+		<module id="sha512checksumhexcheck_plugin" class="Bacularis\Common\Plugins\SHA512ChecksumHexCheck" />
+		<module id="sha512checksumbase64check_plugin" class="Bacularis\Common\Plugins\SHA512ChecksumBase64Check" />
+		<module id="typecheck_plugin" class="Bacularis\Common\Plugins\TypeCheck" />
+		<module id="mtimecheck_plugin" class="Bacularis\Common\Plugins\MTIMECheck" />
+		<module id="permissionscheck_plugin" class="Bacularis\Common\Plugins\PermissionsCheck" />
+		<module id="uidcheck_plugin" class="Bacularis\Common\Plugins\UIDCheck" />
+		<module id="gidcheck_plugin" class="Bacularis\Common\Plugins\GIDCheck" />
+		<module id="restore_verification" class="Bacularis\Common\Modules\RestoreVerification" />
 		<!-- API modules available in common -->
 		<module id="awscli" class="Bacularis\API\Modules\AWSCLI" />
 		<module id="aws_command" class="Bacularis\API\Modules\Cloud\Amazon\AWSCommand" />
