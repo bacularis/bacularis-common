@@ -54,6 +54,7 @@ class RestoreDestinationCapability
 	/**
 	 * Get capability description by name.
 	 *
+	 * @param string $name capability name
 	 * @return string capability description or empty string if capability not found.
 	 */
 	public static function getDescription(string $name): string
