@@ -118,10 +118,12 @@ class PermissionsCheck extends BacularisCommonPluginBase implements IBacularisVe
 	private static function getCurrentPermissions(string $path): string
 	{
 		$permissions = '';
-		$lstat = @lstat($path);
-		if (is_array($lstat) && key_exists('mode', $lstat)) {
-			$human_mode = Miscellaneous::get_human_mode($lstat['mode']);
-			$permissions = substr($human_mode, 1);
+		if (file_exists($path) || is_link($path)) {
+			$lstat = lstat($path);
+			if (is_array($lstat) && key_exists('mode', $lstat)) {
+				$human_mode = Miscellaneous::get_human_mode($lstat['mode']);
+				$permissions = substr($human_mode, 1);
+			}
 		}
 		return $permissions;
 	}

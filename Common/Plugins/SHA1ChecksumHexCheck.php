@@ -74,9 +74,17 @@ class SHA1ChecksumHexCheck extends BacularisCommonPluginBase implements IBacular
 	public static function check(string $operator, $current_value, $expected_value): array
 	{
 		$ret = ['result' => false, 'current' => '', 'expected' => $expected_value];
-		if (!file_exists($current_value)) {
+
+		$is_link = is_link($current_value);
+
+		if (!file_exists($current_value) && !$is_link) {
 			return $ret;
 		}
+
+		if ($is_link) {
+			return $ret;
+		}
+
 		$checksum = hash_file('sha1', $current_value);
 		$ret['current'] = $checksum;
 		$ret['expected'] = $expected_value;

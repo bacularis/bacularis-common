@@ -115,9 +115,11 @@ class MTIMECheck extends BacularisCommonPluginBase implements IBacularisVerifica
 	private static function getCurrentMTIME(string $path)
 	{
 		$mtime = '';
-		$lstat = @lstat($path);
-		if (is_array($lstat) && key_exists('mtime', $lstat)) {
-			$mtime = $lstat['mtime'];
+		if (file_exists($path) || is_link($path)) {
+			$lstat = lstat($path);
+			if (is_array($lstat) && key_exists('mtime', $lstat)) {
+				$mtime = $lstat['mtime'];
+			}
 		}
 		return $mtime;
 	}

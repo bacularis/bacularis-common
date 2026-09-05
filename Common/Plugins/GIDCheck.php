@@ -116,9 +116,11 @@ class GIDCheck extends BacularisCommonPluginBase implements IBacularisVerificati
 	private static function getCurrentValue(string $path, string $key)
 	{
 		$value = '';
-		$lstat = @lstat($path);
-		if (is_array($lstat) && key_exists($key, $lstat)) {
-			$value = $lstat[$key];
+		if (file_exists($path) || is_link($path)) {
+			$lstat = lstat($path);
+			if (is_array($lstat) && key_exists($key, $lstat)) {
+				$value = $lstat[$key];
+			}
 		}
 		return $value;
 	}

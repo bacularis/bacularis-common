@@ -74,7 +74,7 @@ class FileExistsCheck extends BacularisCommonPluginBase implements IBacularisVer
 	public static function check(string $operator, $current_value, $expected_value): array
 	{
 		$expected = $expected_value == 'true';
-		$value = file_exists($current_value);
+		$value = file_exists($current_value) || is_link($current_value);
 		$ret = [
 			'result' => false,
 			'current' => $value ? 'true' : 'false',

@@ -87,10 +87,14 @@ class FileSizeCheck extends BacularisCommonPluginBase implements IBacularisVerif
 		if ($operator == self::OPERATOR_EQUAL_CATALOG) {
 			$ret['expected'] = $expected_value['lstat']['size'] ?? '';
 		}
-		if (!file_exists($current_value)) {
+		if (!file_exists($current_value) && !is_link($current_value)) {
 			return $ret;
 		}
-		$size = filesize($current_value);
+		$stat = lstat($current_value);
+		if ($stat === false) {
+			return $ret;
+		}
+		$size = $stat['size'];
 		$ret['current'] = $size;
 		switch ($operator) {
 			case self::OPERATOR_LESS_THAN: {

@@ -79,11 +79,18 @@ class SHA256ChecksumBase64Check extends BacularisCommonPluginBase implements IBa
 		if ($operator == self::OPERATOR_EQUAL_CATALOG) {
 			$ret['expected'] = $expected_value['checksum'] ?? '';
 		}
-		if (!file_exists($current_value)) {
+
+		$is_link = is_link($current_value);
+
+		if (!file_exists($current_value) && !$is_link) {
 			return $ret;
 		}
+
 		switch ($operator) {
 			case self::OPERATOR_EQUAL_TO: {
+				if ($is_link) {
+					break;
+				}
 				$checksum_bin = hash_file('sha256', $current_value, true);
 				$checksum_b64 = base64_encode($checksum_bin);
 				$checksum = rtrim($checksum_b64, '=');
@@ -92,6 +99,9 @@ class SHA256ChecksumBase64Check extends BacularisCommonPluginBase implements IBa
 				break;
 			}
 			case self::OPERATOR_NOT_EQUAL_TO: {
+				if ($is_link) {
+					break;
+				}
 				$checksum_bin = hash_file('sha256', $current_value, true);
 				$checksum_b64 = base64_encode($checksum_bin);
 				$checksum = rtrim($checksum_b64, '=');
@@ -100,9 +110,13 @@ class SHA256ChecksumBase64Check extends BacularisCommonPluginBase implements IBa
 				break;
 			}
 			case self::OPERATOR_EQUAL_CATALOG: {
-				$checksum_bin = hash_file('sha256', $current_value, true);
-				$checksum_b64 = base64_encode($checksum_bin);
-				$checksum = rtrim($checksum_b64, '=');
+				if ($is_link) {
+					$checksum = '0';
+				} else {
+					$checksum_bin = hash_file('sha256', $current_value, true);
+					$checksum_b64 = base64_encode($checksum_bin);
+					$checksum = rtrim($checksum_b64, '=');
+				}
 				$ret['current'] = $checksum;
 				$ret['result'] = $checksum == $expected_value['checksum'];
 				break;

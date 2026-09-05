@@ -74,9 +74,17 @@ class MD5ChecksumHexCheck extends BacularisCommonPluginBase implements IBaculari
 	public static function check(string $operator, $current_value, $expected_value): array
 	{
 		$ret = ['result' => false, 'current' => '', 'expected' => $expected_value];
-		if (!file_exists($current_value)) {
+
+		$is_link = is_link($current_value);
+
+		if (!file_exists($current_value) && !$is_link) {
 			return $ret;
 		}
+
+		if ($is_link) {
+			return $ret;
+		}
+
 		$checksum = md5_file($current_value);
 		$ret['current'] = $checksum;
 		$ret['expected'] = $expected_value;
