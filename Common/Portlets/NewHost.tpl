@@ -28,6 +28,7 @@
 			<com:TActiveTextBox ID="APIPort" CssClass="w3-input w3-border" CausesValidation="false" Text="9097" Width="70px" Style="display: inline-block" />
 			&nbsp;<i class="fa fa-asterisk w3-text-red" style="line-height: 40px"></i>
 			<com:TRequiredFieldValidator ValidationGroup="NewHostGroup" CssClass="validator-block" Display="Dynamic" ControlCssClass="invalidate" ControlToValidate="APIPort" Text="<%[ Please enter API port. ]%>" />
+			<com:TRangeValidator ValidationGroup="NewHostGroup" ControlToValidate="APIPort" DataType="Integer" MinValue="1" MaxValue="65535" Text="Input must be between 1 and 65535." />
 		</div>
 	</div>
 	<div class="auth_setting">

@@ -67,7 +67,7 @@ class NewHost extends PortletTemplate
 		$host_params = [
 			'protocol' => $this->APIProtocol->SelectedValue,
 			'address' => $this->APIAddress->Text,
-			'port' => $this->APIPort->Text,
+			'port' => (int) $this->APIPort->Text,
 			'url_prefix' => ''
 		];
 
