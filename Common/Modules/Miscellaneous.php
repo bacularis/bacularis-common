@@ -783,4 +783,20 @@ class Miscellaneous extends TModule
 	{
 		return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 	}
+
+	/**
+	 * JSON value helper.
+	 * It encodes value to JSON safe to use in JavaScript context inside HTML.
+	 *
+	 * @param mixed $value value to encode
+	 * @return string JSON encoded value
+	 */
+	public static function json_value($value): string
+	{
+		$json = json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+		if ($json === false) {
+			$json = 'null';
+		}
+		return $json;
+	}
 }
