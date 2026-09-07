@@ -770,4 +770,17 @@ class Miscellaneous extends TModule
 		$mode .= (($p & 0x0001) ? (($p & 0x0200) ? 't' : 'x') : (($p & 0x0200) ? 'T' : '-'));
 		return $mode;
 	}
+
+	/**
+	 * HTML value helper.
+	 * It converts special characters to HTML entities that are save
+	 * to use in HTML.
+	 *
+	 * @param null|string $value value to Convert
+	 * @return string converted value
+	 */
+	public static function html_value($value = '')
+	{
+		return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+	}
 }
