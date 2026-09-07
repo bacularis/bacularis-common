@@ -28,4 +28,5 @@ CVE identifiers will be added once they are assigned and published.
 - Add JSON value helper
 - Add helper for escaping special characters
 - Fix checker support for symbolic links
+- Move text renderer to common script
 
