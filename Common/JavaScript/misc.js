@@ -656,6 +656,15 @@ function adapt_datatable_size(el) {
 	}
 }
 
+function render_text(data, type, row) {
+	let ret = data;
+	if (type == 'display' || type == 'filter') {
+		const span = document.createElement('SPAN');
+		span.textContent = data == null ? '' : data;
+		ret = span.innerHTML;
+	}
+	return ret;
+}
 
 var get_random_string = function(allowed, len) {
 	if (!allowed) {
