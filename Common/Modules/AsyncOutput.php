@@ -42,8 +42,8 @@ class AsyncOutput
 	 * Create an asynchronous output file with a cryptographically strong ID.
 	 *
 	 * @param string $directory output file directory
-	 * @return array output file path and public output ID
 	 * @throws \RuntimeException when the output file cannot be created securely
+	 * @return array output file path and public output ID
 	 */
 	public static function createOutputFile(string $directory): array
 	{
