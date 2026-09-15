@@ -81,8 +81,9 @@ class MD5ChecksumBase64Check extends BacularisCommonPluginBase implements IBacul
 		}
 
 		$is_link = is_link($current_value);
+		$is_dir = is_dir($current_value);
 
-		if (!file_exists($current_value) && !$is_link) {
+		if ((!file_exists($current_value) && !$is_link) || $is_dir) {
 			return $ret;
 		}
 

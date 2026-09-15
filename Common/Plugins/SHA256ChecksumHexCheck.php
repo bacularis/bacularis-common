@@ -76,8 +76,9 @@ class SHA256ChecksumHexCheck extends BacularisCommonPluginBase implements IBacul
 		$ret = ['result' => false, 'current' => '', 'expected' => $expected_value];
 
 		$is_link = is_link($current_value);
+		$is_dir = is_dir($current_value);
 
-		if (!file_exists($current_value) && !$is_link) {
+		if ((!file_exists($current_value) && !$is_link) || $is_dir) {
 			return $ret;
 		}
 
