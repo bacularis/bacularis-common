@@ -656,16 +656,6 @@ function adapt_datatable_size(el) {
 	}
 }
 
-function render_text(data, type, row) {
-	let ret = data;
-	if (type == 'display' || type == 'filter') {
-		const span = document.createElement('SPAN');
-		span.textContent = data == null ? '' : data;
-		ret = span.innerHTML;
-	}
-	return ret;
-}
-
 var get_random_string = function(allowed, len) {
 	if (!allowed) {
 		allowed = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -1012,6 +1002,14 @@ function get_text_color_to_bg(bg_color) {
 		txt_color = '#ffffff';
 	}
 	return txt_color;
+}
+
+const render_text = (data, type, row) => {
+	if (type == 'display') {
+		return DataTable.render.text().display(data);
+	} else {
+		return data;
+	}
 }
 
 /**

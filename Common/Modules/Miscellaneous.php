@@ -244,6 +244,22 @@ class Miscellaneous extends TModule
 		return array_keys($this->components);
 	}
 
+	/**
+	 * Validate component type by its short name.
+	 *
+	 * @param mixed $comp component short name
+	 * @return bool true if component type is supported, false otherwise
+	 */
+	public function isValidComponentType($comp): bool
+	{
+		if (!is_string($comp)) {
+			return false;
+		}
+
+		$components = $this->getComponents();
+		return in_array($comp, $components, true);
+	}
+
 	public function getMainComponentResource($type)
 	{
 		$resource = null;
@@ -280,6 +296,53 @@ class Miscellaneous extends TModule
 			$resources = $this->resources;
 		}
 		return $resources;
+	}
+
+	/**
+	 * Validate resource type for a component.
+	 * Resource type matching is case-insensitive.
+	 *
+	 * @param mixed $comp component short name
+	 * @param mixed $res resource type
+	 * @return bool true if resource type is supported by component, false otherwise
+	 */
+	public function isValidResourceType($comp, $res): bool
+	{
+		if (!$this->isValidComponentType($comp) || !is_string($res)) {
+			return false;
+		}
+
+		$resources = $this->getResources($comp);
+		for ($i = 0; $i < count($resources); $i++) {
+			$resource = $this->setResourceToAPIForm($resources[$i]);
+			if (strcasecmp($resource, $res) === 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Validate resource permission map keys for a component.
+	 *
+	 * @param string $component component name
+	 * @param array $permissions resource permission map
+	 * @return bool true if all resource keys are supported, false otherwise
+	 */
+	public function isValidResourcePermissions(string $component, array $permissions): bool
+	{
+		if (!key_exists($component, $this->resources)) {
+			return false;
+		}
+
+		$resources = $this->getResources($component);
+		$permission_resources = array_keys($permissions);
+		for ($i = 0; $i < count($permission_resources); $i++) {
+			if (!is_string($permission_resources[$i]) || !in_array($permission_resources[$i], $resources, true)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public function setResourceToAPIForm(string $resource): string
@@ -345,7 +408,177 @@ class Miscellaneous extends TModule
 
 	public function isValidName($name)
 	{
-		return (preg_match('/^[\w:\.\-\s]{1,127}$/', $name) === 1);
+		return (is_string($name) && preg_match('/^[\w:\.\-\s]{1,127}$/', $name) === 1);
+	}
+
+	/**
+	 * Validate certificate validity period in days.
+	 *
+	 * @param mixed $days certificate validity period
+	 * @return bool true if the period is in the 1..36500 range, otherwise false
+	 */
+	public function isValidCertificateDays($days): bool
+	{
+		if (!is_string($days) && !is_int($days)) {
+			return false;
+		}
+
+		$days = (string) $days;
+		if (preg_match('/^[0-9]{1,5}$/D', $days) !== 1) {
+			return false;
+		}
+
+		$days_no = (int) $days;
+		return $days_no >= 1 && $days_no <= 36500;
+	}
+
+	/**
+	 * Validate certificate country code.
+	 *
+	 * An empty value is accepted because this certificate subject field is
+	 * optional in the Bacularis form.
+	 *
+	 * @param string $country_code certificate country code
+	 * @return bool true if the country code is valid, otherwise false
+	 */
+	public function isValidCertificateCountry(string $country_code): bool
+	{
+		return $country_code === '' || preg_match('/^[A-Za-z]{2}$/D', $country_code) === 1;
+	}
+
+	/**
+	 * Validate certificate email address.
+	 *
+	 * An empty value is accepted because the self-signed certificate email
+	 * field is optional.
+	 *
+	 * @param string $email certificate email address
+	 * @return bool true if the email address is valid, otherwise false
+	 */
+	public function isValidCertificateEmail(string $email): bool
+	{
+		if ($email === '') {
+			return true;
+		}
+		if (!$this->isValidCertificateTextValue($email)) {
+			return false;
+		}
+		return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+	}
+
+	/**
+	 * Validate certificate common name used as a host or IP address.
+	 *
+	 * @param string $common_name certificate common name
+	 * @return bool true if the common name is valid, otherwise false
+	 */
+	public function isValidCertificateCommonName(string $common_name): bool
+	{
+		if ($common_name === '' || strlen($common_name) > 253) {
+			return false;
+		}
+		if (filter_var($common_name, FILTER_VALIDATE_IP) !== false) {
+			return true;
+		}
+
+		$host = $common_name;
+		if (strpos($common_name, '*.') === 0) {
+			$host = substr($common_name, 2);
+			if ($host === '' || strpos($host, '.') === false) {
+				return false;
+			}
+		}
+		return filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+	}
+
+	/**
+	 * Validate a human-readable certificate subject value.
+	 *
+	 * Control characters and OpenSSL slash-form record delimiters are not
+	 * accepted. Printable punctuation remains valid and is protected separately
+	 * at the POSIX shell argument boundary.
+	 *
+	 * @param string $value certificate subject value
+	 * @return bool true if the subject value is valid, otherwise false
+	 */
+	public function isValidCertificateTextValue(string $value): bool
+	{
+		if (preg_match('/[\x00-\x1F\x7F]/', $value) === 1) {
+			return false;
+		}
+		return strpbrk($value, '/\\') === false;
+	}
+
+	/**
+	 * Validate local system username used by su.
+	 *
+	 * @param string $username local system username
+	 * @return bool true if the username is valid, otherwise false
+	 */
+	public function isValidSystemUsername(string $username): bool
+	{
+		return preg_match('/^[A-Za-z0-9_.][A-Za-z0-9_.-]{0,254}$/D', $username) === 1;
+	}
+
+	/**
+	 * Validate SSH destination host or address.
+	 *
+	 * It accepts DNS names, concrete SSH config aliases, IPv4 addresses and
+	 * IPv6 addresses in plain or bracketed form.
+	 *
+	 * @param string $host destination host or address
+	 * @return bool true if the host is valid, otherwise false
+	 */
+	public function isValidSSHHost(string $host): bool
+	{
+		if ($host === '' || strlen($host) > 253) {
+			return false;
+		}
+
+		$ip = $host;
+		if ($host[0] === '[' && substr($host, -1) === ']') {
+			$ip = substr($host, 1, -1);
+		}
+		if (filter_var($ip, FILTER_VALIDATE_IP) !== false) {
+			return true;
+		}
+
+		$zone_pos = strrpos($ip, '%');
+		if ($zone_pos !== false) {
+			$ipv6 = substr($ip, 0, $zone_pos);
+			$zone = substr($ip, $zone_pos + 1);
+			$is_ipv6 = filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
+			$is_zone = preg_match('/^[A-Za-z0-9_.-]+$/D', $zone) === 1;
+			return $is_ipv6 && $is_zone;
+		}
+
+		return preg_match('/^[A-Za-z0-9_](?:[A-Za-z0-9._-]{0,251}[A-Za-z0-9_.])?$/D', $host) === 1;
+	}
+
+	/**
+	 * Validate SSH username.
+	 *
+	 * @param string $username SSH account name
+	 * @return bool true if the username is valid, otherwise false
+	 */
+	public function isValidSSHUsername(string $username): bool
+	{
+		return preg_match('/^[A-Za-z0-9_.][A-Za-z0-9_.-]{0,254}$/D', $username) === 1;
+	}
+
+	/**
+	 * Validate SSH port.
+	 *
+	 * @param string $port SSH port
+	 * @return bool true if the port is in the 1..65535 range, otherwise false
+	 */
+	public function isValidSSHPort(string $port): bool
+	{
+		if (preg_match('/^[0-9]{1,5}$/D', $port) !== 1) {
+			return false;
+		}
+		$port_number = (int) $port;
+		return $port_number >= 1 && $port_number <= 65535;
 	}
 
 	public function filterValidNameList(array $name_list): array
@@ -397,6 +630,18 @@ class Miscellaneous extends TModule
 	public function isValidPath($path)
 	{
 		return (preg_match('/^[\p{L}\p{N}\p{Z}\p{Sc}\p{Pd}\[\]\-\'\/\\(){}:.#~_,+!$%=]{0,10000}$/u', $path) === 1);
+	}
+
+	/**
+	 * Validate a restore Where value before it can be substituted into a bpipe
+	 * writer command.
+	 *
+	 * @param mixed $where restore Where value
+	 * @return bool true if the value is valid, otherwise false
+	 */
+	public function isValidRestoreWhere($where): bool
+	{
+		return is_string($where) && $this->isValidPath($where) && strpos($where, '$') === false;
 	}
 
 	public function isValidFilename($path)
@@ -793,7 +1038,7 @@ class Miscellaneous extends TModule
 	 */
 	public static function json_value($value): string
 	{
-		$json = json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+		$json = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
 		if ($json === false) {
 			$json = 'null';
 		}

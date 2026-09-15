@@ -27,9 +27,10 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
+use Bacularis\API\Modules\OAuth2\BaculumOAuth2;
+use Bacularis\Common\Portlets\PortletTemplate;
 use Prado\TPropertyValue;
 use Prado\Web\UI\TCommandEventParameter;
-use Bacularis\Common\Portlets\PortletTemplate;
 
 /**
  * New auth client control.
@@ -89,20 +90,26 @@ class NewAuthClient extends PortletTemplate
 				);
 			}
 		} elseif ($this->getAuthType() === self::AUTH_TYPE_OAUTH2) {
+			$redirect_uri = BaculumOAuth2::normalizeRedirectURI($this->APIOAuth2RedirectURI->Text);
+			if ($redirect_uri === null) {
+				$this->NewAuthClientError->Display = 'Dynamic';
+				return;
+			}
 			$oauth2_cfg = $this->getModule('oauth2_config')->getConfig();
 			if ($this->Mode == self::MODE_TYPE_ADD) {
 				if (!key_exists($this->APIOAuth2ClientId->Text, $oauth2_cfg)) {
 					$oauth2_cfg[$this->APIOAuth2ClientId->Text] = [
 						'client_id' => $this->APIOAuth2ClientId->Text,
 						'client_secret' => $this->APIOAuth2ClientSecret->Text,
-						'redirect_uri' => $this->APIOAuth2RedirectURI->Text,
+						'redirect_uri' => $redirect_uri,
 						'scope' => $this->APIOAuth2Scope->Text,
 						'bconsole_cfg_path' => $this->APIOAuth2BconsoleCfgPath->Text,
 						'name' => $this->APIOAuth2Name->Text
 					];
 					$perms = $this->ResourcePermissions->getPermissions();
 					$oauth2_cfg[$this->APIOAuth2ClientId->Text] = array_merge($oauth2_cfg[$this->APIOAuth2ClientId->Text], $perms);
-					$result = $this->getModule('oauth2_config')->setConfig($oauth2_cfg);
+					$oauth2_config = $this->getModule('oauth2_config');
+					$result = $oauth2_config->setConfig($oauth2_cfg, $this->APIOAuth2ClientId->Text);
 				} else {
 					$exists = true;
 				}
@@ -110,14 +117,15 @@ class NewAuthClient extends PortletTemplate
 				$oauth2_cfg[$this->APIOAuth2ClientIdHidden->Value] = [
 					'client_id' => $this->APIOAuth2ClientIdHidden->Value,
 					'client_secret' => $this->APIOAuth2ClientSecret->Text,
-					'redirect_uri' => $this->APIOAuth2RedirectURI->Text,
+					'redirect_uri' => $redirect_uri,
 					'scope' => $this->APIOAuth2Scope->Text,
 					'bconsole_cfg_path' => $this->APIOAuth2BconsoleCfgPath->Text,
 					'name' => $this->APIOAuth2Name->Text
 				];
 				$perms = $this->ResourcePermissions->getPermissions();
 				$oauth2_cfg[$this->APIOAuth2ClientIdHidden->Value] = array_merge($oauth2_cfg[$this->APIOAuth2ClientIdHidden->Value], $perms);
-				$result = $this->getModule('oauth2_config')->setConfig($oauth2_cfg);
+				$oauth2_config = $this->getModule('oauth2_config');
+				$result = $oauth2_config->setConfig($oauth2_cfg, $this->APIOAuth2ClientIdHidden->Value);
 			}
 		}
 

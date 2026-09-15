@@ -151,7 +151,8 @@ var oPluginListSettings = {
 					defaultContent: '<button type="button" class="w3-button w3-blue"><i class="fa fa-angle-down"></i></button>'
 				},
 				{
-					data: 'name'
+					data: 'name',
+					render: render_text
 				},
 				{
 					data: 'plugin',
@@ -160,7 +161,7 @@ var oPluginListSettings = {
 						if (oPlugins.plugins.hasOwnProperty(data)) {
 							plugin = oPlugins.plugins[data].name;
 						}
-						return plugin;
+						return render_text(plugin, type, row);
 					}
 				},
 				{
@@ -170,7 +171,7 @@ var oPluginListSettings = {
 						if (oPlugins.plugins.hasOwnProperty(data)) {
 							ptype = oPlugins.plugins[data].type;
 						}
-						return ptype;
+						return render_text(ptype, type, row);
 					}
 				},
 				{
@@ -193,6 +194,9 @@ var oPluginListSettings = {
 				{
 					data: 'name',
 					render: function (data, type, row) {
+						if (type != 'display') {
+							return data;
+						}
 						let ret;
 						if (oPlugins.plugins.hasOwnProperty(row.plugin)) {
 							// Plugin is installed, show button
@@ -203,12 +207,14 @@ var oPluginListSettings = {
 							i_edit.className = 'fa fa-edit';
 							const label_edit = document.createTextNode(' <%[ Edit ]%>');
 							btn_edit.appendChild(i_edit);
-							btn_edit.innerHTML += '&nbsp';
+							btn_edit.appendChild(document.createTextNode('\u00A0'));
 							btn_edit.style.marginRight = '8px';
 							btn_edit.appendChild(label_edit);
 							const props = {name: data, plugin: row.plugin, enabled: row.enabled};
-							btn_edit.setAttribute('onclick', 'oPlugins.load_plugin_settings_window(' + JSON.stringify(props) + ')');
-							ret = btn_edit.outerHTML;
+							btn_edit.addEventListener('click', function() {
+								oPlugins.load_plugin_settings_window(props);
+							});
+							ret = btn_edit;
 						} else {
 							// Plugin not installed, show warning
 							const span = document.createElement('SPAN');
@@ -222,7 +228,7 @@ var oPluginListSettings = {
 
 							span.appendChild(i_warning);
 							span.appendChild(label);
-							ret = span.outerHTML;
+							ret = span;
 						}
 						return ret;
 					}
@@ -255,7 +261,14 @@ var oPluginListSettings = {
 			drawCallback: function () {
 				this.api().columns([2, 3, 4]).every(function () {
 					var column = this;
-					var select = $('<select class="dt-select"><option value=""></option></select>')
+					const select_el = document.createElement('SELECT');
+					select_el.className = 'dt-select';
+					const empty_option = document.createElement('OPTION');
+					empty_option.value = '';
+					empty_option.title = '';
+					empty_option.textContent = '';
+					select_el.appendChild(empty_option);
+					var select = $(select_el)
 					.appendTo($(column.footer()).empty())
 					.on('change', function () {
 						var val = dtEscapeRegex(
@@ -277,7 +290,7 @@ var oPluginListSettings = {
 							items.push(d);
 						});
 					} else if ([3].indexOf(column[0][0]) > -1) {
-						column.cells('', column[0]).render('display').unique().sort().each(function(d, j) {
+						column.cells('', column[0]).render('filter').unique().sort().each(function(d, j) {
 							if (Array.isArray(d)) {
 								d = d.toString();
 							}
@@ -307,11 +320,12 @@ var oPluginListSettings = {
 						} else {
 							ds = item;
 						}
-						if (column.search() == '^' + dtEscapeRegex(item) + '$') {
-							select.append('<option value="' + item + '" title="' + ds + '" selected>' + ds + '</option>');
-						} else {
-							select.append('<option value="' + item + '" title="' + ds + '">' + ds + '</option>');
-						}
+						const option = document.createElement('OPTION');
+						option.value = item;
+						option.title = ds;
+						option.textContent = ds;
+						option.selected = (column.search() == '^' + dtEscapeRegex(item) + '$');
+						select.append(option);
 					}
 				});
 			}
@@ -380,13 +394,16 @@ var oPluginListPlugins = {
 					defaultContent: '<button type="button" class="w3-button w3-blue"><i class="fa fa-angle-down"></i></button>'
 				},
 				{
-					data: 'name'
+					data: 'name',
+					render: render_text
 				},
 				{
-					data: 'type'
+					data: 'type',
+					render: render_text
 				},
 				{
-					data: 'version'
+					data: 'version',
+					render: render_text
 				}
 			],
 			responsive: {
@@ -409,7 +426,14 @@ var oPluginListPlugins = {
 				$('#' + oPluginListPlugins.ids.table + ' tbody tr td').css('padding', '10px');
 				this.api().columns([2, 3]).every(function () {
 					var column = this;
-					var select = $('<select class="dt-select"><option value=""></option></select>')
+					const select_el = document.createElement('SELECT');
+					select_el.className = 'dt-select';
+					const empty_option = document.createElement('OPTION');
+					empty_option.value = '';
+					empty_option.title = '';
+					empty_option.textContent = '';
+					select_el.appendChild(empty_option);
+					var select = $(select_el)
 					.appendTo($(column.footer()).empty())
 					.on('change', function () {
 						var val = dtEscapeRegex(
@@ -420,11 +444,12 @@ var oPluginListPlugins = {
 						.draw();
 					});
 					column.data().sort().unique().each(function(d, j) {
-						if (column.search() == '^' + dtEscapeRegex(d) + '$') {
-							select.append('<option value="' + d + '" selected>' + d + '</option>');
-						} else {
-							select.append('<option value="' + d + '">' + d + '</option>');
-						}
+						const option = document.createElement('OPTION');
+						option.value = d;
+						option.title = d;
+						option.textContent = d;
+						option.selected = (column.search() == '^' + dtEscapeRegex(d) + '$');
+						select.append(option);
 					});
 				});
 			}

@@ -44,6 +44,7 @@ class BasicUserError extends GenericError
 	public const ERROR_BASIC_USER_INVALID_CONSOLE = 144;
 	public const ERROR_BASIC_USER_INVALID_DIRECTOR = 145;
 	public const ERROR_BASIC_USER_INVALID_PASSWORD = 146;
+	public const ERROR_BASIC_USER_INVALID_RESOURCE_PERMISSIONS = 170;
 
 	public const MSG_ERROR_BASIC_USER_DOES_NOT_EXIST = 'Basic user does not exist.';
 	public const MSG_ERROR_BASIC_USER_ALREADY_EXISTS = 'Basic user already exists.';
@@ -52,4 +53,5 @@ class BasicUserError extends GenericError
 	public const MSG_ERROR_BASIC_USER_INVALID_CONSOLE = 'Invalid Console name.';
 	public const MSG_ERROR_BASIC_USER_INVALID_DIRECTOR = 'Invalid Director name.';
 	public const MSG_ERROR_BASIC_USER_INVALID_PASSWORD = 'Invalid password.';
+	public const MSG_ERROR_BASIC_USER_INVALID_RESOURCE_PERMISSIONS = 'Invalid resource permissions.';
 }

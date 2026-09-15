@@ -36,6 +36,8 @@ define('APPLICATION_WEBROOT', APPLICATION_DIRECTORY . '/htdocs');
 define('APPLICATION_PROTECTED', APPLICATION_DIRECTORY . '/protected');
 define('PRADO_VENDORDIR', APPLICATION_PROTECTED . '/vendor');
 
+header('X-Content-Type-Options: nosniff');
+
 require(APPLICATION_PROTECTED . '/autoload.php');
 require(APPLICATION_PROTECTED . '/API/Init.php');
 require(APPLICATION_PROTECTED . '/Web/Init.php');

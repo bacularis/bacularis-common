@@ -153,10 +153,13 @@ class BaculumPage extends TPage
 	 */
 	public function getFullLoginUrl($user, $password)
 	{
-		$protocol = isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) ? 'https' : 'http';
-		$host_port = $_SERVER['HTTP_HOST'];
+		$https = $_SERVER['HTTPS'] ?? '';
+		$protocol = (!empty($https) && strtolower($https) !== 'off') ? 'https' : 'http';
+		$host_port = $this->getValidatedHTTPHost();
 		$url_prefix = $this->getModule('url_manager')->getUrlPrefix();
 		$url_prefix = str_replace('/index.php', '', $url_prefix);
+		$user = rawurlencode($user);
+		$password = rawurlencode($password);
 		$location = sprintf(
 			'%s://%s:%s@%s%s',
 			$protocol,
@@ -166,6 +169,62 @@ class BaculumPage extends TPage
 			$url_prefix
 		);
 		return $location;
+	}
+
+	/**
+	 * Get a validated HTTP host with an optional port.
+	 *
+	 * @return string validated host and optional port
+	 */
+	private function getValidatedHTTPHost(): string
+	{
+		$host = $_SERVER['HTTP_HOST'] ?? '';
+		if ($this->isValidHTTPHost($host)) {
+			return $host;
+		}
+
+		$host = $_SERVER['SERVER_NAME'] ?? '';
+		if ($this->isValidHTTPHost($host)) {
+			return $host;
+		}
+
+		return 'localhost';
+	}
+
+	/**
+	 * Validate an HTTP host against the allowed hostname, IP address and port syntax.
+	 *
+	 * @param string $host host and optional port
+	 * @return bool true if the host is valid, otherwise false
+	 */
+	private function isValidHTTPHost(string $host): bool
+	{
+		if ($host === '' || strlen($host) > 261) {
+			return false;
+		}
+
+		$hostname = '';
+		$port = '';
+		$matches = [];
+		if (preg_match('/^\[([0-9A-Fa-f:.]+)\](?::([0-9]{1,5}))?$/D', $host, $matches) === 1) {
+			$hostname = $matches[1];
+			$port = $matches[2] ?? '';
+			if (filter_var($hostname, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
+				return false;
+			}
+		} elseif (preg_match('/^([A-Za-z0-9.-]+)(?::([0-9]{1,5}))?$/D', $host, $matches) === 1) {
+			$hostname = $matches[1];
+			$port = $matches[2] ?? '';
+			$is_ip = filter_var($hostname, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+			$is_domain = filter_var($hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false;
+			if (!$is_ip && !$is_domain) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+
+		return $port === '' || ((int) $port > 0 && (int) $port <= 65535);
 	}
 
 	public function setStyleSheetFiles()

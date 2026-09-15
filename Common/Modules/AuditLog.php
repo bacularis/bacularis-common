@@ -212,6 +212,10 @@ abstract class AuditLog extends CommonModule
 	 */
 	public function append(array $logs)
 	{
+		for ($i = 0; $i < count($logs); $i++) {
+			$log = (string) $logs[$i];
+			$logs[$i] = $this->normalizeLogRecord($log);
+		}
 		$logs_all = [];
 		$f = $this->getConfigFile();
 		$fp = fopen($f, 'c+');
@@ -239,6 +243,21 @@ abstract class AuditLog extends CommonModule
 		}
 		fclose($fp);
 		return $logs_all;
+	}
+
+	/**
+	 * Normalize characters that could create additional audit log records.
+	 *
+	 * @param string $log audit log record
+	 * @return string normalized audit log record
+	 */
+	private function normalizeLogRecord(string $log): string
+	{
+		return str_replace(
+			["\r", "\n"],
+			['\\r', '\\n'],
+			$log
+		);
 	}
 
 	/**

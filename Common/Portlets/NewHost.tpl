@@ -240,7 +240,7 @@
 					<td valign="middle">
 						<com:TActiveLabel ID="APITestLoader" Display="None"><i class="fa fa-sync w3-spin"></i></com:TActiveLabel>
 						<com:TActiveLabel ID="APITestResultOk" Display="None" CssClass="w3-text-success" EnableViewState="false"><i class="fa fa-check"></i> &nbsp;<%[ OK ]%></com:TActiveLabel>
-						<com:TActiveLabel ID="APITestResultErr" Display="None" CssClass="w3-text-red" EnableViewState="false"><i class="fa fa-times"></i> &nbsp;<%[ Connection error ]%></com:TActiveLabel>
+						<com:TActiveLabel ID="APITestResultErr" Display="None" CssClass="w3-text-red" EnableViewState="false" Style="white-space: pre-wrap"><i class="fa fa-times"></i> &nbsp;<%[ Connection error ]%></com:TActiveLabel>
 					</td>
 				</tr>
 				<tr>

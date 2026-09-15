@@ -92,12 +92,13 @@ class Tag
 	{
 		$resource_list = implode(' ', $resources);
 		$tag_list = json_encode($tags);
+		$tag_list_arg = escapeshellarg($tag_list);
 
 		$command = [
 			'ec2',
 			'create-tags',
 			"--resources '{$resource_list}'",
-			"--tags '{$tag_list}'"
+			"--tags {$tag_list_arg}"
 		];
 		$app = Prado::getApplication();
 		$aws_cmd = $app->getModule('aws_command');

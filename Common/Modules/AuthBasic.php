@@ -105,9 +105,8 @@ class AuthBasic extends AuthBase implements IAuthModule
 	 * In case authentication error send appropriate headers.
 	 *
 	 * @param object $auth_mod module responsible for handling basic config
-	 * @param string realm realm name
+	 * @param string $realm realm realm name
 	 * @param bool $check_conf check if user exists in basic user config
-	 * @param mixed $realm
 	 * @return bool true if user authenticated successfully, false otherwise
 	 */
 	public function authenticate($auth_mod, $realm, $check_conf = true)

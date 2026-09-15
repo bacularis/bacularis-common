@@ -47,6 +47,7 @@ class OAuth2Error extends GenericError
 	public const ERROR_OAUTH2_CLIENT_INVALID_NAME = 127;
 	public const ERROR_OAUTH2_CLIENT_INVALID_CONSOLE = 128;
 	public const ERROR_OAUTH2_CLIENT_INVALID_DIRECTOR = 129;
+	public const ERROR_OAUTH2_CLIENT_INVALID_RESOURCE_PERMISSIONS = 180;
 
 	public const MSG_ERROR_OAUTH2_CLIENT_DOES_NOT_EXIST = 'OAuth2 client does not exist.';
 	public const MSG_ERROR_OAUTH2_CLIENT_ALREADY_EXISTS = 'OAuth2 client already exists.';
@@ -58,4 +59,5 @@ class OAuth2Error extends GenericError
 	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_NAME = 'Invalid OAuth2 client name.';
 	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_CONSOLE = 'Invalid Console name.';
 	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_DIRECTOR = 'Invalid Director name.';
+	public const MSG_ERROR_OAUTH2_CLIENT_INVALID_RESOURCE_PERMISSIONS = 'Invalid resource permissions.';
 }

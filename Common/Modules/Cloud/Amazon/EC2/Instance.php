@@ -412,7 +412,8 @@ class Instance
 			$params[] = "--cpu-options '{$props['cpu_options']}'";
 		}
 		if (key_exists('tag_specifications', $props)) {
-			$params[] = "--tag-specifications '{$props['tag_specifications']}'";
+			$tag_specifications = escapeshellarg($props['tag_specifications']);
+			$params[] = "--tag-specifications {$tag_specifications}";
 		}
 		if (key_exists('ebs_optimized', $props)) {
 			$params[] = "--ebs-optimized";

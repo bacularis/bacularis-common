@@ -318,7 +318,7 @@
 		<div id="certs_cert_installed_raw_output_container" class="subtab_item" style="display: none;">
 			<div id="certs_cert_installed_content" class="w3-padding" style="height: 600px; overflow-y: auto; overflow-x: none;">
 				<div class="w3-code">
-					<pre id="certs_cert_installed_output" class="w3-small"><%=implode('<br />', $this->cert_raw_output)%></pre>
+					<pre id="certs_cert_installed_output" class="w3-small" style="white-space: pre-wrap;"><%=Miscellaneous::html_value(implode(PHP_EOL, $this->cert_raw_output))%></pre>
 				</div>
 			</div>
 		</div>
@@ -438,7 +438,7 @@ const oCerts = {
 		'email'
 	],
 	validity_warning_treshold: 2592000, // 30 days
-	cert_props: <%=json_encode($this->cert_props)%>,
+	cert_props: <%=Miscellaneous::json_value($this->cert_props)%>,
 	web_server: '<%=$this->web_server%>',
 	init: function() {
 		this.load_os_profiles();

@@ -120,7 +120,8 @@ abstract class GeneralRequirements
 				// test passed, skip
 				continue;
 			}
-			self::$requirements[] = sprintf(self::DIR_HELP_MSG, $dir);
+			$dir_html = Miscellaneous::html_value($dir);
+			self::$requirements[] = sprintf(self::DIR_HELP_MSG, $dir_html);
 		}
 		for ($i = 0; $i < count($this->req_base_rw_dirs); $i++) {
 			$dir = $base_dir . '/' . $this->req_base_rw_dirs[$i];
@@ -128,7 +129,8 @@ abstract class GeneralRequirements
 				// test passed, skip
 				continue;
 			}
-			self::$requirements[] = sprintf(self::DIR_HELP_MSG, $dir);
+			$dir_html = Miscellaneous::html_value($dir);
+			self::$requirements[] = sprintf(self::DIR_HELP_MSG, $dir_html);
 		}
 		for ($i = 0; $i < count($this->req_prot_rw_dirs); $i++) {
 			$dir = $prot_dir . '/' . $this->req_prot_rw_dirs[$i];
@@ -136,7 +138,8 @@ abstract class GeneralRequirements
 				// test passed, skip
 				continue;
 			}
-			self::$requirements[] = sprintf(self::DIR_HELP_MSG, $dir);
+			$dir_html = Miscellaneous::html_value($dir);
+			self::$requirements[] = sprintf(self::DIR_HELP_MSG, $dir_html);
 		}
 	}
 
@@ -162,12 +165,13 @@ abstract class GeneralRequirements
 	protected static function showResult($product)
 	{
 		if (count(self::$requirements) > 0) {
-			echo '<html><body><h2>' . $product . ' - Missing dependencies</h2><ul>';
+			$product_html = Miscellaneous::html_value($product);
+			echo '<html><body><h2>' . $product_html . ' - Missing dependencies</h2><ul>';
 			for ($i = 0; $i < count(self::$requirements); $i++) {
 				echo '<li>' . self::$requirements[$i] . '</li>';
 			}
 			echo '</ul>';
-			echo 'To run ' . $product . ' <u>please correct above requirements</u> and refresh this page in web browser.';
+			echo 'To run ' . $product_html . ' <u>please correct above requirements</u> and refresh this page in web browser.';
 			echo '</body></html>';
 			exit();
 		}

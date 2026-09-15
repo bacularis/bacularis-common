@@ -15,7 +15,9 @@
 
 namespace Bacularis\Common\Modules;
 
+use Bacularis\Common\Modules\Errors\GenericError;
 use DateTime;
+use Prado\Prado;
 
 /**
  * SSL certificate module.
@@ -93,20 +95,27 @@ class SSLCertificate extends ShellCommandModule
 		if (key_exists('email', $params)) {
 			$subj[] = 'emailAddress=' . $params['email'];
 		}
+		$days_no = (string) ($params['days_no'] ?? $def_days_no);
+		$days_arg = escapeshellarg($days_no);
+		$key_file_arg = escapeshellarg($key_file);
+		$cert_file_arg = escapeshellarg($cert_file);
+		$subject = '/' . implode('/', $subj);
+		$subject_arg = escapeshellarg($subject);
 		$ret = [
 			'openssl',
 			'req',
 			'-x509',
 			'-nodes',
-			'-days ' . ($params['days_no'] ?? $def_days_no),
+			'-days',
+			$days_arg,
 			'-newkey',
 			'rsa:2048',
 			'-keyout',
-			$key_file,
+			$key_file_arg,
 			'-out',
-			$cert_file,
+			$cert_file_arg,
 			'-subj',
-			'"/' . implode('/', $subj) . '"'
+			$subject_arg
 		];
 		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
@@ -141,22 +150,34 @@ class SSLCertificate extends ShellCommandModule
 		if (key_exists('email', $params) && !empty($params['email'])) {
 			$subj[] = 'emailAddress=' . $params['email'];
 		}
-		$ret = [
+		$key_file_arg = escapeshellarg($key_file);
+		$subject = '/' . implode('/', $subj);
+		$subject_arg = escapeshellarg($subject);
+		$common_name = (string) ($params['common_name'] ?? $def_common_name);
+		$subject_alt_name = 'subjectAltName = DNS:' . $common_name;
+		$subject_alt_name_arg = escapeshellarg($subject_alt_name);
+		$openssl_command = [
 			'openssl',
 			'req',
 			'-new',
 			'-key',
-			$key_file,
+			$key_file_arg,
 			'-subj',
-			'"/' . implode('/', $subj) . '"',
+			$subject_arg,
 			'-addext',
-			'"subjectAltName = DNS:' . ($params['common_name'] ?? $def_common_name) . '"',
+			$subject_alt_name_arg,
 			'-outform',
 			'DER'
-
 		];
-		array_push($ret, '|', 'openssl', 'enc', '-base64');
-		$cmd_params['use_shell'] = true;
+		$pipeline = implode(' ', $openssl_command);
+		$pipeline .= ' | openssl enc -base64';
+		$pipeline_arg = escapeshellarg($pipeline);
+		$ret = [
+			'sh',
+			'-c',
+			$pipeline_arg
+		];
+		$cmd_params['use_shell'] = false;
 		static::setCommandParameters($ret, $cmd_params);
 		return $ret;
 	}
@@ -503,6 +524,19 @@ class SSLCertificate extends ShellCommandModule
 	 */
 	public function createCSR(string $address, string $email, array $cmd_params = []): array
 	{
+		$application = Prado::getApplication();
+		$misc = $application->getModule('misc');
+		$is_valid_address = $misc->isValidCertificateCommonName($address);
+		$is_valid_email = $misc->isValidCertificateEmail($email);
+		if (!$is_valid_address || !$is_valid_email) {
+			return [
+				'output' => [GenericError::MSG_ERROR_INVALID_COMMAND],
+				'output_id' => '',
+				'exitcode' => GenericError::ERROR_INVALID_COMMAND,
+				'error' => GenericError::ERROR_INVALID_COMMAND
+			];
+		}
+
 		$csr_params = [
 			'common_name' => $address,
 			'email' => $email

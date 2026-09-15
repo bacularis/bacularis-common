@@ -15,6 +15,8 @@
 
 namespace Bacularis\Common\Modules;
 
+use Bacularis\Common\Modules\Errors\GenericError;
+
 /**
  * Self-signed certificate management.
  *
@@ -37,6 +39,32 @@ class SelfSignedCert extends CommonModule
 	 */
 	public function createCert(array $params, array $cmd_params): array
 	{
+		$misc = $this->getModule('misc');
+		$days_no = $params['days_no'] ?? '3650';
+		$common_name = $params['common_name'] ?? null;
+		$email = $params['email'] ?? '';
+		$country_code = $params['country_code'] ?? '';
+		$state = $params['state'] ?? '';
+		$locality = $params['locality'] ?? '';
+		$organization = $params['organization'] ?? '';
+		$organization_unit = $params['organization_unit'] ?? '';
+		$is_valid = $misc->isValidCertificateDays($days_no);
+		$is_valid = $is_valid && is_string($common_name) && $misc->isValidCertificateCommonName($common_name);
+		$is_valid = $is_valid && is_string($email) && $misc->isValidCertificateEmail($email);
+		$is_valid = $is_valid && is_string($country_code) && $misc->isValidCertificateCountry($country_code);
+		$is_valid = $is_valid && is_string($state) && $misc->isValidCertificateTextValue($state);
+		$is_valid = $is_valid && is_string($locality) && $misc->isValidCertificateTextValue($locality);
+		$is_valid = $is_valid && is_string($organization) && $misc->isValidCertificateTextValue($organization);
+		$is_valid = $is_valid && is_string($organization_unit) && $misc->isValidCertificateTextValue($organization_unit);
+		if (!$is_valid) {
+			return [
+				'output' => [GenericError::MSG_ERROR_INVALID_COMMAND],
+				'output_id' => '',
+				'exitcode' => GenericError::ERROR_INVALID_COMMAND,
+				'error' => GenericError::ERROR_INVALID_COMMAND
+			];
+		}
+
 		$user = $cmd_params['user'] ?? '';
 		$password = $cmd_params['password'] ?? '';
 		$use_sudo = $cmd_params['use_sudo'] ?? false;

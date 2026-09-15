@@ -65,6 +65,16 @@ class Su extends CommonModule
 	 */
 	public function execCommand(string $user, string $password, array $params, int $ptype = self::PTYPE_REG_CMD, $env_vars = []): array
 	{
+		$misc = $this->getModule('misc');
+		if ($user !== '' && !$misc->isValidSystemUsername($user)) {
+			return [
+				'output' => [GenericError::MSG_ERROR_INVALID_COMMAND],
+				'output_id' => '',
+				'exitcode' => GenericError::ERROR_INVALID_COMMAND,
+				'error' => GenericError::ERROR_INVALID_COMMAND
+			];
+		}
+
 		$cmd = $this->prepareCommand(
 			$user,
 			$params,
@@ -106,14 +116,25 @@ class Su extends CommonModule
 	 * @param string $user username to log in
 	 * @param array $params command parameters
 	 * @param int $ptype command pattern type
-	 * @return string full command string
+	 * @return array full command details
 	 */
-	private function prepareCommand(string $user, array $params, int $ptype)
+	private function prepareCommand(string $user, array $params, int $ptype): array
 	{
 		// SU command parameters
 		$opts = [];
 		if (key_exists('command', $params) && !empty($params['command'])) {
-			$opts[] = '-c "' . str_replace('"', '\\"', $params['command']) . '"';
+			$command = $params['command'];
+			/*
+			 * ShellCommandModule adds one transport backslash for the former Tcl
+			 * quoting behavior. Remove it only from its exact legacy sh -c wrapper;
+			 * quoteExpectCommand() below now preserves the logical command verbatim.
+			 */
+			$is_legacy_shell_command = preg_match('/^LANG=C (?:[^"\r\n ]+ )*sh -c " .* "$/sD', $command) === 1;
+			if ($is_legacy_shell_command) {
+				$command = str_replace(['\\\"'], ['\\"'], $command);
+			}
+			$command = $this->quoteExpectCommand($command);
+			$opts[] = '-c "' . $command . '"';
 		}
 		$options = implode(' ', $opts);
 
@@ -123,7 +144,8 @@ class Su extends CommonModule
 		// User parameter
 		$cuser = $user;
 		if (!empty($user)) {
-			$cuser = " -l \"{$user}\"";
+			$expect_user = $this->quoteExpectCommand($user);
+			$cuser = ' -l "' . $expect_user . '"';
 		}
 
 		/**
@@ -146,11 +168,11 @@ class Su extends CommonModule
 			$cuser,
 			$options
 		);
+		$expect_command = $this->prepareExpectCommand($cmd, null);
 		return [
-			'cmd' => $this->prepareExpectCommand($cmd, null),
+			'cmd' => $expect_command,
 			'output_id' => ''
 		];
-		return $cmd;
 	}
 
 	/**
@@ -213,12 +235,11 @@ class Su extends CommonModule
 	 * Use foreground expect prepare SU command to spawn.
 	 *
 	 * @param string $cmd SU command
-	 * @param string $file file for writing output
 	 * @return string expect command ready to run
 	 */
-	private function prepareExpectFgCommand($cmd)
+	private function prepareExpectFgCommand(string $cmd): string
 	{
-		return 'expect -c \'spawn ' . $this->quoteExpectCommand($cmd) . '
+		$expect_program = 'spawn ' . $cmd . '
 set timeout ' . self::SU_COMMAND_TIMEOUT . '
 set prompt "(.*)\[#%>:\$\]  $"
 expect {
@@ -259,25 +280,26 @@ expect {
 lassign [wait] pid spawnid os_error_flag value
 puts "\nEXITCODE=$value"
 puts "quit"
-exit\' || echo "
+exit';
+		$expect_program_arg = escapeshellarg($expect_program);
+		return 'expect -c ' . $expect_program_arg . ' || echo "
 EXITCODE=1
 ===
 "';
 	}
 
 	/**
-	 * Quote special characters in expect spawn command.
+	 * Quote a dynamic value embedded in an Expect/Tcl double-quoted word.
 	 *
-	 * @param string spawn expect command
-	 * @param mixed $cmd
-	 * @return string spawn expect command with escaped special characters
+	 * @param string $value dynamic Expect/Tcl word value
+	 * @return string value with Expect/Tcl substitutions disabled
 	 */
-	private function quoteExpectCommand($cmd)
+	private function quoteExpectCommand(string $value): string
 	{
 		return str_replace(
-			['[', ']', '$'],
-			['\\[', '\\]', '\\\\\\$'],
-			$cmd
+			['\\', '"', '[', ']', '$'],
+			['\\\\', '\\"', '\\[', '\\]', '\\$'],
+			$value
 		);
 	}
 }

@@ -119,16 +119,18 @@ class WebServerConfig extends ShellCommandModule
 		$cfg_path = self::getLighttpdConfigFilePath();
 		$pem_file = SSLCertificate::getPEMFilePath();
 		$disable_https_cmd = self::getDisableHTTPSLighttpdCommand();
+		$ssl_config = '
+server.modules += ( "mod_openssl" )
+ssl.engine = "enable"
+ssl.pemfile = "' . $pem_file . '"
+';
+		$ssl_config_arg = escapeshellarg($ssl_config);
 		$ret = [
 			'{',
 			...$disable_https_cmd,
 			';',
 			'echo',
-			'\'\\\'\'
-server.modules += ( "mod_openssl" )
-ssl.engine = "enable"
-ssl.pemfile = "' . $pem_file . '"
-\'\\\'\'',
+			$ssl_config_arg,
 			'>>',
 			$cfg_path,
 			';',

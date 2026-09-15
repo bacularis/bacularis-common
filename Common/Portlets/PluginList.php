@@ -223,6 +223,16 @@ class PluginList extends PortletTemplate
 		}
 		$fields = (array) $fields;
 		$name = $this->PluginSettingsName->Text;
+		$cb = $this->getPage()->getCallbackClient();
+		$is_valid_name = PluginConfigBase::validateSettingsName($name);
+		if ($is_valid_name === false) {
+			$cb->update(
+				'plugin_list_plugin_settings_error',
+				'Invalid plugin settings name.'
+			);
+			$cb->show('plugin_list_plugin_settings_error');
+			return false;
+		}
 		$enabled = $this->PluginSettingsEnabled->Checked ? '1' : '0';
 		$plugin_name = $this->PluginSettingsPluginName->Text;
 		$settings = [
@@ -230,7 +240,6 @@ class PluginList extends PortletTemplate
 			'enabled' => $enabled,
 			'parameters' => $fields
 		];
-		$cb = $this->getPage()->getCallbackClient();
 		$plugin_config = $this->getModule('plugin_config');
 		$win_mode = $this->PluginSettingsWindowMode->Value;
 		if ($win_mode == 'add' && $plugin_config->isPluginSettings($name)) {

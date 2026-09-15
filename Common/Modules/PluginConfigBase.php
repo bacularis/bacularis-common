@@ -200,6 +200,18 @@ abstract class PluginConfigBase extends ConfigFileModule
 	}
 
 	/**
+	 * Validate the complete plugin settings name.
+	 *
+	 * @param string $name settings name
+	 * @return bool true if the complete name is valid, otherwise false
+	 */
+	public static function validateSettingsName(string $name): bool
+	{
+		$pattern = '/\A(?:' . self::SETTINGS_NAME_PATTERN . ')\z/uD';
+		return preg_match($pattern, $name) === 1;
+	}
+
+	/**
 	 * Set single plugin settings.
 	 *
 	 * @param string $name settings name
@@ -208,6 +220,9 @@ abstract class PluginConfigBase extends ConfigFileModule
 	 */
 	public function setPluginSettings(string $name, array $settings): bool
 	{
+		if (self::validateSettingsName($name) === false) {
+			return false;
+		}
 		$config = $this->getConfig();
 		$config[$name] = $settings;
 		$result = $this->setConfig($config);

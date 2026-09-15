@@ -15,9 +15,9 @@
 
 namespace Bacularis\Common\Portlets;
 
-use DateTime;
 use Bacularis\Common\Modules\AuditLog;
 use Bacularis\Common\Modules\BinaryPackage;
+use Bacularis\Common\Modules\Errors\GenericError;
 use Bacularis\Common\Modules\ExecuteCommand;
 use Bacularis\Common\Modules\LetsEncryptCert;
 use Bacularis\Common\Modules\Logging;
@@ -26,6 +26,7 @@ use Bacularis\Common\Modules\SelfSignedCert;
 use Bacularis\Common\Modules\SSLCertificate;
 use Bacularis\Common\Portlets\AdminAccess;
 use Bacularis\Common\Portlets\PortletTemplate;
+use DateTime;
 use Prado\TPropertyValue;
 
 /**
@@ -218,7 +219,9 @@ class Certs extends PortletTemplate
 		// Check if there is a need to create PEM file
 		$web_server = $this->CertsWebServer->getSelectedValue();
 		if ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
-			$state = $this->createCertKeyPemFile();
+			$state = $this->createCertKeyPemFile(
+				$this->CertsAdminAccessCreateCert
+			);
 		}
 		if (!$state) {
 			return $state;
@@ -272,7 +275,9 @@ class Certs extends PortletTemplate
 		// Check if there is a need to create PEM file
 		$web_server = $this->CertsWebServer->getSelectedValue();
 		if ($web_server == Miscellaneous::WEB_SERVERS['lighttpd']['id']) {
-			$state = $this->createCertKeyPemFile();
+			$state = $this->createCertKeyPemFile(
+				$this->CertsAdminAccessRenewCert
+			);
 		}
 		if (!$state) {
 			return $state;
@@ -353,6 +358,20 @@ class Certs extends PortletTemplate
 	 */
 	private function createLetsEncryptCert(): bool
 	{
+		$email = $this->CertsLetsEncryptEmail->Text;
+		$common_name = $this->CertsLetsEncryptCommonName->Text;
+		$misc = $this->getModule('misc');
+		$is_valid_common_name = $misc->isValidCertificateCommonName($common_name);
+		$is_valid_email = $email !== '' && $misc->isValidCertificateEmail($email);
+		if (!$is_valid_common_name || !$is_valid_email) {
+			$result = [
+				'output' => [GenericError::MSG_ERROR_INVALID_COMMAND],
+				'error' => GenericError::ERROR_INVALID_COMMAND
+			];
+			$this->reportError($result, 'Invalid certificate parameters.');
+			return false;
+		}
+
 		// create let's encrypt account first
 		$result = $this->createLetsEncryptAccount();
 		$state = $result['error'] == 0;
@@ -360,9 +379,6 @@ class Certs extends PortletTemplate
 			return $state;
 		}
 		$params = $result;
-
-		$email = $this->CertsLetsEncryptEmail->Text;
-		$common_name = $this->CertsLetsEncryptCommonName->Text;
 
 		$user = $this->CertsAdminAccessCreateCert->getAdminUser();
 		$password = $this->CertsAdminAccessCreateCert->getAdminPassword();
@@ -542,13 +558,14 @@ class Certs extends PortletTemplate
 	 * Create PEM file with certificate and key.
 	 * It is used by Lighttpd web server.
 	 *
+	 * @param AdminAccess $admin_access admin access control instance
 	 * @return bool true on success, false otherwise
 	 */
-	private function createCertKeyPemFile(): bool
+	private function createCertKeyPemFile(AdminAccess $admin_access): bool
 	{
-		$user = $this->CertsAdminAccessCreateCert->getAdminUser();
-		$password = $this->CertsAdminAccessCreateCert->getAdminPassword();
-		$use_sudo = $this->CertsAdminAccessCreateCert->getAdminUseSudo();
+		$user = $admin_access->getAdminUser();
+		$password = $admin_access->getAdminPassword();
+		$use_sudo = $admin_access->getAdminUseSudo();
 
 		$cmd_params = [
 			'user' => $user,

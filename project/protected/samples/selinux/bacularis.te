@@ -1,4 +1,4 @@
-module bacularis 1.0.18;
+module bacularis 1.0.19;
 
 require {
 	attribute can_change_process_identity;
@@ -172,7 +172,7 @@ allow httpd_t postgresql_var_run_t:dir { relabelto rmdir read };
 allow httpd_t ptmx_t:chr_file { ioctl open read write getattr };
 allow httpd_t rhnsd_conf_t:dir read;
 allow httpd_t root_t:file { read open };
-allow httpd_t rpm_log_t:file open;
+allow httpd_t rpm_log_t:file { open read setattr };
 allow httpd_t rpm_script_t:process { noatsecure rlimitinh siginh transition };
 allow httpd_t rpm_t:dbus send_msg;
 allow httpd_t rpm_t:dir search;

@@ -27,9 +27,10 @@
  * Bacula(R) is a registered trademark of Kern Sibbald.
  */
 
+use Bacularis\Common\Modules\Miscellaneous;
+use Bacularis\Common\Portlets\PortletTemplate;
 use Prado\TPropertyValue;
 use Prado\Web\UI\TCommandEventParameter;
-use Bacularis\Common\Portlets\PortletTemplate;
 
 /**
  * New host control.
@@ -123,11 +124,12 @@ class NewHost extends PortletTemplate
 			$status_ok = $is_config;
 		}
 
+		$diagnostics = [];
 		if (!$is_catalog) {
-			$this->APITestResultErr->Text .= $catalog->output . '<br />';
+			$diagnostics[] = $catalog->output;
 		}
 		if (!$is_console) {
-			$this->APITestResultErr->Text .= $console->output . '<br />';
+			$diagnostics[] = $console->output;
 		}
 		if (!$is_config) {
 			$config_output = '';
@@ -140,8 +142,11 @@ class NewHost extends PortletTemplate
 			} else {
 				$config_output = $config->output;
 			}
-			$this->APITestResultErr->Text .= $config_output . '<br />';
+			$diagnostics[] = $config_output;
 		}
+		$diagnostic_output = implode(PHP_EOL, $diagnostics);
+		$diagnostic_output = Miscellaneous::html_value($diagnostic_output);
+		$this->APITestResultErr->Text = $diagnostic_output;
 
 		$this->APITestResultOk->Display = ($status_ok === true) ? 'Dynamic' : 'None';
 		$this->APITestResultErr->Display = ($status_ok === false) ? 'Dynamic' : 'None';

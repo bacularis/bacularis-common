@@ -208,7 +208,7 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 			lengthChange: false,
 			autoWidth: false,
 			columns: [
-				{data: 'resource'},
+				{data: 'resource', render: render_text},
 				{
 					data: 'preview',
 					render: function(data, type, row) {
@@ -226,7 +226,7 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 							} else if (no_access && no_access.checked) {
 								<%=$this->ClientID%>set_preview(preview.id, 'no');
 							}
-							ret = preview.outerHTML;
+							ret = preview;
 						}
 						return ret;
 					}.bind(this)
@@ -236,19 +236,22 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 					render: function(data, type, row) {
 						let ret = '';
 						if (type == 'display') {
-							var read_only = document.createElement('INPUT');
+							const preview_id = this.ids.table + row.resource;
+							const read_only = document.createElement('INPUT');
 							read_only.type = 'radio';
-							read_only.id = this.ids.table + row.resource + 'ro';
+							read_only.id = preview_id + 'ro';
 							read_only.name = this.component + row.resource;
 							read_only.classList.add('w3-check');
 							read_only.style.top = '3px';
 							read_only.setAttribute('data-ro', 'true');
 							if (data === true) {
 								read_only.setAttribute('checked', 'checked');
-								<%=$this->ClientID%>set_preview(this.ids.table + row.resource, 'ro');
+								<%=$this->ClientID%>set_preview(preview_id, 'ro');
 							}
-							read_only.setAttribute('onclick', '<%=$this->ClientID%>set_preview(\'' + this.ids.table + row.resource + '\', \'ro\');');
-							ret = read_only.outerHTML;
+							read_only.addEventListener('click', function() {
+								<%=$this->ClientID%>set_preview(preview_id, 'ro');
+							});
+							ret = read_only;
 						}
 						return ret;
 					}.bind(this)
@@ -258,19 +261,22 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 					render: function(data, type, row) {
 						let ret = '';
 						if (type == 'display') {
-							var read_write = document.createElement('INPUT');
+							const preview_id = this.ids.table + row.resource;
+							const read_write = document.createElement('INPUT');
 							read_write.type = 'radio';
-							read_write.id = this.ids.table + row.resource + 'rw';
+							read_write.id = preview_id + 'rw';
 							read_write.name = this.component + row.resource;
 							read_write.classList.add('w3-check');
 							read_write.style.top = '3px';
 							read_write.setAttribute('data-rw', 'true');
 							if (data === true) {
 								read_write.setAttribute('checked', 'checked');
-								<%=$this->ClientID%>set_preview(this.ids.table + row.resource, 'rw');
+								<%=$this->ClientID%>set_preview(preview_id, 'rw');
 							}
-							read_write.setAttribute('onclick', '<%=$this->ClientID%>set_preview(\'' + this.ids.table + row.resource + '\', \'rw\');');
-							ret = read_write.outerHTML;
+							read_write.addEventListener('click', function() {
+								<%=$this->ClientID%>set_preview(preview_id, 'rw');
+							});
+							ret = read_write;
 						}
 						return ret;
 					}.bind(this)
@@ -280,19 +286,22 @@ class <%=$this->ClientID%>ResourcePermissionsBase {
 					render: function(data, type, row) {
 						let ret = '';
 						if (type == 'display') {
-							var no_access = document.createElement('INPUT');
+							const preview_id = this.ids.table + row.resource;
+							const no_access = document.createElement('INPUT');
 							no_access.type = 'radio';
-							no_access.id = this.ids.table + row.resource + 'no';
+							no_access.id = preview_id + 'no';
 							no_access.name = this.component + row.resource;
 							no_access.classList.add('w3-check');
 							no_access.style.top = '3px';
 							no_access.setAttribute('data-no', 'true');
 							if (data === true) {
 								no_access.setAttribute('checked', 'checked');
-								<%=$this->ClientID%>set_preview(this.ids.table + row.resource, 'no');
+								<%=$this->ClientID%>set_preview(preview_id, 'no');
 							}
-							no_access.setAttribute('onclick', '<%=$this->ClientID%>set_preview(\'' + this.ids.table + row.resource + '\', \'no\');');
-							ret = no_access.outerHTML;
+							no_access.addEventListener('click', function() {
+								<%=$this->ClientID%>set_preview(preview_id, 'no');
+							});
+							ret = no_access;
 						}
 						return ret;
 					}.bind(this)
