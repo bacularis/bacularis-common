@@ -206,7 +206,7 @@ const oPluginForm = {
 			if ([this.types.str, this.types.pwd, this.types.str_long, this.types.int, this.types.arr].indexOf(type) != -1) {
 				el.value = value || def_value;
 			} else if (type == this.types.bool) {
-				el.checked = (value && value != def_value) ? (value == 1) : def_value;
+				el.checked = (typeof(value) == 'boolean' && value != def_value) ? (value == 1) : def_value;
 			} else if ([this.types.arr_multi, this.types.arr_multi_ord].indexOf(type) != -1) {
 				const vals = value.length > 0 ? value : def_value;
 				el.value = '';
