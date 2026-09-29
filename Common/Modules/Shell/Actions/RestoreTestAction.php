@@ -34,7 +34,7 @@ class RestoreTestAction extends BShellAction
 	/**
 	 * Action methods.
 	 */
-	protected $methods = ['run', 'verify'];
+	protected $methods = ['run', 'verify', 'finalize'];
 
 	/**
 	 * Command required parameters.
@@ -45,6 +45,9 @@ class RestoreTestAction extends BShellAction
 		],
 		[
 			'test-id' => 'test-id'
+		],
+		[
+			'token' => 'token'
 		]
 	];
 
@@ -57,7 +60,12 @@ class RestoreTestAction extends BShellAction
 			'web-address' => 'address',
 			'web-port' => 'port'
 		],
-		[]
+		[],
+		[
+			'web-protocol' => 'protocol',
+			'web-address' => 'address',
+			'web-port' => 'port'
+		]
 	];
 
 	/**
@@ -66,7 +74,8 @@ class RestoreTestAction extends BShellAction
 	protected $description = [
 		'Verify restore test commands',
 		'Run restore test.',
-		'Run restore data verification.'
+		'Run restore data verification.',
+		'Finalize restore data verification.'
 	];
 
 	/**
@@ -166,6 +175,26 @@ class RestoreTestAction extends BShellAction
 	{
 		$test_id = $this->params['test-id'] ?? '';
 		return RestoreVerification::runTestPlan($test_id);
+	}
+
+	/**
+	 * Finalize restore verification.
+	 *
+	 * @param array $args command line parameters
+	 * @return bool true on success, false otherwise
+	 */
+	public function actionFinalize(array $args = []): bool
+	{
+		$token = $args['token'] ?? '';
+		$web_protocol = self::getWebProtocol($args);
+		$web_address = self::getWebAddress($args);
+		$web_port = self::getWebPort($args);
+		return RestoreVerification::finalizeRestoreTest(
+			$token,
+			$web_protocol,
+			$web_address,
+			$web_port
+		);
 	}
 
 	/**

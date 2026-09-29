@@ -39,6 +39,7 @@ class RestoreVerification extends CommonModule
 	 * Restore test plan file path.
 	 */
 	private const RESTORE_TEST_PLAN_FILE = 'Bacularis.Common.Working.RestoreTestPlan-%test_id';
+	private const RESTORE_TEST_PLAN_EXT = '.json';
 
 	/**
 	 * Maximum plan file size (in bytes)
@@ -101,6 +102,63 @@ class RestoreVerification extends CommonModule
 	}
 
 	/**
+	 * Finalize restore verification through one-time Web Access.
+	 *
+	 * @param string $token web access token
+	 * @param string $protocol web access interface protocol (http|https)
+	 * @param string $address web access interface address
+	 * @param string $port web access interface port
+	 * @return bool true on success, otherwise false
+	 */
+	public static function finalizeRestoreTest(string $token, string $protocol, string $address, string $port): bool
+	{
+		if (!Miscellaneous::isValidWebAccessToken($token)) {
+			Plugins::log(Plugins::LOG_ERROR, 'Invalid Restore Verification finalize token.');
+			return false;
+		}
+
+		$web_token = rawurlencode($token);
+		$url = "{$protocol}://{$address}:{$port}/web/access/{$web_token}";
+		$options = [
+			CURLOPT_SSL_VERIFYHOST => false,
+			CURLOPT_SSL_VERIFYPEER => false
+		];
+		$response = HTTPClient::get($url, [], $options);
+		$body = null;
+		$success = false;
+		if ($response['http_code'] == 200 && $response['error'] == 0) {
+			$body = json_decode($response['output'], true);
+			if (is_array($body) && key_exists('error', $body)) {
+				$success = ($body['error'] == 0);
+			}
+		}
+
+		if ($success) {
+			$output = $body['message'] ?? '';
+			if (is_array($output) || is_object($output)) {
+				$output = Miscellaneous::json_value($output);
+			} elseif (is_scalar($output)) {
+				$output = (string) $output;
+			} else {
+				$output = '';
+			}
+			if ($output !== '') {
+				fwrite(STDOUT, $output . PHP_EOL);
+			}
+		} else {
+			$response_output = htmlspecialchars($response['output']);
+			$emsg = sprintf(
+				'Error while finalizing Restore Verification. HTTP Code: %d, Error: %d, Body: %s.',
+				$response['http_code'],
+				$response['error'],
+				$response_output
+			);
+			Plugins::log(Plugins::LOG_ERROR, $emsg);
+		}
+		return $success;
+	}
+
+	/**
 	 * Save restore test plan.
 	 *
 	 * @param string $test_id restore test identifier
@@ -109,8 +167,33 @@ class RestoreVerification extends CommonModule
 	 */
 	public static function saveRestoreTestPlan(string $test_id, string $plan): bool
 	{
+		if (!self::isValidTestId($test_id)) {
+			return false;
+		}
 		$path = self::getPlanFileByTestId($test_id);
-		return (file_put_contents($path, $plan, LOCK_EX) !== false);
+		$result = file_put_contents($path, $plan, LOCK_EX);
+		$result = ($result === strlen($plan));
+		if ($result) {
+			$result = RestoreVerificationStatus::save(
+				$test_id,
+				RestoreVerificationStatus::STATE_READY
+			);
+			if (!$result) {
+				self::removeTestPlan($test_id);
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * Validate restore test identifier.
+	 *
+	 * @param string $test_id restore test identifier
+	 * @return bool true if identifier is valid, otherwise false
+	 */
+	public static function isValidTestId(string $test_id): bool
+	{
+		return (preg_match('/^rt-[a-zA-Z0-9]{32}$/D', $test_id) === 1);
 	}
 
 	/**
@@ -123,7 +206,7 @@ class RestoreVerification extends CommonModule
 	public static function validatePlan(string $test_id, string $plan): bool
 	{
 		$valid = false;
-		if (strlen($plan) > self::RESTORE_TEST_PLAN_MAX_SIZE) {
+		if (!self::isValidTestId($test_id) || strlen($plan) > self::RESTORE_TEST_PLAN_MAX_SIZE) {
 			$valid = false;
 		} else {
 			$content = json_decode($plan, true);
@@ -150,7 +233,7 @@ class RestoreVerification extends CommonModule
 			$test_id,
 			self::RESTORE_TEST_PLAN_FILE
 		);
-		return Prado::getPathOfNamespace($file, '.json');
+		return Prado::getPathOfNamespace($file, self::RESTORE_TEST_PLAN_EXT);
 	}
 
 	/**
@@ -161,6 +244,14 @@ class RestoreVerification extends CommonModule
 	 */
 	public static function runTestPlan(string $test_id): bool
 	{
+		if (!self::isValidTestId($test_id)) {
+			$emsg = sprintf('Invalid restore test identifier "%s".', $test_id);
+			Plugins::log(
+				Plugins::LOG_ERROR,
+				$emsg
+			);
+			return false;
+		}
 		$plan = self::getTestPlan($test_id);
 		if (!$plan) {
 			Plugins::log(
@@ -169,10 +260,23 @@ class RestoreVerification extends CommonModule
 			);
 			return false;
 		}
-		$result = self::runPathTest($plan);
-		if ($result) {
-			self::removeTestPlan($test_id);
+		$status = RestoreVerificationStatus::save(
+			$test_id,
+			RestoreVerificationStatus::STATE_RUNNING
+		);
+		if (!$status) {
+			$emsg = sprintf('Test "%s" ERROR. Unable to save running status.', $test_id);
+			Plugins::log(
+				Plugins::LOG_ERROR,
+				$emsg
+			);
+			return false;
 		}
+		$result = self::runPathTest($plan);
+
+		// Clean up test plan (without impact on result)
+		self::removeTestPlan($test_id);
+
 		return $result;
 	}
 
@@ -190,12 +294,15 @@ class RestoreVerification extends CommonModule
 		$paths = $plan['paths'] ?? [];
 		$destination = $plan['restore']['destination_name'] ?? '';
 		$capabilities = $plan['restore']['destination_capabilities'] ?? [];
+		$history = $plan['history'] ?? [];
+		$result_state = [];
 		foreach ($paths as $rule_set => $rule_set_paths) {
 			Plugins::log(Plugins::LOG_INFO, sprintf('START CHECKERS RULE SET: "%s"', $rule_set));
 			Plugins::log(Plugins::LOG_INFO, ' ');
 			foreach ($rule_set_paths as $fpath => $tests) {
 				for ($i = 0; $i < count($tests); $i++) {
 					$checker = sprintf('\\Bacularis\\Common\\Plugins\\%s', $tests[$i]['checker']);
+					$is_data_checker = is_subclass_of($checker, IBacularisVerificationDataPlugin::class);
 
 					// Check if destination supports checker capabilities
 					$is_capable = true;
@@ -218,6 +325,28 @@ class RestoreVerification extends CommonModule
 						continue;
 					}
 
+					// Pass historical data to data checker
+					$config_hash = '';
+					if ($is_data_checker) {
+						$checker_config_name = $tests[$i]['checker_config_name'] ?? '';
+						$checker_config = $tests[$i]['checker_config'] ?? [];
+
+						$checker::setCheckerConfig($checker_config);
+
+						$config_hash = self::getCheckerConfigHash($checker, $checker_config_name);
+						if ($config_hash === '') {
+							$success = false;
+							continue;
+						}
+						$checker_history = self::getCheckerHistory(
+							$history,
+							$fpath,
+							$tests[$i]['checker'],
+							$config_hash
+						);
+						$checker::setHistory($checker_history);
+					}
+
 					$path = self::prepareTestPath($plan, $fpath);
 					$test_config = ['path' => $path, 'config' => $tests[$i]];
 					// Run before each test check
@@ -227,12 +356,26 @@ class RestoreVerification extends CommonModule
 
 					// Run main test check
 					$result = $checker::check(
-						$tests[$i]['operator'],
+						($tests[$i]['operator'] ?? ''),
 						$path,
-						$tests[$i]['value']
+						($tests[$i]['value'] ?? '')
 					);
 					if (!$result['result']) {
 						$success = false;
+					}
+
+					// Add current plugin state
+					if ($is_data_checker) {
+						$state = $checker::getState($result);
+
+						self::getCheckerState(
+							$result_state,
+							$plan,
+							$fpath,
+							$tests[$i]['checker'],
+							$config_hash,
+							$state
+						);
 					}
 
 					// Run after each test check
@@ -244,7 +387,7 @@ class RestoreVerification extends CommonModule
 					self::reportTestResult(
 						$result,
 						$tests[$i]['checker'],
-						$tests[$i]['operator'],
+						($tests[$i]['operator'] ?? ''),
 						$fpath
 					);
 					Plugins::log(Plugins::LOG_INFO, ' ');
@@ -257,8 +400,98 @@ class RestoreVerification extends CommonModule
 			Plugins::log(Plugins::LOG_ERROR, sprintf('Test "%s" FAILED.', $plan['test_id']));
 		}
 
+		// Save results
+		$result = RestoreVerificationResult::save($plan['test_id'], $result_state);
+		if (!$result) {
+			$success = false;
+			$emsg = sprintf('Test "%s" ERROR. Unable to write result file.', $plan['test_id']);
+			Plugins::log(Plugins::LOG_ERROR, $emsg);
+		} else {
+			$result = RestoreVerificationStatus::save(
+				$plan['test_id'],
+				RestoreVerificationStatus::STATE_DONE
+			);
+			if (!$result) {
+				$success = false;
+				$emsg = sprintf('Test "%s" ERROR. Unable to save done status.', $plan['test_id']);
+				Plugins::log(Plugins::LOG_ERROR, $emsg);
+			}
+		}
+
 		Plugins::log(Plugins::LOG_INFO, sprintf('Finishing "%s" restore test.', $plan['test_id']));
 		return $success;
+	}
+
+
+	/**
+	 * Get single checker history items.
+	 *
+	 * @param array $history all test history
+	 * @param string $fpath file/directory path
+	 * @param string $checker checker name
+	 * @param string $config_hash configuration hash
+	 */
+	private static function getCheckerHistory(array $history, string $fpath, string $checker, string $config_hash): array
+	{
+	 	return $history[$fpath][$checker][$config_hash] ?? [];
+	}
+
+	/**
+	 * Get single checker state for current checker execution.
+	 *
+	 * @param array $result_state result state container
+	 * @param array $plan restore plan metadata
+	 * @param string $path current path examined by checker
+	 * @param string $checker checker name
+	 * @param string $config_hash current checker config hash
+	 * @param array $state current single checker result
+	 */
+	private static function getCheckerState(array &$result_state, array $plan, string $path, string $checker, string $config_hash, array $state): void
+	{
+		$test_name = $plan['test_name'];
+		if (!key_exists($test_name, $result_state)) {
+			$result_state[$test_name] = [];
+		}
+		if (!key_exists($path, $result_state[$test_name])) {
+			$result_state[$test_name][$path] = [];
+		}
+		if (!key_exists($checker, $result_state[$test_name][$path])) {
+			$result_state[$test_name][$path][$checker] = [];
+		}
+		if (!key_exists($config_hash, $result_state[$test_name][$path][$checker])) {
+			$result_state[$test_name][$path][$checker][$config_hash] = [];
+		}
+		$result_state[$test_name][$path][$checker][$config_hash][] = $state;
+	}
+
+	/**
+	 * Get current checker configuration hash.
+	 *
+	 * @param string $checker checker class name
+	 * @param array $config checker configuration
+	 * @return string checker configuration hash or empty string on error
+	 */
+	public static function getCheckerConfigHash(string $checker, string $config_name = ''): string
+	{
+		$hist_config = $checker::getHistoryConfig();
+
+		$hash_data = [
+			'config_name' => $config_name,
+			'history' => $hist_config
+		];
+
+		Miscellaneous::sortArrayRecursive($hash_data);
+
+		$json = json_encode(
+			$hash_data,
+			JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+		);
+
+		if ($json === false) {
+			return '';
+		}
+
+		return hash('sha256', $json);
 	}
 
 	/**
@@ -323,9 +556,14 @@ class RestoreVerification extends CommonModule
 		$line = sprintf($line_pattern, $result['current']);
 		Plugins::log($type, $line);
 
-		$line_pattern = '       EXPECTED: %s';
-		$line = sprintf($line_pattern, $result['expected']);
-		Plugins::log($type, $line);
+		$checker = sprintf('\\Bacularis\\Common\\Plugins\\%s', $checker);
+		$operators = $checker::getOperators();
+
+		if ($operators) {
+			$line_pattern = '       EXPECTED: %s';
+			$line = sprintf($line_pattern, $result['expected']);
+			Plugins::log($type, $line);
+		}
 	}
 
 	/**
@@ -359,6 +597,10 @@ class RestoreVerification extends CommonModule
 		$path = self::getPlanFileByTestId($test_id);
 		if (file_exists($path)) {
 			$result = unlink($path);
+		}
+		if (!$result) {
+			$emsg = sprintf('Test "%s" ERROR. Unable to remove test plan file.', $test_id);
+			Plugins::log(Plugins::LOG_ERROR, $emsg);
 		}
 		return $result;
 	}

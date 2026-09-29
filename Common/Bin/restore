@@ -35,6 +35,13 @@ if (in_array('verification/run', $argv)) {
 	if (!$result) {
 		exit(1);
 	}
+} elseif (in_array('verification/finalize', $argv)) {
+	$params = BacularisCommonPluginBase::parseCommandParameters($argv);
+	$rat = new RestoreTestAction();
+	$result = $rat->actionFinalize($params);
+	if (!$result) {
+		exit(1);
+	}
 } else {
 	$_SERVER['SCRIPT_FILENAME'] = implode(DIRECTORY_SEPARATOR, [
 		APPLICATION_WEBROOT,
