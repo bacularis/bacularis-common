@@ -15,6 +15,7 @@
 
 namespace Bacularis\Common\Modules\Shell\Actions;
 
+use Bacularis\Common\Modules\Miscellaneous;
 use Bacularis\Common\Modules\PluginConfigParameter;
 use Bacularis\Common\Modules\Shell\BShellAction;
 use Prado\Shell\TShellWriter;
@@ -67,7 +68,7 @@ class PluginCommandAction extends BShellAction
 	{
 		$type = $definition['type'] ?? '';
 		if (in_array($type, [PluginConfigParameter::TYPE_STRING, PluginConfigParameter::TYPE_STRING_LONG, 'password'], true)) {
-			return is_string($value) && preg_match('/[\x00-\x1F\x7F]/', $value) !== 1;
+			return is_string($value) && !Miscellaneous::isASCIControlChar($value);
 		}
 		if ($type === PluginConfigParameter::TYPE_INTEGER) {
 			return is_int($value) || (is_string($value) && preg_match('/^\d+$/D', $value) === 1);
