@@ -492,6 +492,28 @@ class Miscellaneous extends TModule
 	}
 
 	/**
+	 * Check if a value contains an ASCII control character.
+	 *
+	 * @param string $value value to check
+	 * @return bool true if the value contains an ASCII control character, otherwise false
+	 */
+	public static function isASCIControlChar(string $value): bool
+	{
+		return preg_match('/[\x00-\x1F\x7F]/', $value) === 1;
+	}
+
+	/**
+	 * Validate a Web Access token.
+	 *
+	 * @param string $token Web Access token
+	 * @return bool true if the token is valid, otherwise false
+	 */
+	public static function isValidWebAccessToken(string $token): bool
+	{
+		return preg_match('/^[a-zA-Z0-9\-_]+$/D', $token) === 1;
+	}
+
+	/**
 	 * Validate a human-readable certificate subject value.
 	 *
 	 * Control characters and OpenSSL slash-form record delimiters are not
@@ -503,7 +525,7 @@ class Miscellaneous extends TModule
 	 */
 	public function isValidCertificateTextValue(string $value): bool
 	{
-		if (preg_match('/[\x00-\x1F\x7F]/', $value) === 1) {
+		if (self::isASCIControlChar($value)) {
 			return false;
 		}
 		return strpbrk($value, '/\\') === false;
@@ -1043,5 +1065,27 @@ class Miscellaneous extends TModule
 			$json = 'null';
 		}
 		return $json;
+	}
+
+	/**
+	 * Sort associative array recursively.
+	 *
+	 * List item order is preserved.
+	 *
+	 * @param array $data array to sort
+	 */
+	public static function sortArrayRecursive(array &$data): void
+	{
+		foreach ($data as &$value) {
+			if (is_array($value)) {
+				self::sortArrayRecursive($value);
+			}
+		}
+		unset($value);
+
+		$is_list = empty($data) || array_keys($data) === range(0, count($data) - 1);
+		if (!$is_list) {
+			ksort($data);
+		}
 	}
 }
