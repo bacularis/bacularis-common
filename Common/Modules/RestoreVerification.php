@@ -448,6 +448,10 @@ class RestoreVerification extends CommonModule
 	 */
 	private static function getCheckerState(array &$result_state, array $plan, string $path, string $checker, string $config_hash, array $state): void
 	{
+		if (!$state) {
+			// No checker state to save
+			return;
+		}
 		$test_name = $plan['test_name'];
 		if (!key_exists($test_name, $result_state)) {
 			$result_state[$test_name] = [];
