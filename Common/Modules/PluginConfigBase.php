@@ -352,6 +352,24 @@ abstract class PluginConfigBase extends ConfigFileModule
 	}
 
 	/**
+	 * Get plugin settings by plugin name.
+	 *
+	 * @param string $name plugin name
+	 * @return array settings from given type plugin list
+	 */
+	public function getPluginSettingsByName(string $name): array
+	{
+		$settings = [];
+		$config = $this->getConfig();
+		foreach ($config as $pname => $pconf) {
+			if ($pconf['plugin'] === $name) {
+				$settings[$pname] = $pconf;
+			}
+		}
+		return $settings;
+	}
+
+	/**
 	 * Get configuration file path in dot notation.
 	 *
 	 * @return string config file path
