@@ -237,7 +237,8 @@ var oPluginListSettings = {
 			responsive: {
 				details: {
 					type: 'column',
-					display: DataTable.Responsive.display.childRow
+					display: DataTable.Responsive.display.childRow,
+					renderer: DataTable.Responsive.renderer.listHiddenNodes()
 				}
 			},
 			columnDefs: [{
