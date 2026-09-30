@@ -24,6 +24,15 @@ namespace Bacularis\Common\Modules;
 class FileType extends ShellCommandModule
 {
 	/**
+	 * Generic MIME types for unrecognized binary data.
+	 */
+	private const GENERIC_MIME_TYPES = [
+		'application/octet-stream',
+		'application/x-binary',
+		'binary/octet-stream'
+	];
+
+	/**
 	 * File binary.
 	 */
 	public const FILE_BINARY = 'file';
@@ -136,6 +145,22 @@ class FileType extends ShellCommandModule
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Check if MIME type represents generic unrecognized binary data.
+	 *
+	 * @param null|string $mime MIME type
+	 * @return bool true if MIME type is generic, otherwise false
+	 */
+	public static function isGenericMimeType(?string $mime): bool
+	{
+		if ($mime === null) {
+			return false;
+		}
+
+		$mime = strtolower(trim($mime));
+		return in_array($mime, self::GENERIC_MIME_TYPES, true);
 	}
 
 	/**
