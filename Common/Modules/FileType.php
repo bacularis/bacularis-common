@@ -76,7 +76,7 @@ class FileType extends ShellCommandModule
 	/**
 	 * File info object instance.
 	 */
-	private static $file_info = null;
+	private static $file_info;
 
 	/**
 	 * Get file MIME type.
@@ -202,6 +202,7 @@ class FileType extends ShellCommandModule
 	 * Get MIME type using external file command.
 	 *
 	 * @param string $path file path
+	 * @param array $cmd_params command parameters
 	 * @return null|string MIME type or null on error
 	 */
 	private static function getMimeTypeExternal(string $path, array $cmd_params): ?string

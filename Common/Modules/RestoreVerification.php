@@ -433,7 +433,7 @@ class RestoreVerification extends CommonModule
 	 */
 	private static function getCheckerHistory(array $history, string $fpath, string $checker, string $config_hash): array
 	{
-	 	return $history[$fpath][$checker][$config_hash] ?? [];
+		return $history[$fpath][$checker][$config_hash] ?? [];
 	}
 
 	/**
@@ -472,7 +472,7 @@ class RestoreVerification extends CommonModule
 	 * Get current checker configuration hash.
 	 *
 	 * @param string $checker checker class name
-	 * @param array $config checker configuration
+	 * @param string $config_name checker configuration name
 	 * @return string checker configuration hash or empty string on error
 	 */
 	public static function getCheckerConfigHash(string $checker, string $config_name = ''): string
