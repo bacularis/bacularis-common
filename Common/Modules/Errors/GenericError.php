@@ -39,12 +39,14 @@ class GenericError
 {
 	public const ERROR_NO_ERRORS = 0;
 	public const ERROR_INVALID_COMMAND = 1;
+	public const ERROR_NOT_READY = 999;
 	public const ERROR_INTERNAL_ERROR = 1000;
 	public const ERROR_INVALID_PATH = 8;
 	public const ERROR_WRONG_EXITCODE = 9;
 
 	public const MSG_ERROR_NO_ERRORS = '';
 	public const MSG_ERROR_INVALID_COMMAND = 'Invalid command.';
+	public const MSG_ERROR_NOT_READY = 'Not ready.';
 	public const MSG_ERROR_INTERNAL_ERROR = 'Internal error.';
 	public const MSG_ERROR_INVALID_PATH = 'Invalid path.';
 	public const MSG_ERROR_WRONG_EXITCODE = 'Wrong exitcode.';
