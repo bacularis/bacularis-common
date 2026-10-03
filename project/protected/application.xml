@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<application id="bacularis" mode="Debug">
+<application id="bacularis" mode="Normal">
 	<paths>
 		<using namespace="System.I18N.*" />
 		<alias id="Bacularis" path="" />
