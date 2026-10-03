@@ -145,6 +145,9 @@ class RestoreVerification extends CommonModule
 			if ($output !== '') {
 				fwrite(STDOUT, $output . PHP_EOL);
 			}
+		} elseif (is_array($body) && ($body['error'] ?? 0) != 0) {
+			$emsg = 'Unable to finalize Restore Verification. See the Bacularis audit log for details.';
+			Plugins::log(Plugins::LOG_ERROR, $emsg);
 		} else {
 			$response_output = htmlspecialchars($response['output']);
 			$emsg = sprintf(
