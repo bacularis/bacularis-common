@@ -511,9 +511,9 @@ class RestoreVerification extends CommonModule
 	 */
 	private static function prepareTestPath(array $plan, string $path): string
 	{
-		$ppath = $path;
+		$ppath = '/' . ltrim($path, '/');
 		foreach ($plan['restore']['path_mapping'] as $path_from => $path_to) {
-			$ppath = preg_replace('!^' . $path_from . '!', $path_to, $ppath);
+			$ppath = preg_replace('!^' . preg_quote($path_from, '!') . '!', $path_to, $ppath);
 		}
 		return $ppath;
 	}
