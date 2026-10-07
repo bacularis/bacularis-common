@@ -104,9 +104,10 @@ class Logging extends CommonModule
 	 */
 	private static function prepareLog(&$log)
 	{
-		if (is_object($log) || is_array($log)) {
-			$log = print_r($log, true);
-		}
+		// First reduce log if needed
+		self::reduceLog($log);
+
+		// Then prepare markers
 		$file_line = '';
 		$trace = debug_backtrace();
 		if (isset($trace[1]['file']) && isset($trace[1]['line'])) {
@@ -118,6 +119,54 @@ class Logging extends CommonModule
 			$log = $file_line . $log;
 		}
 		$log .= PHP_EOL . PHP_EOL;
+	}
+
+	/**
+	 * Minimize log size.
+	 * This is for reducing very large logs.
+	 *
+	 * @param mixed $log log value
+	 */
+	private static function reduceLog(&$log): void
+	{
+		if (is_string($log) || is_array($log) || is_object($log)) {
+			if (is_array($log)) {
+				$count = count($log);
+				if ($count > 200) {
+					$log = [
+						'count' => $count,
+						'first' => array_slice($log, 0, 100, true),
+						'last' => array_slice($log, -100, 100, true)
+					];
+				}
+				$log = print_r($log, true);
+			} elseif (is_string($log)) {
+				$length = strlen($log);
+				if ($length > 100000) {
+					$log =
+						substr($log, 0, 50000)
+						. PHP_EOL
+						. sprintf('[... %d bytes omitted ...]', $length - 100000)
+						. PHP_EOL
+						. substr($log, -50000);
+				}
+			} elseif (is_object($log)) {
+				if (property_exists($log, 'output') && is_array($log->output)) {
+					$count = count($log->output);
+					if ($count > 200) {
+						$log = (object) [
+							'error' => $log->error ?? null,
+							'output' => [
+								'count' => $count,
+								'first' => array_slice($log->output, 0, 100, true),
+								'last' => array_slice($log->output, -100, 100, true)
+							]
+						];
+					}
+				}
+				$log = print_r($log, true);
+			}
+		}
 	}
 
 	/**
