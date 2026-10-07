@@ -104,8 +104,8 @@ class Logging extends CommonModule
 	 */
 	private static function prepareLog(&$log)
 	{
-		// First reduce log if needed
-		self::reduceLog($log);
+		// First reduce log if needed and convert to string
+		self::reduceLogStr($log);
 
 		// Then prepare markers
 		$file_line = '';
@@ -122,12 +122,12 @@ class Logging extends CommonModule
 	}
 
 	/**
-	 * Minimize log size.
-	 * This is for reducing very large logs.
+	 * Minimize log size to string
+	 * This is for reducing very large logs and converts it into string.
 	 *
 	 * @param mixed $log log value
 	 */
-	private static function reduceLog(&$log): void
+	private static function reduceLogStr(&$log): void
 	{
 		if (is_string($log) || is_array($log) || is_object($log)) {
 			if (is_array($log)) {
