@@ -78,6 +78,7 @@
 		<module id="permissionscheck_plugin" class="Bacularis\Common\Plugins\PermissionsCheck" />
 		<module id="uidcheck_plugin" class="Bacularis\Common\Plugins\UIDCheck" />
 		<module id="gidcheck_plugin" class="Bacularis\Common\Plugins\GIDCheck" />
+		<module id="ransomwaredetectioncheck_plugin" class="Bacularis\Common\Plugins\RansomwareDetectionCheck" />
 		<module id="restore_verification" class="Bacularis\Common\Modules\RestoreVerification" />
 		<!-- API modules available in common -->
 		<module id="awscli" class="Bacularis\API\Modules\AWSCLI" />
