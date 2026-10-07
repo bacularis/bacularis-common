@@ -18,6 +18,8 @@ namespace Bacularis\Common\Portlets;
 use Prado\Prado;
 use Bacularis\Common\Modules\AuditLog;
 use Bacularis\Common\Modules\IBacularisActionPlugin;
+use Bacularis\Common\Modules\IBacularisVerificationCheckPlugin;
+use Bacularis\Common\Modules\IBacularisVerificationConfigPlugin;
 use Bacularis\Common\Modules\PluginConfigBase;
 use Bacularis\Common\Modules\PluginConfigParameter;
 use Bacularis\Common\Portlets\PortletTemplate;
@@ -203,6 +205,10 @@ class PluginList extends PortletTemplate
 		$plugins = $plugin_config->getPlugins();
 		uasort($plugins, fn ($a, $b) => strnatcmp($a['type'], $b['type']));
 		foreach ($plugins as $cls => $prop) {
+			if (is_subclass_of($cls, IBacularisVerificationCheckPlugin::class) && !is_subclass_of($cls, IBacularisVerificationConfigPlugin::class)) {
+				// verification plugins without config support - skip it
+				continue;
+			}
 			$data[$cls] = sprintf('[%s] %s', $prop['type'], $prop['name']);
 		}
 		$this->PluginSettingsPluginName->DataSource = $data;
