@@ -47,25 +47,8 @@ class BShellPluginApplication extends BShellApplication
 	 */
 	public function run($args = null)
 	{
-		set_exception_handler([static::class, 'handleError']);
+		$this->setErrorHandler(new BShellPluginErrorHandler());
 		parent::run($args);
-	}
-
-	/**
-	 * Error handler method.
-	 * It is required to print propser traces in the plugin command output
-	 * if any error happen.
-	 * NOTE: This method ends with exit();
-	 *
-	 * @param object $exception exception object
-	 */
-	public static function handleError($exception)
-	{
-		$msg = $exception->getMessage();
-		$trace = $exception->getTraceAsString();
-		fwrite(STDERR, $msg);
-		fwrite(STDERR, $trace);
-		exit(1);
 	}
 
 	/**
