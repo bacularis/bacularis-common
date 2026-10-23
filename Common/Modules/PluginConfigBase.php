@@ -30,7 +30,7 @@ abstract class PluginConfigBase extends ConfigFileModule
 	/**
 	 * Settings name pattern.
 	 */
-	public const SETTINGS_NAME_PATTERN = '(?!^\d+$)[\p{L}\p{N}\p{Z}\-\'\\/\\(\\)\\{\\}:.#~_+!$]{1,100}';
+	public const SETTINGS_NAME_PATTERN = '(?!^(\d+|\.|\.\.)$)[\p{L}\p{N}\p{Z}\-\'\\(\\)\\{\\}:.#~_+!$]{1,100}';
 
 	/**
 	 * Plugin directory path.
