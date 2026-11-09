@@ -29,6 +29,7 @@
 
 namespace Bacularis\Common\Modules;
 
+use InvalidArgumentException;
 use Prado\TModule;
 
 /**
@@ -719,6 +720,26 @@ class Miscellaneous extends TModule
 	public static function isWindowsPath(string $path): bool
 	{
 		return (preg_match('/^[A-Z]:[\\\\\/]/i', $path) === 1);
+	}
+
+	/**
+	 * Resolve an existing local path with realpath(), preserving filename whitespace.
+	 * Resolves symbolic links and dot segments; the path must exist and be resolvable.
+	 *
+	 * @param string $path local filesystem path, without NUL bytes
+	 * @return string canonical absolute path
+	 * @throws InvalidArgumentException for empty, invalid or unresolvable paths
+	 */
+	public static function getRealPath(string $path): string
+	{
+		if ($path === '' || strpos($path, "\0") !== false) {
+			throw new InvalidArgumentException('A nonempty filesystem path without NUL bytes is required.');
+		}
+		$absolute = realpath($path);
+		if ($absolute === false) {
+			throw new InvalidArgumentException('Filesystem path cannot be resolved: ' . $path);
+		}
+		return $absolute;
 	}
 
 	public function escapeCharsToConsole($path)
