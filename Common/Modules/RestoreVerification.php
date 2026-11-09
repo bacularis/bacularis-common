@@ -305,6 +305,7 @@ class RestoreVerification extends CommonModule
 			foreach ($rule_set_paths as $fpath => $tests) {
 				for ($i = 0; $i < count($tests); $i++) {
 					$checker = sprintf('\\Bacularis\\Common\\Plugins\\%s', $tests[$i]['checker']);
+					$is_config_checker = is_subclass_of($checker, IBacularisVerificationConfigPlugin::class);
 					$is_data_checker = is_subclass_of($checker, IBacularisVerificationDataPlugin::class);
 
 					// Check if destination supports checker capabilities
@@ -328,14 +329,16 @@ class RestoreVerification extends CommonModule
 						continue;
 					}
 
+					// Pass current configuration independently of historical-data support
+					if ($is_config_checker) {
+						$checker_config = $tests[$i]['checker_config'] ?? [];
+						$checker::setCheckerConfig($checker_config);
+					}
+
 					// Pass historical data to data checker
 					$config_hash = '';
 					if ($is_data_checker) {
 						$checker_config_name = $tests[$i]['checker_config_name'] ?? '';
-						$checker_config = $tests[$i]['checker_config'] ?? [];
-
-						$checker::setCheckerConfig($checker_config);
-
 						$config_hash = self::getCheckerConfigHash($checker, $checker_config_name);
 						if ($config_hash === '') {
 							$success = false;
