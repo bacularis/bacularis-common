@@ -241,4 +241,3 @@ class YaraX extends Common
 		}
 	}
 }
-

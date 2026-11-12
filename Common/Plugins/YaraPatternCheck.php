@@ -298,8 +298,8 @@ class YaraPatternCheck extends BacularisCommonPluginBase implements IBacularisVe
 	 * disables warnings; an enabled warning threshold must be below the error threshold.
 	 *
 	 * @param array $config supplied parameters
-	 * @return array validated parameters
 	 * @throws InvalidArgumentException for invalid or missing settings
+	 * @return array validated parameters
 	 */
 	private static function validateConfig(array $config): array
 	{

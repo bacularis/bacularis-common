@@ -94,4 +94,3 @@ class Command extends Common
 		);
 	}
 }
-

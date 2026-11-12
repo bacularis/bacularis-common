@@ -727,8 +727,8 @@ class Miscellaneous extends TModule
 	 * Resolves symbolic links and dot segments; the path must exist and be resolvable.
 	 *
 	 * @param string $path local filesystem path, without NUL bytes
-	 * @return string canonical absolute path
 	 * @throws InvalidArgumentException for empty, invalid or unresolvable paths
+	 * @return string canonical absolute path
 	 */
 	public static function getRealPath(string $path): string
 	{

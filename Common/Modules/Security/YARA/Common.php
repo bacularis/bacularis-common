@@ -70,8 +70,8 @@ class Common extends CommonModule
 	 * Select an engine explicitly, without a fallback.
 	 *
 	 * @param string $type engine identifier
-	 * @return string engine class
 	 * @throws InvalidArgumentException for unsupported engines
+	 * @return string engine class
 	 */
 	public static function getEngineClass(string $type): string
 	{
@@ -408,4 +408,3 @@ class Common extends CommonModule
 		return $result;
 	}
 }
-

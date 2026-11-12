@@ -200,4 +200,3 @@ class Yara extends Common
 		}
 	}
 }
-
