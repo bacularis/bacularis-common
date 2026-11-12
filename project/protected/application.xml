@@ -79,6 +79,7 @@
 		<module id="uidcheck_plugin" class="Bacularis\Common\Plugins\UIDCheck" />
 		<module id="gidcheck_plugin" class="Bacularis\Common\Plugins\GIDCheck" />
 		<module id="ransomwaredetectioncheck_plugin" class="Bacularis\Common\Plugins\RansomwareDetectionCheck" />
+		<module id="yarapatterncheck_plugin" class="Bacularis\Common\Plugins\YaraPatternCheck" />
 		<module id="influxdb2backup_plugin" class="Bacularis\Common\Plugins\InfluxDB2Backup" />
 		<module id="restore_verification" class="Bacularis\Common\Modules\RestoreVerification" />
 		<!-- API modules available in common -->
